@@ -1,0 +1,4 @@
+
+kt-android/local.properties
+kt-android/app/src/test/java/com/ladsers/passtable/android/ExampleUnitTest.kt
+kt-android/app/src/androidTest/java/com/ladsers/passtable/android/ExampleInstrumentedTest.kt
