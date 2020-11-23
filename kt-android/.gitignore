@@ -20,3 +20,10 @@ gradle-app.setting
 
 #libs
 libs/
+
+
+local.properties
+
+app/src/test/java/com/ladsers/passtable/android/ExampleUnitTest.kt
+
+app/src/androidTest/java/com/ladsers/passtable/android/ExampleInstrumentedTest.kt
