@@ -1,17 +1,14 @@
 package com.ladsers.passtable.android
 
-import android.content.Context
+import DataItem
 import android.net.Uri
-import android.opengl.Visibility
 import android.os.Bundle
-import android.text.Editable
 import android.view.View
 import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
 import com.ladsers.passtable.android.databinding.DialogAskpasswordBinding
 import java.io.BufferedReader
@@ -100,8 +97,21 @@ class TableActivity : AppCompatActivity() {
     private fun openProcess(masterPass: String) {
         table = DataTableAndroid(uriStr, masterPass, cryptData)
         when (table.open()) {
-            0 -> { }//TODO: work with data
+            0 -> workWithRecyclerView()
             3 -> askPassword(true)
         }
+    }
+
+    private fun workWithRecyclerView(){
+        binding.rvTable.layoutManager = LinearLayoutManager(
+            this,
+            LinearLayoutManager.VERTICAL,
+            false
+        )
+
+        val mtList = mutableListOf<DataItem>()
+        mtList.addAll(table.getData()) // TODO: fix this in library
+        val adapter = TableAdapter(mtList)
+        binding.rvTable.adapter = adapter
     }
 }
