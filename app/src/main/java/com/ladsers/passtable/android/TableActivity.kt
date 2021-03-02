@@ -21,6 +21,9 @@ class TableActivity : AppCompatActivity() {
     private lateinit var uriStr: String
     private lateinit var cryptData: String
 
+    private lateinit var adapter: TableAdapter
+    private lateinit var mtList: MutableList<DataItem>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTableBinding.inflate(layoutInflater)
@@ -109,9 +112,26 @@ class TableActivity : AppCompatActivity() {
             false
         )
 
-        val mtList = mutableListOf<DataItem>()
+        mtList = mutableListOf()
         mtList.addAll(table.getData()) // TODO: fix this in library
-        val adapter = TableAdapter(mtList)
+        adapter = TableAdapter(mtList, {id -> showCard(id)},
+            {id -> showPassword(id)})
         binding.rvTable.adapter = adapter
+    }
+
+    private fun showCard(id: Int){
+        val builder = AlertDialog.Builder(this)
+        // TODO: replace with a full layout.
+        builder.setTitle(table.getData(id, "n"))
+        val msg = table.getData(id, "l") + "\n\n" + table.getData(id, "p")
+        builder.setMessage(msg)
+        builder.setPositiveButton("OK") { _, _ -> }
+        builder.show()
+    }
+
+    private fun showPassword(id: Int){
+        mtList[id].password = if (mtList[id].password == "/yes") table.getData(id, "p")
+        else "/yes"
+        adapter.notifyItemChanged(id)
     }
 }

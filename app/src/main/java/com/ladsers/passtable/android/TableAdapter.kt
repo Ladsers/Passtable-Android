@@ -2,11 +2,14 @@ package com.ladsers.passtable.android
 
 import DataItem
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ladsers.passtable.android.databinding.ItemCollectionBinding
 
-class TableAdapter(private val dataList: MutableList<DataItem>) : RecyclerView.Adapter<TableAdapter.ItemViewHolder>() {
+class TableAdapter(private val dataList: MutableList<DataItem>,
+                   private val showCard: (Int) -> Unit,
+                   private val showPassword: (Int) -> Unit) : RecyclerView.Adapter<TableAdapter.ItemViewHolder>() {
 
     class ItemViewHolder(val binding: ItemCollectionBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -24,6 +27,14 @@ class TableAdapter(private val dataList: MutableList<DataItem>) : RecyclerView.A
                 binding.tvNote.text = note
                 binding.tvLogin.text = login
                 binding.tvPassword.text = password
+
+                if (password == "/no") binding.btShowPassword.visibility = View.GONE
+
+                binding.tvPassword.visibility =
+                    if (password != "/yes" && password != "/no") View.VISIBLE else View.GONE
+
+                binding.clItem.setOnClickListener { showCard(position) }
+                binding.btShowPassword.setOnClickListener { showPassword(position) }
             }
         }
     }
