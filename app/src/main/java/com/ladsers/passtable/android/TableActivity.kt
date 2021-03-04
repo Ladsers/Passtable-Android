@@ -1,16 +1,23 @@
 package com.ladsers.passtable.android
 
 import DataItem
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
 import com.ladsers.passtable.android.databinding.DialogAskpasswordBinding
+import com.ladsers.passtable.android.databinding.DialogItemBinding
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -78,7 +85,7 @@ class TableActivity : AppCompatActivity() {
             openProcess(binding.etPassword.text.toString())
             closedViaOk = true
         }
-        builder.setOnDismissListener { if(!closedViaOk) finish() }
+        builder.setOnDismissListener { if (!closedViaOk) finish() }
 
         builder.show().apply {
             this.setCanceledOnTouchOutside(false)
@@ -105,7 +112,7 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
-    private fun workWithRecyclerView(){
+    private fun workWithRecyclerView() {
         binding.rvTable.layoutManager = LinearLayoutManager(
             this,
             LinearLayoutManager.VERTICAL,
@@ -114,24 +121,74 @@ class TableActivity : AppCompatActivity() {
 
         mtList = mutableListOf()
         mtList.addAll(table.getData()) // TODO: fix this in library
-        adapter = TableAdapter(mtList, {id -> showCard(id)},
-            {id -> showPassword(id)})
+        adapter = TableAdapter(mtList, { id -> showCard(id) },
+            { id -> showPassword(id) })
         binding.rvTable.adapter = adapter
     }
 
-    private fun showCard(id: Int){
+    private fun showCard(id: Int) {
         val builder = AlertDialog.Builder(this)
-        // TODO: replace with a full layout.
-        builder.setTitle(table.getData(id, "n"))
-        val msg = table.getData(id, "l") + "\n\n" + table.getData(id, "p")
-        builder.setMessage(msg)
-        builder.setPositiveButton("OK") { _, _ -> }
-        builder.show()
+        val binding = DialogItemBinding.inflate(layoutInflater)
+        builder.setView(binding.root)
+
+        binding.tbTag.text = table.getData(id, "t") //TODO: change to colored circles
+
+        val n = table.getData(id, "n")
+        val l = table.getData(id, "l")
+        val p = table.getData(id, "p")
+
+        if (n.isNotEmpty()) binding.tbNote.text = n
+        else {
+            binding.tbNote.text = "<no note>" //TODO: change to string const and add text styles
+            binding.btCopyNote.visibility = View.GONE
+        }
+
+        if (l.isNotEmpty()) binding.tbLogin.text = l
+        else {
+            binding.tbLogin.visibility = View.INVISIBLE
+            binding.btCopyLogin.visibility = View.GONE
+        }
+
+        if (p.isNotEmpty()) binding.tbPassword.text = "********"
+        else {
+            binding.tbPassword.visibility = View.INVISIBLE
+            binding.btCopyPassword.visibility = View.GONE
+            binding.btShowPassword.visibility = View.GONE
+        }
+
+        binding.btCopyNote.setOnClickListener { toClipboard(id, "n") }
+        binding.btCopyLogin.setOnClickListener { toClipboard(id, "l") }
+        binding.btCopyPassword.setOnClickListener { toClipboard(id, "p") }
+        binding.btShowPassword.setOnClickListener {
+            binding.tbPassword.text = if (binding.tbPassword.text == "********") p else "********"
+        }
+
+        binding.btEdit.setOnClickListener { /*TODO*/ }
+        binding.btDelete.setOnClickListener { /*TODO*/ }
+
+        builder.show().apply {
+            this.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            binding.btOk.setOnClickListener { this.dismiss() }
+        }
     }
 
-    private fun showPassword(id: Int){
+    private fun showPassword(id: Int) {
         mtList[id].password = if (mtList[id].password == "/yes") table.getData(id, "p")
         else "/yes"
         adapter.notifyItemChanged(id)
+    }
+
+    private fun toClipboard(id: Int, key: String) {
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText(key, table.getData(id, key))
+        clipboard.setPrimaryClip(clip)
+
+        val text = when (key){
+            "n" -> "Note copied" //TODO
+            "l" -> "Login copied"
+            "p" -> "Password copied"
+            else -> return
+        }
+        Toast.makeText(applicationContext, text, Toast.LENGTH_SHORT).show()
     }
 }
