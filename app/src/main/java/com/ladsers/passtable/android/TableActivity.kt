@@ -144,20 +144,20 @@ class TableActivity : AppCompatActivity() {
         if (n.isNotEmpty()) binding.tbNote.text = n
         else {
             binding.tbNote.text = "<no note>" //TODO: change to string const and add text styles
-            binding.btCopyNote.visibility = View.GONE
+            binding.btCopyNote.visibility = View.INVISIBLE
         }
 
         if (l.isNotEmpty()) binding.tbLogin.text = l
         else {
             binding.tbLogin.visibility = View.INVISIBLE
-            binding.btCopyLogin.visibility = View.GONE
+            binding.btCopyLogin.visibility = View.INVISIBLE
         }
 
         if (p.isNotEmpty()) binding.tbPassword.text = "********"
         else {
             binding.tbPassword.visibility = View.INVISIBLE
-            binding.btCopyPassword.visibility = View.GONE
-            binding.btShowPassword.visibility = View.GONE
+            binding.btCopyPassword.visibility = View.INVISIBLE
+            binding.btShowPassword.visibility = View.INVISIBLE
         }
 
         binding.btCopyNote.setOnClickListener { toClipboard(id, "n") }
