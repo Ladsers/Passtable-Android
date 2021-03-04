@@ -4,6 +4,7 @@ import DataItem
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -30,6 +31,9 @@ class TableActivity : AppCompatActivity() {
 
     private lateinit var adapter: TableAdapter
     private lateinit var mtList: MutableList<DataItem>
+
+    private val EditActivity_EditMode = 10
+    private val EditActivity_AddMode = 11
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -163,11 +167,15 @@ class TableActivity : AppCompatActivity() {
             binding.tbPassword.text = if (binding.tbPassword.text == "********") p else "********"
         }
 
-        binding.btEdit.setOnClickListener { /*TODO*/ }
-        binding.btDelete.setOnClickListener { /*TODO*/ }
-
         builder.show().apply {
             this.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            binding.btEdit.setOnClickListener {
+                editItem(id)
+                this.dismiss()
+            }
+            binding.btDelete.setOnClickListener { /*TODO*/ }
+
             binding.btOk.setOnClickListener { this.dismiss() }
         }
     }
@@ -183,12 +191,75 @@ class TableActivity : AppCompatActivity() {
         val clip = ClipData.newPlainText(key, table.getData(id, key))
         clipboard.setPrimaryClip(clip)
 
-        val text = when (key){
+        val text = when (key) {
             "n" -> "Note copied" //TODO
             "l" -> "Login copied"
             "p" -> "Password copied"
             else -> return
         }
         Toast.makeText(applicationContext, text, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun editItem(id: Int) {
+        val intent = Intent(this, EditActivity::class.java)
+        intent.putExtra("dataTag", table.getData(id, "t"))
+        intent.putExtra("dataNote", table.getData(id, "n"))
+        intent.putExtra("dataLogin", table.getData(id, "l"))
+        intent.putExtra("dataPassword", table.getData(id, "p"))
+
+        intent.putExtra("modeEdit", true)
+        intent.putExtra("id", id)
+        startActivityForResult(intent, EditActivity_EditMode)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            EditActivity_EditMode -> {
+                if (resultCode == RESULT_OK) {
+                    if (data == null) showMsgDialog("No data received. Not saved.") //TODO
+                    else {
+                        val id = data.getIntExtra("id", -1)
+                        val newTag = data.getStringExtra("newDataTag")
+                        val newNote = data.getStringExtra("newDataNote")
+                        val newLogin = data.getStringExtra("newDataLogin")
+                        val newPassword = data.getStringExtra("newDataPassword")
+                        if (id != -1 && newTag != null && newNote != null &&
+                            newLogin != null && newPassword != null
+                        )
+                            saving(id, newTag, newNote, newLogin, newPassword)
+                        else showMsgDialog("Not all data received. Not saved.") //TODO
+                    }
+                } else {
+                    Toast.makeText(applicationContext, "Changes were not saved", Toast.LENGTH_SHORT)
+                        .show() //TODO
+                    //showCard(id) //TODO!!!
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun saving(
+        id: Int,
+        newTag: String,
+        newNote: String,
+        newLogin: String,
+        newPassword: String
+    ) {
+        table.setData(id, "t", newTag)
+        table.setData(id, "n", newNote)
+        table.setData(id, "l", newLogin)
+        table.setData(id, "p", newPassword)
+
+        mtList[id].tag = newTag
+        mtList[id].note = newNote
+        mtList[id].login = newLogin
+        mtList[id].password = newPassword
+
+        adapter.notifyItemChanged(id)
+        showCard(id)
+        //TODO
+
+        Toast.makeText(applicationContext, "Saved", Toast.LENGTH_SHORT).show() //TODO
     }
 }
