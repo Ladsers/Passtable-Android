@@ -86,9 +86,7 @@ class EditActivity : AppCompatActivity() {
     }
 
     private fun returnNewData(){
-        val id = intent.getIntExtra("id", -1)
         val intent = Intent()
-        intent.putExtra("id", id)
         intent.putExtra("newDataTag", "0") //TODO: tag system
         intent.putExtra("newDataNote", binding.etNote.text.toString())
         intent.putExtra("newDataLogin", binding.etLogin.text.toString())

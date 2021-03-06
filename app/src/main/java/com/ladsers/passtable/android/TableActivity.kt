@@ -35,6 +35,8 @@ class TableActivity : AppCompatActivity() {
     private val EditActivity_EditMode = 10
     private val EditActivity_AddMode = 11
 
+    private var idForActivityResult = -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTableBinding.inflate(layoutInflater)
@@ -201,6 +203,8 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun editItem(id: Int) {
+        idForActivityResult = id
+
         val intent = Intent(this, EditActivity::class.java)
         intent.putExtra("dataTag", table.getData(id, "t"))
         intent.putExtra("dataNote", table.getData(id, "n"))
@@ -208,7 +212,6 @@ class TableActivity : AppCompatActivity() {
         intent.putExtra("dataPassword", table.getData(id, "p"))
 
         intent.putExtra("modeEdit", true)
-        intent.putExtra("id", id)
         startActivityForResult(intent, EditActivity_EditMode)
     }
 
@@ -218,28 +221,29 @@ class TableActivity : AppCompatActivity() {
                 if (resultCode == RESULT_OK) {
                     if (data == null) showMsgDialog("No data received. Not saved.") //TODO
                     else {
-                        val id = data.getIntExtra("id", -1)
                         val newTag = data.getStringExtra("newDataTag")
                         val newNote = data.getStringExtra("newDataNote")
                         val newLogin = data.getStringExtra("newDataLogin")
                         val newPassword = data.getStringExtra("newDataPassword")
-                        if (id != -1 && newTag != null && newNote != null &&
+                        if (newTag != null && newNote != null &&
                             newLogin != null && newPassword != null
                         )
-                            saving(id, newTag, newNote, newLogin, newPassword)
+                            savingEdit(idForActivityResult, newTag, newNote, newLogin, newPassword)
                         else showMsgDialog("Not all data received. Not saved.") //TODO
+                        idForActivityResult = -1
                     }
                 } else {
                     Toast.makeText(applicationContext, "Changes were not saved", Toast.LENGTH_SHORT)
                         .show() //TODO
-                    //showCard(id) //TODO!!!
+                    showCard(idForActivityResult)
+                    idForActivityResult = -1
                 }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun saving(
+    private fun savingEdit(
         id: Int,
         newTag: String,
         newNote: String,
