@@ -55,7 +55,7 @@ class TableActivity : AppCompatActivity() {
 
     private fun checkFileProcess() {
         /* Testing for errors in the file. */
-        table = DataTableAndroid(uriStr, "/test", cryptData)
+        table = DataTableAndroid(uriStr, "/test", cryptData, contentResolver)
         when (table.open()) {
             2 -> showErrDialog("InvalidFileVer") //TODO
             -2 -> showErrDialog("CorruptedFile") //TODO
@@ -111,7 +111,7 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun openProcess(masterPass: String) {
-        table = DataTableAndroid(uriStr, masterPass, cryptData)
+        table = DataTableAndroid(uriStr, masterPass, cryptData, contentResolver)
         when (table.open()) {
             0 -> workWithRecyclerView()
             3 -> askPassword(true)
@@ -228,7 +228,7 @@ class TableActivity : AppCompatActivity() {
                         if (newTag != null && newNote != null &&
                             newLogin != null && newPassword != null
                         )
-                            savingEdit(idForActivityResult, newTag, newNote, newLogin, newPassword)
+                            editComplete(idForActivityResult, newTag, newNote, newLogin, newPassword)
                         else showMsgDialog("Not all data received. Not saved.") //TODO
                         idForActivityResult = -1
                     }
@@ -243,7 +243,7 @@ class TableActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun savingEdit(
+    private fun editComplete(
         id: Int,
         newTag: String,
         newNote: String,
@@ -262,8 +262,37 @@ class TableActivity : AppCompatActivity() {
 
         adapter.notifyItemChanged(id)
         showCard(id)
-        //TODO
 
-        Toast.makeText(applicationContext, "Saved", Toast.LENGTH_SHORT).show() //TODO
+        saving() // TODO: save error check
+    }
+
+    private fun saving(): Boolean {
+        // save and save as in one fun?
+        when (table.save()) {
+            0 -> {
+                Toast.makeText(applicationContext, "Saved", Toast.LENGTH_SHORT).show() //TODO
+                return true
+            }
+            2 -> showMsgDialog("identity check", "Save failed") //TODO
+            3 -> {
+                showMsgDialog(
+                    "failed to save the file in the specified directory!",
+                    "Save failed"
+                ) //TODO
+                return true
+            }
+            4 -> {
+                showMsgDialog(
+                    "table without records!",
+                    "Save failed"
+                ) //TODO: the last entry remained in the file, create a new one to delete it.
+                return true
+            }
+            -2 -> showMsgDialog("file encryption error.", "Save failed") //TODO
+            -3 -> showMsgDialog("error writing data to the file.", "Save failed") //TODO: choose a new path
+            5 -> {} //TODO
+            6 -> {} //TODO
+        }
+        return false
     }
 }
