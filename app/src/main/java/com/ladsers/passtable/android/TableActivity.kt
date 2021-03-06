@@ -176,7 +176,9 @@ class TableActivity : AppCompatActivity() {
                 editItem(id)
                 this.dismiss()
             }
-            binding.btDelete.setOnClickListener { /*TODO*/ }
+            binding.btDelete.setOnClickListener {
+                removeItem(id, this)
+            }
 
             binding.btOk.setOnClickListener { this.dismiss() }
         }
@@ -294,5 +296,22 @@ class TableActivity : AppCompatActivity() {
             6 -> {} //TODO
         }
         return false
+    }
+
+    private fun removeItem(id: Int, alertDialog: AlertDialog){
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("the entry will be permanently deleted") //TODO
+        builder.setTitle("Are you sure?") //TODO
+        builder.setPositiveButton("Yes") { _, _ -> //TODO
+            alertDialog.dismiss()
+
+            table.delete(id)
+            mtList.removeAt(id)
+            adapter.notifyItemRemoved(id)
+
+            saving() // TODO: save error check
+        }
+        builder.setNegativeButton("No") { _, _ -> } //TODO
+        builder.show()
     }
 }
