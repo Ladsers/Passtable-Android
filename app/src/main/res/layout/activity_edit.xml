@@ -87,7 +87,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:focusable="false"
-        android:text="ShowPassword"
+        android:text="@string/app_bt_showPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etPassword" />
@@ -98,7 +98,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:focusable="false"
-        android:text="Accept &amp; save"
+        android:text="@string/app_bt_editSave"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -109,7 +109,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
-        android:text="ErrMsg: Note OR Login and Password"
+        android:text="@string/ui_ct_editItemErr"
         android:textColor="@android:color/holo_red_light"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/btSave"

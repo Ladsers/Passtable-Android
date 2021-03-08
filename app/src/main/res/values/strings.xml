@@ -1,3 +1,77 @@
 <resources>
-    <string name="app_name">Passtable</string>
+    <!-- APP -->
+
+        <!-- info -->
+        <string name="app_info_appName">Passtable</string>
+        <!-- end! -->
+
+        <!-- com (common) -->
+        <string name="app_com_note">note</string>
+        <string name="app_com_login">login</string>
+        <string name="app_com_password">password</string>
+        <string name="app_com_tag">tag</string>
+        <string name="app_com_passwordSecret">********</string>
+        <string name="app_com_itemHasNoNote">&#60; no note &#62;</string>
+        <!-- end! -->
+
+        <!-- bt (button) -->
+        <string name="app_bt_yes">yes</string>
+        <string name="app_bt_no">no</string>
+        <string name="app_bt_ok">ok</string>
+        <string name="app_bt_open">open</string>
+        <string name="app_bt_editItem">Edit item</string>
+        <string name="app_bt_removeItem">Remove item</string>
+        <string name="app_bt_showPassword">Show password</string>
+        <string name="app_bt_editSave">Accept &amp; save</string>
+        <!-- end! -->
+
+    <!-- END -->
+
+    <!-- UI -->
+
+        <!-- ct (content) -->
+        <string name="ui_ct_editItemErr">"ErrMsg: Note OR Login and Password"</string>
+        <!-- end! -->
+
+        <!-- msg (message) -->
+        <string name="ui_msg_noteCopied">Note was copied</string>
+        <string name="ui_msg_loginCopied">Login was copied</string>
+        <string name="ui_msg_passwordCopied">Password was copied</string>
+        <string name="ui_msg_saved">Saved</string>
+        <string name="ui_msg_canceled">Canceled</string>
+        <!-- end! -->
+
+    <!-- END -->
+
+    <!-- DLG  -->
+
+        <!-- title -->
+        <string name="dlg_title_enterMasterPassword">Enter master password</string>
+        <string name="dlg_title_notSaved">Not saved</string>
+        <string name="dlg_title_saveFailed">Save failed</string>
+        <string name="dlg_title_areYouSure">Are you sure?</string>
+        <!-- end! -->
+
+        <!-- ct (content) -->
+        <string name="dlg_ct_invalidPassword">"InvalidPassword"</string>
+        <!-- end! -->
+
+        <!-- err (error) -->
+        <string name="dlg_err_uriIsNull">"UriIsNull"</string>
+        <string name="dlg_err_invalidFileVer">"InvalidFileVer"</string>
+        <string name="dlg_err_corruptedFile">"CorruptedFile"</string>
+        <string name="dlg_err_noDataReceived">"Reason: No data received"</string>
+        <string name="dlg_err_someDataNull">"Reason: Not all data received"</string>
+        <string name="dlg_err_saveIdentity">"Identity check failed"</string>
+        <string name="dlg_err_saveSpecifiedDir">"Failed to save the file in the specified directory"</string>
+        <string name="dlg_err_saveWithoutRecords">"Table without records"</string>
+        <string name="dlg_err_saveEncryptionProblem">"File encryption error"</string>
+        <string name="dlg_err_saveWriting">"Error writing data to the file"</string>
+        <!-- end! -->
+
+        <!-- msg (message) -->
+        <string name="dlg_msg_permanentRemoval">The entry will be permanently deleted</string>
+        <!-- end! -->
+
+    <!-- END -->
 </resources>

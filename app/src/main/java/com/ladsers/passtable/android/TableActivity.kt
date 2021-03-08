@@ -43,7 +43,7 @@ class TableActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val uri = intent.getParcelableExtra<Uri>("fileUri")
-        if (uri == null) showErrDialog("UriIsNull") //TODO
+        if (uri == null) showErrDialog(getString(R.string.dlg_err_uriIsNull))
         else {
             val inputStream = contentResolver.openInputStream(uri)
             cryptData =
@@ -57,8 +57,8 @@ class TableActivity : AppCompatActivity() {
         /* Testing for errors in the file. */
         table = DataTableAndroid(uriStr, "/test", cryptData, contentResolver)
         when (table.open()) {
-            2 -> showErrDialog("InvalidFileVer") //TODO
-            -2 -> showErrDialog("CorruptedFile") //TODO
+            2 -> showErrDialog(getString(R.string.dlg_err_invalidFileVer))
+            -2 -> showErrDialog(getString(R.string.dlg_err_corruptedFile))
             else -> askPassword()
         }
     }
@@ -67,7 +67,7 @@ class TableActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         builder.setMessage(text)
         if (title.isNotEmpty()) builder.setTitle(title)
-        builder.setPositiveButton("OK") { _, _ -> }
+        builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ -> }
         builder.show()
     }
 
@@ -76,7 +76,7 @@ class TableActivity : AppCompatActivity() {
         builder.setMessage(text)
         if (title.isNotEmpty()) builder.setTitle(title)
         builder.setCancelable(false)
-        builder.setPositiveButton("OK") { _, _ -> finish() }
+        builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ -> finish() }
         builder.show()
     }
 
@@ -84,10 +84,10 @@ class TableActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         val binding = DialogAskpasswordBinding.inflate(layoutInflater)
         builder.setView(binding.root)
-        builder.setTitle("Enter master password")
+        builder.setTitle(getString(R.string.dlg_title_enterMasterPassword))
         if (isInvalidPassword) binding.tvInvalidPassword.visibility = View.VISIBLE
         var closedViaOk = false
-        builder.setPositiveButton("OK") { _, _ ->
+        builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ ->
             openProcess(binding.etPassword.text.toString())
             closedViaOk = true
         }
@@ -145,7 +145,7 @@ class TableActivity : AppCompatActivity() {
 
         if (n.isNotEmpty()) binding.tbNote.text = n
         else {
-            binding.tbNote.text = "<no note>" //TODO: change to string const and add text styles
+            binding.tbNote.text = getString(R.string.app_com_itemHasNoNote) //TODO: add text styles
             binding.btCopyNote.visibility = View.INVISIBLE
         }
 
@@ -155,7 +155,7 @@ class TableActivity : AppCompatActivity() {
             binding.btCopyLogin.visibility = View.INVISIBLE
         }
 
-        if (p.isNotEmpty()) binding.tbPassword.text = "********"
+        if (p.isNotEmpty()) binding.tbPassword.text = getString(R.string.app_com_passwordSecret)
         else {
             binding.tbPassword.visibility = View.INVISIBLE
             binding.btCopyPassword.visibility = View.INVISIBLE
@@ -166,7 +166,8 @@ class TableActivity : AppCompatActivity() {
         binding.btCopyLogin.setOnClickListener { toClipboard(id, "l") }
         binding.btCopyPassword.setOnClickListener { toClipboard(id, "p") }
         binding.btShowPassword.setOnClickListener {
-            binding.tbPassword.text = if (binding.tbPassword.text == "********") p else "********"
+            binding.tbPassword.text = if (binding.tbPassword.text ==
+                getString(R.string.app_com_passwordSecret)) p else getString(R.string.app_com_passwordSecret)
         }
 
         builder.show().apply {
@@ -196,9 +197,9 @@ class TableActivity : AppCompatActivity() {
         clipboard.setPrimaryClip(clip)
 
         val text = when (key) {
-            "n" -> "Note copied" //TODO
-            "l" -> "Login copied"
-            "p" -> "Password copied"
+            "n" -> getString(R.string.ui_msg_noteCopied)
+            "l" -> getString(R.string.ui_msg_loginCopied)
+            "p" -> getString(R.string.ui_msg_passwordCopied)
             else -> return
         }
         Toast.makeText(applicationContext, text, Toast.LENGTH_SHORT).show()
@@ -221,7 +222,7 @@ class TableActivity : AppCompatActivity() {
         when (requestCode) {
             EditActivity_EditMode -> {
                 if (resultCode == RESULT_OK) {
-                    if (data == null) showMsgDialog("No data received. Not saved.") //TODO
+                    if (data == null) showMsgDialog(getString(R.string.dlg_err_noDataReceived),  getString(R.string.dlg_title_notSaved))
                     else {
                         val newTag = data.getStringExtra("newDataTag")
                         val newNote = data.getStringExtra("newDataNote")
@@ -231,12 +232,12 @@ class TableActivity : AppCompatActivity() {
                             newLogin != null && newPassword != null
                         )
                             editComplete(idForActivityResult, newTag, newNote, newLogin, newPassword)
-                        else showMsgDialog("Not all data received. Not saved.") //TODO
+                        else showMsgDialog(getString(R.string.dlg_err_someDataNull), getString(R.string.dlg_title_notSaved))
                         idForActivityResult = -1
                     }
                 } else {
-                    Toast.makeText(applicationContext, "Changes were not saved", Toast.LENGTH_SHORT)
-                        .show() //TODO
+                    Toast.makeText(applicationContext, getString(R.string.ui_msg_canceled), Toast.LENGTH_SHORT)
+                        .show()
                     showCard(idForActivityResult)
                     idForActivityResult = -1
                 }
@@ -272,26 +273,26 @@ class TableActivity : AppCompatActivity() {
         // save and save as in one fun?
         when (table.save()) {
             0 -> {
-                Toast.makeText(applicationContext, "Saved", Toast.LENGTH_SHORT).show() //TODO
+                Toast.makeText(applicationContext, getString(R.string.ui_msg_saved), Toast.LENGTH_SHORT).show()
                 return true
             }
-            2 -> showMsgDialog("identity check", "Save failed") //TODO
+            2 -> showMsgDialog(getString(R.string.dlg_err_saveIdentity), getString(R.string.dlg_title_saveFailed))
             3 -> {
                 showMsgDialog(
-                    "failed to save the file in the specified directory!",
-                    "Save failed"
-                ) //TODO
+                    getString(R.string.dlg_err_saveSpecifiedDir),
+                    getString(R.string.dlg_title_saveFailed)
+                ) //TODO: remove?
                 return true
             }
             4 -> {
                 showMsgDialog(
-                    "table without records!",
-                    "Save failed"
+                    getString(R.string.dlg_err_saveWithoutRecords),
+                    getString(R.string.dlg_title_saveFailed)
                 ) //TODO: the last entry remained in the file, create a new one to delete it.
                 return true
             }
-            -2 -> showMsgDialog("file encryption error.", "Save failed") //TODO
-            -3 -> showMsgDialog("error writing data to the file.", "Save failed") //TODO: choose a new path
+            -2 -> showMsgDialog(getString(R.string.dlg_err_saveEncryptionProblem), getString(R.string.dlg_title_saveFailed))
+            -3 -> showMsgDialog(getString(R.string.dlg_err_saveWriting), getString(R.string.dlg_title_saveFailed)) //TODO: choose a new path
             5 -> {} //TODO
             6 -> {} //TODO
         }
@@ -300,9 +301,9 @@ class TableActivity : AppCompatActivity() {
 
     private fun removeItem(id: Int, alertDialog: AlertDialog){
         val builder = AlertDialog.Builder(this)
-        builder.setMessage("the entry will be permanently deleted") //TODO
-        builder.setTitle("Are you sure?") //TODO
-        builder.setPositiveButton("Yes") { _, _ -> //TODO
+        builder.setMessage(getString(R.string.dlg_msg_permanentRemoval))
+        builder.setTitle(getString(R.string.dlg_title_areYouSure))
+        builder.setPositiveButton(getString(R.string.app_bt_yes)) { _, _ ->
             alertDialog.dismiss()
 
             table.delete(id)
@@ -311,7 +312,7 @@ class TableActivity : AppCompatActivity() {
 
             saving() // TODO: save error check
         }
-        builder.setNegativeButton("No") { _, _ -> } //TODO
+        builder.setNegativeButton(getString(R.string.app_bt_no)) { _, _ -> }
         builder.show()
     }
 }
