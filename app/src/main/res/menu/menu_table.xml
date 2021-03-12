@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/btAdd"
+        android:title="@string/app_bt_addItem"
+        android:icon="@drawable/ic_add"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/btSaveAs"
+        android:title="@string/app_bt_saveAs"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/btClone"
+        android:title="@string/app_bt_cloneTable"
+        app:showAsAction="never" />
+
+</menu>

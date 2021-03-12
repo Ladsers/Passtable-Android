@@ -9,11 +9,14 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
@@ -45,11 +48,39 @@ class TableActivity : AppCompatActivity() {
         val uri = intent.getParcelableExtra<Uri>("fileUri")
         if (uri == null) showErrDialog(getString(R.string.dlg_err_uriIsNull))
         else {
+            binding.toolbar.root.title = getFileName(uri) ?: getString(R.string.app_info_appName)
+            binding.toolbar.root.navigationIcon = ContextCompat.getDrawable(this, R.drawable.ic_close)
+            setSupportActionBar(binding.toolbar.root)
+            binding.toolbar.root.setNavigationOnClickListener { finish() }
+
             val inputStream = contentResolver.openInputStream(uri)
             cryptData =
                 BufferedReader(InputStreamReader(inputStream)).readText() //is protection required?
             uriStr = uri.toString()
             checkFileProcess()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_table, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.btAdd -> {
+                //TODO
+                true
+            }
+            R.id.btSaveAs -> {
+                //TODO
+                true
+            }
+            R.id.btClone -> {
+                //TODO
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

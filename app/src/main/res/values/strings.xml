@@ -23,6 +23,11 @@
         <string name="app_bt_removeItem">Remove item</string>
         <string name="app_bt_showPassword">Show password</string>
         <string name="app_bt_editSave">Accept &amp; save</string>
+        <string name="app_bt_addItem">Add item</string>
+        <string name="app_bt_saveAs">Save as</string>
+        <string name="app_bt_cloneTable">Clone table</string>
+        <string name="app_bt_settings">Settings</string>
+        <string name="app_bt_about">About</string>
         <!-- end! -->
 
     <!-- END -->
@@ -30,7 +35,10 @@
     <!-- UI -->
 
         <!-- ct (content) -->
+        <string name="ui_ct_home">Home</string>
         <string name="ui_ct_editItemErr">"ErrMsg: Note OR Login and Password"</string>
+        <string name="ui_ct_editItem">Edit item</string>
+        <string name="ui_ct_addItem">Add item</string>
         <!-- end! -->
 
         <!-- msg (message) -->

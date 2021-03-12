@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import com.ladsers.passtable.android.databinding.ActivityEditBinding
 
@@ -30,10 +31,18 @@ class EditActivity : AppCompatActivity() {
         editMode = intent.getBooleanExtra("modeEdit", false)
 
         if (!editMode) {
+            binding.toolbar.root.title = getString(R.string.ui_ct_addItem)
             binding.btUndoNote.visibility = View.GONE
             binding.btUndoLogin.visibility = View.GONE
             binding.btUndoPassword.visibility = View.GONE
         }
+        else{
+            binding.toolbar.root.title = getString(R.string.ui_ct_editItem)
+        }
+
+        binding.toolbar.root.navigationIcon = ContextCompat.getDrawable(this, R.drawable.ic_back_arrow)
+        setSupportActionBar(binding.toolbar.root)
+        binding.toolbar.root.setNavigationOnClickListener { finish() }
 
         binding.etNote.inputType = EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE
         binding.etNote.setHorizontallyScrolling(false)
