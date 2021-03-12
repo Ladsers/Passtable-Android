@@ -69,7 +69,7 @@ class TableActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             R.id.btAdd -> {
-                //TODO
+                addItem()
                 true
             }
             R.id.btSaveAs -> {
@@ -249,11 +249,16 @@ class TableActivity : AppCompatActivity() {
         startActivityForResult(intent, EditActivity_EditMode)
     }
 
+    private fun addItem(){
+        val intent = Intent(this, EditActivity::class.java)
+        startActivityForResult(intent, EditActivity_AddMode)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             EditActivity_EditMode -> {
                 if (resultCode == RESULT_OK) {
-                    if (data == null) showMsgDialog(getString(R.string.dlg_err_noDataReceived),  getString(R.string.dlg_title_notSaved))
+                    if (data == null) showMsgDialog(getString(R.string.dlg_err_noDataReceived), getString(R.string.dlg_title_notSaved))
                     else {
                         val newTag = data.getStringExtra("newDataTag")
                         val newNote = data.getStringExtra("newDataNote")
@@ -271,6 +276,25 @@ class TableActivity : AppCompatActivity() {
                         .show()
                     showCard(idForActivityResult)
                     idForActivityResult = -1
+                }
+            }
+            EditActivity_AddMode -> {
+                if (resultCode == RESULT_OK) {
+                    if (data == null) showMsgDialog(getString(R.string.dlg_err_noDataReceived), getString(R.string.dlg_title_notSaved))
+                    else {
+                        val newTag = data.getStringExtra("newDataTag")
+                        val newNote = data.getStringExtra("newDataNote")
+                        val newLogin = data.getStringExtra("newDataLogin")
+                        val newPassword = data.getStringExtra("newDataPassword")
+                        if (newTag != null && newNote != null &&
+                            newLogin != null && newPassword != null
+                        )
+                            addComplete(newTag, newNote, newLogin, newPassword)
+                        else showMsgDialog(getString(R.string.dlg_err_someDataNull), getString(R.string.dlg_title_notSaved))
+                    }
+                } else {
+                    Toast.makeText(applicationContext, getString(R.string.ui_msg_canceled), Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
@@ -296,6 +320,24 @@ class TableActivity : AppCompatActivity() {
 
         adapter.notifyItemChanged(id)
         showCard(id)
+
+        saving() // TODO: save error check
+    }
+
+    private fun addComplete(
+        tag: String,
+        note: String,
+        login: String,
+        password: String
+    ) {
+        table.add(tag, note, login, password)
+
+        val hasPassword = if (password.isNotEmpty()) "/yes" else "/no"
+        mtList.add(DataItem(tag,note,login,hasPassword))
+        adapter.notifyItemInserted(mtList.lastIndex)
+        binding.rvTable.postDelayed(Runnable{
+            binding.rvTable.smoothScrollToPosition(mtList.lastIndex)
+        }, 500)
 
         saving() // TODO: save error check
     }

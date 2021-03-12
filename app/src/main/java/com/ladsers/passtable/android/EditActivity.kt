@@ -35,6 +35,7 @@ class EditActivity : AppCompatActivity() {
             binding.btUndoNote.visibility = View.GONE
             binding.btUndoLogin.visibility = View.GONE
             binding.btUndoPassword.visibility = View.GONE
+            binding.btSave.text = getString(R.string.app_bt_addSave)
         }
         else{
             binding.toolbar.root.title = getString(R.string.ui_ct_editItem)
@@ -60,6 +61,8 @@ class EditActivity : AppCompatActivity() {
         }
 
         binding.btSave.setOnClickListener { returnNewData() }
+
+        canBeSavedCheck()
     }
 
     private fun editTextBehavior(editText: EditText, button: Button, originalVal: String) {

@@ -23,6 +23,7 @@
         <string name="app_bt_removeItem">Remove item</string>
         <string name="app_bt_showPassword">Show password</string>
         <string name="app_bt_editSave">Accept &amp; save</string>
+        <string name="app_bt_addSave">Add &amp; save</string>
         <string name="app_bt_addItem">Add item</string>
         <string name="app_bt_saveAs">Save as</string>
         <string name="app_bt_cloneTable">Clone table</string>
