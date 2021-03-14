@@ -1,6 +1,7 @@
 package com.ladsers.passtable.android
 
 import DataItem
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -14,6 +15,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -35,10 +37,7 @@ class TableActivity : AppCompatActivity() {
     private lateinit var adapter: TableAdapter
     private lateinit var mtList: MutableList<DataItem>
 
-    private val EditActivity_EditMode = 10
-    private val EditActivity_AddMode = 11
-
-    private var idForActivityResult = -1
+    private var editId = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -204,7 +203,8 @@ class TableActivity : AppCompatActivity() {
             this.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
             binding.btEdit.setOnClickListener {
-                editItem(id)
+                editId = id
+                editItem()
                 this.dismiss()
             }
             binding.btDelete.setOnClickListener {
@@ -236,110 +236,88 @@ class TableActivity : AppCompatActivity() {
         Toast.makeText(applicationContext, text, Toast.LENGTH_SHORT).show()
     }
 
-    private fun editItem(id: Int) {
-        idForActivityResult = id
+    private fun parseDataFromEditActivity(data: Intent?): List<String>? {
+        return if (data == null) {
+            showMsgDialog(getString(R.string.dlg_err_noDataReceived), getString(R.string.dlg_title_notSaved))
+            null
+        }
+        else {
+            val newTag = data.getStringExtra("newDataTag")
+            val newNote = data.getStringExtra("newDataNote")
+            val newLogin = data.getStringExtra("newDataLogin")
+            val newPassword = data.getStringExtra("newDataPassword")
+            if (newTag != null && newNote != null && newLogin != null && newPassword != null)
+                listOf(newTag, newNote, newLogin, newPassword)
+            else {
+                showMsgDialog(getString(R.string.dlg_err_someDataNull), getString(R.string.dlg_title_notSaved))
+                null
+            }
+        }
+    }
 
+    private fun editItem() {
         val intent = Intent(this, EditActivity::class.java)
-        intent.putExtra("dataTag", table.getData(id, "t"))
-        intent.putExtra("dataNote", table.getData(id, "n"))
-        intent.putExtra("dataLogin", table.getData(id, "l"))
-        intent.putExtra("dataPassword", table.getData(id, "p"))
+        intent.putExtra("dataTag", table.getData(editId, "t"))
+        intent.putExtra("dataNote", table.getData(editId, "n"))
+        intent.putExtra("dataLogin", table.getData(editId, "l"))
+        intent.putExtra("dataPassword", table.getData(editId, "p"))
 
         intent.putExtra("modeEdit", true)
-        startActivityForResult(intent, EditActivity_EditMode)
+        editActivityResult.launch(intent)
+    }
+
+    private val editActivityResult = registerForActivityResult(ActivityResultContracts
+        .StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data = parseDataFromEditActivity(result.data) ?: return@registerForActivityResult
+
+            table.setData(editId, "t", data[0])
+            table.setData(editId, "n", data[1])
+            table.setData(editId, "l", data[2])
+            table.setData(editId, "p", data[3])
+
+            mtList[editId].tag = data[0]
+            mtList[editId].note = data[1]
+            mtList[editId].login = data[2]
+            mtList[editId].password = if (data[3].isNotEmpty()) "/yes" else "/no"
+
+            adapter.notifyItemChanged(editId)
+            showCard(editId)
+
+            saving() // TODO: save error check
+        } else {
+            showCard(editId)
+            Toast.makeText(
+                this, getString(R.string.ui_msg_canceled), Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun addItem(){
         val intent = Intent(this, EditActivity::class.java)
-        startActivityForResult(intent, EditActivity_AddMode)
+        addActivityResult.launch(intent)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            EditActivity_EditMode -> {
-                if (resultCode == RESULT_OK) {
-                    if (data == null) showMsgDialog(getString(R.string.dlg_err_noDataReceived), getString(R.string.dlg_title_notSaved))
-                    else {
-                        val newTag = data.getStringExtra("newDataTag")
-                        val newNote = data.getStringExtra("newDataNote")
-                        val newLogin = data.getStringExtra("newDataLogin")
-                        val newPassword = data.getStringExtra("newDataPassword")
-                        if (newTag != null && newNote != null &&
-                            newLogin != null && newPassword != null
-                        )
-                            editComplete(idForActivityResult, newTag, newNote, newLogin, newPassword)
-                        else showMsgDialog(getString(R.string.dlg_err_someDataNull), getString(R.string.dlg_title_notSaved))
-                        idForActivityResult = -1
-                    }
-                } else {
-                    Toast.makeText(applicationContext, getString(R.string.ui_msg_canceled), Toast.LENGTH_SHORT)
-                        .show()
-                    showCard(idForActivityResult)
-                    idForActivityResult = -1
-                }
-            }
-            EditActivity_AddMode -> {
-                if (resultCode == RESULT_OK) {
-                    if (data == null) showMsgDialog(getString(R.string.dlg_err_noDataReceived), getString(R.string.dlg_title_notSaved))
-                    else {
-                        val newTag = data.getStringExtra("newDataTag")
-                        val newNote = data.getStringExtra("newDataNote")
-                        val newLogin = data.getStringExtra("newDataLogin")
-                        val newPassword = data.getStringExtra("newDataPassword")
-                        if (newTag != null && newNote != null &&
-                            newLogin != null && newPassword != null
-                        )
-                            addComplete(newTag, newNote, newLogin, newPassword)
-                        else showMsgDialog(getString(R.string.dlg_err_someDataNull), getString(R.string.dlg_title_notSaved))
-                    }
-                } else {
-                    Toast.makeText(applicationContext, getString(R.string.ui_msg_canceled), Toast.LENGTH_SHORT)
-                        .show()
-                }
-            }
+    private val addActivityResult = registerForActivityResult(ActivityResultContracts
+        .StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data = parseDataFromEditActivity(result.data) ?: return@registerForActivityResult
+
+            table.add(data[0], data[1], data[2], data[3])
+
+            val hasPassword = if (data[3].isNotEmpty()) "/yes" else "/no"
+            mtList.add(DataItem(data[0], data[1], data[2], hasPassword))
+            adapter.notifyItemInserted(mtList.lastIndex)
+            binding.rvTable.postDelayed(Runnable{
+                binding.rvTable.smoothScrollToPosition(mtList.lastIndex)
+            }, 500)
+
+            saving() // TODO: save error check
+        } else {
+            Toast.makeText(
+                this, getString(R.string.ui_msg_canceled), Toast.LENGTH_SHORT
+            ).show()
         }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
-    private fun editComplete(
-        id: Int,
-        newTag: String,
-        newNote: String,
-        newLogin: String,
-        newPassword: String
-    ) {
-        table.setData(id, "t", newTag)
-        table.setData(id, "n", newNote)
-        table.setData(id, "l", newLogin)
-        table.setData(id, "p", newPassword)
-
-        mtList[id].tag = newTag
-        mtList[id].note = newNote
-        mtList[id].login = newLogin
-        mtList[id].password = if (newPassword.isNotEmpty()) "/yes" else "/no"
-
-        adapter.notifyItemChanged(id)
-        showCard(id)
-
-        saving() // TODO: save error check
-    }
-
-    private fun addComplete(
-        tag: String,
-        note: String,
-        login: String,
-        password: String
-    ) {
-        table.add(tag, note, login, password)
-
-        val hasPassword = if (password.isNotEmpty()) "/yes" else "/no"
-        mtList.add(DataItem(tag,note,login,hasPassword))
-        adapter.notifyItemInserted(mtList.lastIndex)
-        binding.rvTable.postDelayed(Runnable{
-            binding.rvTable.smoothScrollToPosition(mtList.lastIndex)
-        }, 500)
-
-        saving() // TODO: save error check
     }
 
     private fun saving(): Boolean {
