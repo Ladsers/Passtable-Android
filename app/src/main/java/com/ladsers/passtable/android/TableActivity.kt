@@ -219,6 +219,7 @@ class TableActivity : AppCompatActivity() {
         mtList[id].password = if (mtList[id].password == "/yes") table.getData(id, "p")
         else "/yes"
         adapter.notifyItemChanged(id)
+        if (id == mtList.lastIndex) binding.rvTable.scrollToPosition(mtList.lastIndex)
     }
 
     private fun toClipboard(id: Int, key: String) {
