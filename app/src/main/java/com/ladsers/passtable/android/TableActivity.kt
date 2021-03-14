@@ -156,8 +156,7 @@ class TableActivity : AppCompatActivity() {
             false
         )
 
-        mtList = mutableListOf()
-        mtList.addAll(table.getData()) // TODO: fix this in library
+        mtList = table.getData()
         adapter = TableAdapter(mtList, { id -> showCard(id) },
             { id -> showPassword(id) })
         binding.rvTable.adapter = adapter
@@ -355,13 +354,6 @@ class TableActivity : AppCompatActivity() {
                     getString(R.string.dlg_err_saveSpecifiedDir),
                     getString(R.string.dlg_title_saveFailed)
                 ) //TODO: remove?
-                return true
-            }
-            4 -> {
-                showMsgDialog(
-                    getString(R.string.dlg_err_saveWithoutRecords),
-                    getString(R.string.dlg_title_saveFailed)
-                ) //TODO: the last entry remained in the file, create a new one to delete it.
                 return true
             }
             -2 -> showMsgDialog(getString(R.string.dlg_err_saveEncryptionProblem), getString(R.string.dlg_title_saveFailed))
