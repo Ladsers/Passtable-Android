@@ -315,7 +315,7 @@ class TableActivity : AppCompatActivity() {
         mtList[id].tag = newTag
         mtList[id].note = newNote
         mtList[id].login = newLogin
-        mtList[id].password = newPassword
+        mtList[id].password = if (newPassword.isNotEmpty()) "/yes" else "/no"
 
         adapter.notifyItemChanged(id)
         showCard(id)

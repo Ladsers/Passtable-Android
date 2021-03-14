@@ -28,7 +28,7 @@ class TableAdapter(private val dataList: MutableList<DataItem>,
                 binding.tvLogin.text = login
                 binding.tvPassword.text = password
 
-                if (password == "/no") binding.btShowPassword.visibility = View.GONE
+                binding.btShowPassword.visibility = if (password == "/no") View.GONE else View.VISIBLE
 
                 binding.tvPassword.visibility =
                     if (password != "/yes" && password != "/no") View.VISIBLE else View.GONE
