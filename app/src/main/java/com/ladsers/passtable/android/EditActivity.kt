@@ -8,6 +8,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
@@ -17,6 +18,7 @@ import com.ladsers.passtable.android.databinding.ActivityEditBinding
 class EditActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditBinding
     private var editMode: Boolean = false
+    private lateinit var selectedTag: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,18 +38,27 @@ class EditActivity : AppCompatActivity() {
             binding.btUndoLogin.visibility = View.GONE
             binding.btUndoPassword.visibility = View.GONE
             binding.btSave.text = getString(R.string.app_bt_addSave)
-        }
-        else{
+        } else {
             binding.toolbar.root.title = getString(R.string.ui_ct_editItem)
         }
 
-        binding.toolbar.root.navigationIcon = ContextCompat.getDrawable(this, R.drawable.ic_back_arrow)
+        binding.toolbar.root.navigationIcon =
+            ContextCompat.getDrawable(this, R.drawable.ic_back_arrow)
         setSupportActionBar(binding.toolbar.root)
         binding.toolbar.root.setNavigationOnClickListener { finish() }
 
         binding.etNote.inputType = EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE
         binding.etNote.setHorizontallyScrolling(false)
         binding.etNote.maxLines = Integer.MAX_VALUE
+
+        selectedTag = originalTag
+        preselectTag()
+        binding.btTagNone.setOnClickListener { v -> selectTag(v) }
+        binding.btTagRed.setOnClickListener { v -> selectTag(v) }
+        binding.btTagGreen.setOnClickListener { v -> selectTag(v) }
+        binding.btTagBlue.setOnClickListener { v -> selectTag(v) }
+        binding.btTagYellow.setOnClickListener { v -> selectTag(v) }
+        binding.btTagPurple.setOnClickListener { v -> selectTag(v) }
 
         editTextBehavior(binding.etNote, binding.btUndoNote, originalNote)
         editTextBehavior(binding.etLogin, binding.btUndoLogin, originalLogin)
@@ -97,14 +108,57 @@ class EditActivity : AppCompatActivity() {
         }
     }
 
-    private fun returnNewData(){
+    private fun returnNewData() {
         val intent = Intent()
-        intent.putExtra("newDataTag", "0") //TODO: tag system
+        intent.putExtra("newDataTag", selectedTag)
         intent.putExtra("newDataNote", binding.etNote.text.toString())
         intent.putExtra("newDataLogin", binding.etLogin.text.toString())
         intent.putExtra("newDataPassword", binding.etPassword.text.toString())
 
         setResult(RESULT_OK, intent)
         finish()
+    }
+
+    private fun selectTag(clickedTag: View) {
+        resetAllTags()
+        setTagScale(clickedTag, 1.3F)
+        selectedTag = when (clickedTag) {
+            binding.btTagRed -> "1"
+            binding.btTagGreen -> "2"
+            binding.btTagBlue -> "3"
+            binding.btTagYellow -> "4"
+            binding.btTagPurple -> "5"
+            else -> "0"
+        }
+    }
+
+    private fun preselectTag(){
+        resetAllTags()
+        setTagScale(when (selectedTag){
+            "1" -> binding.btTagRed
+            "2" -> binding.btTagGreen
+            "3" -> binding.btTagBlue
+            "4" -> binding.btTagYellow
+            "5" -> binding.btTagPurple
+             else -> binding.btTagNone
+        }, 1.3F)
+    }
+
+    private fun resetAllTags(){
+        val initScale = 0.75F
+
+        setTagScale(binding.btTagNone, initScale)
+        setTagScale(binding.btTagRed, initScale)
+        setTagScale(binding.btTagGreen, initScale)
+        setTagScale(binding.btTagBlue, initScale)
+        setTagScale(binding.btTagYellow, initScale)
+        setTagScale(binding.btTagPurple, initScale)
+    }
+
+    private fun setTagScale(imageButton: View, scale: Float) {
+        with(imageButton) {
+            scaleX = scale
+            scaleY = scale
+        }
     }
 }

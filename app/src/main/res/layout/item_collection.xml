@@ -6,41 +6,47 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tvTag"
-            android:layout_width="0dp"
+        <ImageView
+            android:id="@+id/ivTag"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Tag"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="2dp"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view" />
+            app:layout_constraintTop_toBottomOf="@+id/view"
+            app:srcCompat="@drawable/ic_tag_circle" />
 
         <TextView
             android:id="@+id/tvNote"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="2dp"
             android:text="Note"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTag" />
+            app:layout_constraintStart_toEndOf="@+id/ivTag"
+            app:layout_constraintTop_toBottomOf="@+id/view" />
 
         <TextView
             android:id="@+id/tvLogin"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="2dp"
             android:text="Login"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ivTag"
             app:layout_constraintTop_toBottomOf="@+id/tvNote" />
 
         <TextView
             android:id="@+id/tvPassword"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="2dp"
             android:text="Password"
             android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ivTag"
             app:layout_constraintTop_toBottomOf="@+id/tvLogin" />
 
         <Button

@@ -167,7 +167,7 @@ class TableActivity : AppCompatActivity() {
         val binding = DialogItemBinding.inflate(layoutInflater)
         builder.setView(binding.root)
 
-        binding.tbTag.text = table.getData(id, "t") //TODO: change to colored circles
+        binding.vTag.setBackgroundColor(getColor(colorSelectionByTagCode(table.getData(id, "t"))))
 
         val n = table.getData(id, "n")
         val l = table.getData(id, "l")
