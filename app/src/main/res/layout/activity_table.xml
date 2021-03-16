@@ -14,8 +14,105 @@
         android:id="@+id/rvTable"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingBottom="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/tablePanel"
+        android:clickable="true"
+        android:elevation="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/rvTable"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageButton
+            android:id="@+id/btTagRed"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:focusable="false"
+            android:tint="@color/tagRed"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_tag_off" />
+
+        <ImageButton
+            android:id="@+id/btTagGreen"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="24dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:focusable="false"
+            android:tint="@color/tagGreen"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btTagRed"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_tag_off" />
+
+        <ImageButton
+            android:id="@+id/btTagBlue"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="24dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:focusable="false"
+            android:tint="@color/tagBlue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btTagGreen"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_tag_off" />
+
+        <ImageButton
+            android:id="@+id/btTagYellow"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="24dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:focusable="false"
+            android:tint="@color/tagYellow"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btTagBlue"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_tag_off" />
+
+        <ImageButton
+            android:id="@+id/btTagPurple"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="24dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:focusable="false"
+            android:tint="@color/tagPurple"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btTagYellow"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_tag_off" />
+
+        <ImageButton
+            android:id="@+id/btSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:focusable="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_search" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,6 +14,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -38,6 +39,7 @@ class TableActivity : AppCompatActivity() {
     private lateinit var mtList: MutableList<DataItem>
 
     private var editId = -1
+    private val tagFilter = MutableList(6) {false}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +59,8 @@ class TableActivity : AppCompatActivity() {
                 BufferedReader(InputStreamReader(inputStream)).readText() //is protection required?
             uriStr = uri.toString()
             checkFileProcess()
+
+            turnOnPanel()
         }
     }
 
@@ -166,11 +170,12 @@ class TableActivity : AppCompatActivity() {
         val binding = DialogItemBinding.inflate(layoutInflater)
         builder.setView(binding.root)
 
-        binding.vTag.setBackgroundColor(getColor(colorSelectionByTagCode(table.getData(id, "t"))))
+        val tableId = if (mtList[id].id == -1) id else mtList[id].id
+        binding.vTag.setBackgroundColor(getColor(colorSelectionByTagCode(table.getData(tableId, "t"))))
 
-        val n = table.getData(id, "n")
-        val l = table.getData(id, "l")
-        val p = table.getData(id, "p")
+        val n = table.getData(tableId, "n")
+        val l = table.getData(tableId, "l")
+        val p = table.getData(tableId, "p")
 
         if (n.isNotEmpty()) binding.tbNote.text = n
         else {
@@ -216,7 +221,8 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun showPassword(id: Int) {
-        mtList[id].password = if (mtList[id].password == "/yes") table.getData(id, "p")
+        val tableId = if (mtList[id].id == -1) id else mtList[id].id
+        mtList[id].password = if (mtList[id].password == "/yes") table.getData(tableId, "p")
         else "/yes"
         adapter.notifyItemChanged(id)
         if (id == mtList.lastIndex) binding.rvTable.scrollToPosition(mtList.lastIndex)
@@ -224,16 +230,17 @@ class TableActivity : AppCompatActivity() {
 
     private fun toClipboard(id: Int, key: String) {
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText(key, table.getData(id, key))
+        val tableId = if (mtList[id].id == -1) id else mtList[id].id
+        val clip = ClipData.newPlainText(key, table.getData(tableId, key))
         clipboard.setPrimaryClip(clip)
 
-        val text = when (key) {
+        val msg = when (key) {
             "n" -> getString(R.string.ui_msg_noteCopied)
             "l" -> getString(R.string.ui_msg_loginCopied)
             "p" -> getString(R.string.ui_msg_passwordCopied)
             else -> return
         }
-        Toast.makeText(applicationContext, text, Toast.LENGTH_SHORT).show()
+        Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
     }
 
     private fun parseDataFromEditActivity(data: Intent?): List<String>? {
@@ -256,11 +263,12 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun editItem() {
+        val tableId = if (mtList[editId].id == -1) editId else mtList[editId].id
         val intent = Intent(this, EditActivity::class.java)
-        intent.putExtra("dataTag", table.getData(editId, "t"))
-        intent.putExtra("dataNote", table.getData(editId, "n"))
-        intent.putExtra("dataLogin", table.getData(editId, "l"))
-        intent.putExtra("dataPassword", table.getData(editId, "p"))
+        intent.putExtra("dataTag", table.getData(tableId, "t"))
+        intent.putExtra("dataNote", table.getData(tableId, "n"))
+        intent.putExtra("dataLogin", table.getData(tableId, "l"))
+        intent.putExtra("dataPassword", table.getData(tableId, "p"))
 
         intent.putExtra("modeEdit", true)
         editActivityResult.launch(intent)
@@ -271,18 +279,21 @@ class TableActivity : AppCompatActivity() {
         if (result.resultCode == Activity.RESULT_OK) {
             val data = parseDataFromEditActivity(result.data) ?: return@registerForActivityResult
 
-            table.setData(editId, "t", data[0])
-            table.setData(editId, "n", data[1])
-            table.setData(editId, "l", data[2])
-            table.setData(editId, "p", data[3])
+            val tableId = if (mtList[editId].id == -1) editId else mtList[editId].id
+            table.setData(tableId, data[0], data[1], data[2], data[3])
 
-            mtList[editId].tag = data[0]
-            mtList[editId].note = data[1]
-            mtList[editId].login = data[2]
-            mtList[editId].password = if (data[3].isNotEmpty()) "/yes" else "/no"
-
-            adapter.notifyItemChanged(editId)
             showCard(editId)
+            if (!tagFilter.any { it } || tagFilter[data[0].toInt()]) {
+                mtList[editId].tag = data[0]
+                mtList[editId].note = data[1]
+                mtList[editId].login = data[2]
+                mtList[editId].password = if (data[3].isNotEmpty()) "/yes" else "/no"
+
+                adapter.notifyItemChanged(editId)
+            } else{
+                mtList.removeAt(editId)
+                adapter.notifyItemRemoved(editId)
+            }
 
             saving() // TODO: save error check
         } else {
@@ -305,12 +316,14 @@ class TableActivity : AppCompatActivity() {
 
             table.add(data[0], data[1], data[2], data[3])
 
-            val hasPassword = if (data[3].isNotEmpty()) "/yes" else "/no"
-            mtList.add(DataItem(data[0], data[1], data[2], hasPassword))
-            adapter.notifyItemInserted(mtList.lastIndex)
-            binding.rvTable.postDelayed(Runnable{
-                binding.rvTable.smoothScrollToPosition(mtList.lastIndex)
-            }, 500)
+            if (!tagFilter.any { it } || tagFilter[data[0].toInt()]) {
+                val hasPassword = if (data[3].isNotEmpty()) "/yes" else "/no"
+                mtList.add(DataItem(data[0], data[1], data[2], hasPassword))
+                adapter.notifyItemInserted(mtList.lastIndex)
+                binding.rvTable.postDelayed(Runnable {
+                    binding.rvTable.smoothScrollToPosition(mtList.lastIndex)
+                }, 500)
+            }
 
             saving() // TODO: save error check
         } else {
@@ -350,7 +363,8 @@ class TableActivity : AppCompatActivity() {
         builder.setPositiveButton(getString(R.string.app_bt_yes)) { _, _ ->
             alertDialog.dismiss()
 
-            table.delete(id)
+            val tableId = if (mtList[id].id == -1) id else mtList[id].id
+            table.remove(tableId)
             mtList.removeAt(id)
             adapter.notifyItemRemoved(id)
 
@@ -358,5 +372,78 @@ class TableActivity : AppCompatActivity() {
         }
         builder.setNegativeButton(getString(R.string.app_bt_no)) { _, _ -> }
         builder.show()
+    }
+
+    private fun turnOnPanel(){
+        binding.btTagRed.setOnClickListener { v -> searchByTag(1, v as ImageButton) }
+        binding.btTagGreen.setOnClickListener { v -> searchByTag(2, v as ImageButton) }
+        binding.btTagBlue.setOnClickListener { v -> searchByTag(3, v as ImageButton) }
+        binding.btTagYellow.setOnClickListener { v -> searchByTag(4, v as ImageButton) }
+        binding.btTagPurple.setOnClickListener { v -> searchByTag(5, v as ImageButton) }
+
+        binding.btSearch.setOnClickListener { openSearchPanel() }
+    }
+
+    private fun searchByTag(tagCode: Int, btTag: ImageButton) {
+        tagFilter[tagCode] = !tagFilter[tagCode]
+        if (tagFilter[tagCode]) {
+            btTag.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_tag_on))
+        } else {
+            btTag.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_tag_off))
+        }
+
+        mtList.clear()
+        if (tagFilter.any { it }) {
+            mtList.addAll(
+                table.searchByTag(
+                    tagFilter[1],
+                    tagFilter[2],
+                    tagFilter[3],
+                    tagFilter[4],
+                    tagFilter[5]
+                )
+            )
+            binding.btSearch.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.ic_tag_cancel
+                )
+            )
+        } else {
+            mtList.addAll(table.getData())
+            binding.btSearch.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.ic_search
+                )
+            )
+        }
+
+        adapter.notifyDataSetChanged()
+    }
+
+    private fun openSearchPanel(){
+        if (!tagFilter.any { it }) {
+
+        }
+        else {
+            // closing tags
+            for (i in 1..5) tagFilter[i] = false
+            mtList.clear()
+            mtList.addAll(table.getData())
+            adapter.notifyDataSetChanged()
+
+            with(binding) {
+                val context = this@TableActivity
+                btSearch.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_search))
+
+                val dr = R.drawable.ic_tag_off
+                btTagRed.setImageDrawable(ContextCompat.getDrawable(context, dr))
+                btTagGreen.setImageDrawable(ContextCompat.getDrawable(context, dr))
+                btTagBlue.setImageDrawable(ContextCompat.getDrawable(context, dr))
+                btTagYellow.setImageDrawable(ContextCompat.getDrawable(context, dr))
+                btTagPurple.setImageDrawable(ContextCompat.getDrawable(context, dr))
+            }
+        }
     }
 }

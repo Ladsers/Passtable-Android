@@ -15,4 +15,6 @@
     <color name="tagBlue">#8FDEFF</color>
     <color name="tagYellow">#FFD28F</color>
     <color name="tagPurple">#E28FFF</color>
+
+    <color name="tablePanel">#FAFFFFFF</color>
 </resources>
