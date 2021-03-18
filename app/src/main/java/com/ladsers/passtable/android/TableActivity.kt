@@ -10,7 +10,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
+import android.provider.DocumentsContract
 import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
@@ -23,6 +23,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
@@ -84,11 +85,11 @@ class TableActivity : AppCompatActivity() {
                 true
             }
             R.id.btSaveAs -> {
-                //TODO
+                saveAs()
                 true
             }
             R.id.btClone -> {
-                //TODO
+                //TODO: remove!
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -122,18 +123,37 @@ class TableActivity : AppCompatActivity() {
         builder.show()
     }
 
-    private fun askPassword(isInvalidPassword: Boolean = false) {
+    private fun askPassword(isInvalidPassword: Boolean = false, newPath: String? = null) {
         val builder = AlertDialog.Builder(this)
         val binding = DialogAskpasswordBinding.inflate(layoutInflater)
         builder.setView(binding.root)
         builder.setTitle(getString(R.string.dlg_title_enterMasterPassword))
         if (isInvalidPassword) binding.tvInvalidPassword.visibility = View.VISIBLE
-        var closedViaOk = false
+        var closedViaButton = false
         builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ ->
-            openProcess(binding.etPassword.text.toString())
-            closedViaOk = true
+            if (newPath.isNullOrEmpty()) openProcess(binding.etPassword.text.toString())
+            else {
+                saving(newPath, binding.etPassword.text.toString()) // TODO: save error check
+                this.binding.toolbar.root.title = getFileName(newPath.toUri())
+            }
+            closedViaButton = true
         }
-        builder.setOnDismissListener { if (!closedViaOk) finish() }
+        newPath?.let {
+            builder.setNeutralButton(getString(R.string.app_bt_doNotChangePassword)) { _, _ ->
+                saving(it) // TODO: save error check
+                this.binding.toolbar.root.title = getFileName(it.toUri())
+                closedViaButton = true
+            }
+        }
+        builder.setOnDismissListener { if (!closedViaButton){
+            if (newPath.isNullOrEmpty()) finish()
+            else {
+                //TODO remove empty file
+                Toast.makeText(
+                    this, getString(R.string.ui_msg_canceled), Toast.LENGTH_SHORT
+                ).show()
+            }
+        } }
 
         builder.show().apply {
             this.setCanceledOnTouchOutside(false)
@@ -360,9 +380,13 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
-    private fun saving(): Boolean {
-        // save and save as in one fun?
-        when (table.save()) {
+    private fun saving(newPath: String? = null, newPassword: String? = null): Boolean {
+        val resCode = when (true){
+            newPath != null && newPassword == null -> table.save(newPath)
+            newPath != null && newPassword != null -> table.save(newPath, newPassword)
+            else -> table.save()
+        }
+        when (resCode) {
             0 -> {
                 Toast.makeText(
                     applicationContext,
@@ -528,5 +552,31 @@ class TableActivity : AppCompatActivity() {
         mtList.clear()
         mtList.addAll(if (query.isNotEmpty()) table.searchByData(query) else table.getData())
         adapter.notifyDataSetChanged()
+    }
+
+    private fun saveAs(){
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = "application/*" //TODO: try to catch only passtable files.
+        saveAsResult.launch(intent)
+    }
+
+    private val saveAsResult = registerForActivityResult(
+        ActivityResultContracts
+            .StartActivityForResult()
+    ) { result ->
+        if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
+
+        var uri = result.data?.data ?: return@registerForActivityResult //TODO: err msg
+
+        val originalName = getFileNameWithExt(uri) ?: return@registerForActivityResult //TODO: err msg
+        if (!originalName.endsWith(".passtable")){
+            val saveName = "$originalName.passtable"
+            uri = DocumentsContract.renameDocument(contentResolver, uri, saveName)!!
+        }
+        val perms = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        contentResolver.takePersistableUriPermission(uri, perms)
+
+        askPassword(newPath = uri.toString())
     }
 }
