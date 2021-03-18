@@ -1,10 +1,13 @@
 package com.ladsers.passtable.android
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.DocumentsContract
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.ladsers.passtable.android.databinding.ActivityMainBinding
 
@@ -21,6 +24,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar.root)
 
         binding.btnOpenFile.setOnClickListener { openFile() }
+        binding.btNewFile.setOnClickListener { newFile() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -34,27 +38,53 @@ class MainActivity : AppCompatActivity() {
                 //TODO
                 true
             }
-            R.id.btAbout -> {
-                //TODO
-                true
-            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun newFile(){
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = "application/*" //TODO: try to catch only passtable files.
+        newFileActivityResult.launch(intent)
+    }
+
+    private val newFileActivityResult = registerForActivityResult(
+        ActivityResultContracts
+            .StartActivityForResult()
+    ) { result ->
+        if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
+
+        var uri = result.data?.data ?: return@registerForActivityResult //TODO: err msg
+
+        val originalName = getFileNameWithExt(uri) ?: return@registerForActivityResult //TODO: err msg
+        if (!originalName.endsWith(".passtable")){
+            val saveName = "$originalName.passtable"
+            uri = DocumentsContract.renameDocument(contentResolver, uri, saveName)!!
+        }
+        val perms = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        contentResolver.takePersistableUriPermission(uri, perms)
+
+        val intent = Intent(this, TableActivity::class.java)
+        intent.putExtra("fileUri", uri)
+        intent.putExtra("newFile", true)
+        startActivity(intent)
     }
 
     private fun openFile() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
         intent.addCategory(Intent.CATEGORY_OPENABLE)
         intent.type = "application/*" //TODO: try to catch only passtable files.
-        startActivityForResult(intent, 1)
+        openFileActivityResult.launch(intent)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode != RESULT_OK) return
-        if (data == null) return
+    private val openFileActivityResult = registerForActivityResult(
+        ActivityResultContracts
+            .StartActivityForResult()
+    ) { result ->
+        if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
 
-        val uri = data.data ?: return
+        val uri = result.data?.data ?: return@registerForActivityResult //TODO: err msg
         val perms = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         contentResolver.takePersistableUriPermission(uri, perms)
 

@@ -6,12 +6,6 @@
         android:id="@+id/btSettings"
         android:icon="@drawable/ic_settings"
         android:title="@string/app_bt_settings"
-        app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/btAbout"
-        android:icon="@drawable/ic_info"
-        android:title="@string/app_bt_about"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
 </menu>

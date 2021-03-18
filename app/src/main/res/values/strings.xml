@@ -19,6 +19,7 @@
         <string name="app_bt_no">no</string>
         <string name="app_bt_ok">ok</string>
         <string name="app_bt_open">open</string>
+        <string name="app_bt_new">new</string>
         <string name="app_bt_editItem">Edit item</string>
         <string name="app_bt_removeItem">Remove item</string>
         <string name="app_bt_showPassword">Show password</string>
@@ -29,6 +30,7 @@
         <string name="app_bt_settings">Settings</string>
         <string name="app_bt_about">About</string>
         <string name="app_bt_doNotChangePassword">don\'t change</string>
+        <string name="app_bt_save">Save</string>
         <!-- end! -->
 
     <!-- END -->
@@ -49,6 +51,7 @@
         <string name="ui_msg_passwordCopied">Password was copied</string>
         <string name="ui_msg_saved">Saved</string>
         <string name="ui_msg_canceled">Canceled</string>
+        <string name="ui_msg_fileCreated">File created</string>
         <!-- end! -->
 
     <!-- END -->
@@ -57,6 +60,7 @@
 
         <!-- title -->
         <string name="dlg_title_enterMasterPassword">Enter master password</string>
+        <string name="dlg_title_enterNewMasterPassword">Enter new master password</string>
         <string name="dlg_title_notSaved">Not saved</string>
         <string name="dlg_title_saveFailed">Save failed</string>
         <string name="dlg_title_areYouSure">Are you sure?</string>

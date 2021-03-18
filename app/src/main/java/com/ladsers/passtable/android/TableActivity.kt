@@ -23,7 +23,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
@@ -51,8 +50,10 @@ class TableActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityTableBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        turnOnPanel()
 
         val uri = intent.getParcelableExtra<Uri>("fileUri")
+        val newFile = intent.getBooleanExtra("newFile", false)
         if (uri == null) showErrDialog(getString(R.string.dlg_err_uriIsNull))
         else {
             binding.toolbar.root.title = getFileName(uri) ?: getString(R.string.app_info_appName)
@@ -67,9 +68,8 @@ class TableActivity : AppCompatActivity() {
             cryptData =
                 BufferedReader(InputStreamReader(inputStream)).readText() //is protection required?
             uriStr = uri.toString()
-            checkFileProcess()
 
-            turnOnPanel()
+            if (newFile) askPassword(isNewPassword = true) else checkFileProcess()
         }
     }
 
@@ -90,6 +90,12 @@ class TableActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun creationFileProcess(masterPass: String){
+        table = DataTableAndroid(uriStr, masterPass, cryptData, contentResolver)
+        saving(firstSave = true)
+        workWithRecyclerView()
     }
 
     private fun checkFileProcess() {
@@ -119,17 +125,28 @@ class TableActivity : AppCompatActivity() {
         builder.show()
     }
 
-    private fun askPassword(isInvalidPassword: Boolean = false, newPath: Uri? = null) {
+    private fun askPassword(
+        isInvalidPassword: Boolean = false,
+        newPath: Uri? = null,
+        isNewPassword: Boolean = false
+    ) {
         val builder = AlertDialog.Builder(this)
         val binding = DialogAskpasswordBinding.inflate(layoutInflater)
         builder.setView(binding.root)
-        builder.setTitle(getString(R.string.dlg_title_enterMasterPassword))
+        val title = if (newPath == null) getString(R.string.dlg_title_enterMasterPassword)
+        else getString(R.string.dlg_title_enterNewMasterPassword)
+        builder.setTitle(title)
         if (isInvalidPassword) binding.tvInvalidPassword.visibility = View.VISIBLE
         var closedViaButton = false
-        builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ ->
-            if (newPath == null) openProcess(binding.etPassword.text.toString())
+        val posBtnText = if (isNewPassword) getString(R.string.app_bt_save)
+        else getString(R.string.app_bt_ok)
+        builder.setPositiveButton(posBtnText) { _, _ ->
+            val pass = binding.etPassword.text.toString()
+            if (newPath == null) {
+                if (isNewPassword) creationFileProcess(pass) else openProcess(pass)
+            }
             else {
-                saving(newPath.toString(), binding.etPassword.text.toString()) // TODO: save error check
+                saving(newPath.toString(), pass) // TODO: save error check
                 this.binding.toolbar.root.title = getFileName(newPath)
             }
             closedViaButton = true
@@ -363,7 +380,7 @@ class TableActivity : AppCompatActivity() {
                 val hasPassword = if (data[3].isNotEmpty()) "/yes" else "/no"
                 mtList.add(DataItem(data[0], data[1], data[2], hasPassword))
                 adapter.notifyItemInserted(mtList.lastIndex)
-                binding.rvTable.postDelayed(Runnable {
+                binding.rvTable.postDelayed({
                     binding.rvTable.smoothScrollToPosition(mtList.lastIndex)
                 }, 500)
             }
@@ -376,7 +393,11 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
-    private fun saving(newPath: String? = null, newPassword: String? = null): Boolean {
+    private fun saving(
+        newPath: String? = null,
+        newPassword: String? = null,
+        firstSave: Boolean = false
+    ): Boolean {
         val resCode = when (true){
             newPath != null && newPassword == null -> table.save(newPath)
             newPath != null && newPassword != null -> table.save(newPath, newPassword)
@@ -386,7 +407,8 @@ class TableActivity : AppCompatActivity() {
             0 -> {
                 Toast.makeText(
                     applicationContext,
-                    getString(R.string.ui_msg_saved),
+                    if (firstSave) getString(R.string.ui_msg_fileCreated)
+                    else getString(R.string.ui_msg_saved),
                     Toast.LENGTH_SHORT
                 ).show()
                 return true
