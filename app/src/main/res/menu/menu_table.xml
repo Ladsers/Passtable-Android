@@ -13,9 +13,4 @@
         android:title="@string/app_bt_saveAs"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/btClone"
-        android:title="@string/app_bt_cloneTable"
-        app:showAsAction="never" />
-
 </menu>

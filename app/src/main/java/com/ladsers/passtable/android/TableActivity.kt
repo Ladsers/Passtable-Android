@@ -88,10 +88,6 @@ class TableActivity : AppCompatActivity() {
                 saveAs()
                 true
             }
-            R.id.btClone -> {
-                //TODO: remove!
-                true
-            }
             else -> super.onOptionsItemSelected(item)
         }
     }
