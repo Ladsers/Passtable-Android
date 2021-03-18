@@ -40,6 +40,7 @@
         <string name="ui_ct_editItemErr">"ErrMsg: Note OR Login and Password"</string>
         <string name="ui_ct_editItem">Edit item</string>
         <string name="ui_ct_addItem">Add item</string>
+        <string name="ui_ct_searchHint">Search by notes and logins</string>
         <!-- end! -->
 
         <!-- msg (message) -->

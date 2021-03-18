@@ -10,10 +10,13 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,6 +31,7 @@ import com.ladsers.passtable.android.databinding.DialogItemBinding
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
+
 class TableActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTableBinding
     private lateinit var table: DataTableAndroid
@@ -40,6 +44,7 @@ class TableActivity : AppCompatActivity() {
 
     private var editId = -1
     private val tagFilter = MutableList(6) {false}
+    private var searchMode = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +55,10 @@ class TableActivity : AppCompatActivity() {
         if (uri == null) showErrDialog(getString(R.string.dlg_err_uriIsNull))
         else {
             binding.toolbar.root.title = getFileName(uri) ?: getString(R.string.app_info_appName)
-            binding.toolbar.root.navigationIcon = ContextCompat.getDrawable(this, R.drawable.ic_close)
+            binding.toolbar.root.navigationIcon = ContextCompat.getDrawable(
+                this,
+                R.drawable.ic_close
+            )
             setSupportActionBar(binding.toolbar.root)
             binding.toolbar.root.setNavigationOnClickListener { finish() }
 
@@ -171,7 +179,16 @@ class TableActivity : AppCompatActivity() {
         builder.setView(binding.root)
 
         val tableId = if (mtList[id].id == -1) id else mtList[id].id
-        binding.vTag.setBackgroundColor(getColor(colorSelectionByTagCode(table.getData(tableId, "t"))))
+        binding.vTag.setBackgroundColor(
+            getColor(
+                colorSelectionByTagCode(
+                    table.getData(
+                        tableId,
+                        "t"
+                    )
+                )
+            )
+        )
 
         val n = table.getData(tableId, "n")
         val l = table.getData(tableId, "l")
@@ -245,7 +262,10 @@ class TableActivity : AppCompatActivity() {
 
     private fun parseDataFromEditActivity(data: Intent?): List<String>? {
         return if (data == null) {
-            showMsgDialog(getString(R.string.dlg_err_noDataReceived), getString(R.string.dlg_title_notSaved))
+            showMsgDialog(
+                getString(R.string.dlg_err_noDataReceived),
+                getString(R.string.dlg_title_notSaved)
+            )
             null
         }
         else {
@@ -256,7 +276,10 @@ class TableActivity : AppCompatActivity() {
             if (newTag != null && newNote != null && newLogin != null && newPassword != null)
                 listOf(newTag, newNote, newLogin, newPassword)
             else {
-                showMsgDialog(getString(R.string.dlg_err_someDataNull), getString(R.string.dlg_title_notSaved))
+                showMsgDialog(
+                    getString(R.string.dlg_err_someDataNull),
+                    getString(R.string.dlg_title_notSaved)
+                )
                 null
             }
         }
@@ -274,8 +297,10 @@ class TableActivity : AppCompatActivity() {
         editActivityResult.launch(intent)
     }
 
-    private val editActivityResult = registerForActivityResult(ActivityResultContracts
-        .StartActivityForResult()) { result ->
+    private val editActivityResult = registerForActivityResult(
+        ActivityResultContracts
+            .StartActivityForResult()
+    ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val data = parseDataFromEditActivity(result.data) ?: return@registerForActivityResult
 
@@ -309,8 +334,10 @@ class TableActivity : AppCompatActivity() {
         addActivityResult.launch(intent)
     }
 
-    private val addActivityResult = registerForActivityResult(ActivityResultContracts
-        .StartActivityForResult()) { result ->
+    private val addActivityResult = registerForActivityResult(
+        ActivityResultContracts
+            .StartActivityForResult()
+    ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val data = parseDataFromEditActivity(result.data) ?: return@registerForActivityResult
 
@@ -337,10 +364,17 @@ class TableActivity : AppCompatActivity() {
         // save and save as in one fun?
         when (table.save()) {
             0 -> {
-                Toast.makeText(applicationContext, getString(R.string.ui_msg_saved), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    applicationContext,
+                    getString(R.string.ui_msg_saved),
+                    Toast.LENGTH_SHORT
+                ).show()
                 return true
             }
-            2 -> showMsgDialog(getString(R.string.dlg_err_saveIdentity), getString(R.string.dlg_title_saveFailed))
+            2 -> showMsgDialog(
+                getString(R.string.dlg_err_saveIdentity),
+                getString(R.string.dlg_title_saveFailed)
+            )
             3 -> {
                 showMsgDialog(
                     getString(R.string.dlg_err_saveSpecifiedDir),
@@ -348,10 +382,18 @@ class TableActivity : AppCompatActivity() {
                 ) //TODO: remove?
                 return true
             }
-            -2 -> showMsgDialog(getString(R.string.dlg_err_saveEncryptionProblem), getString(R.string.dlg_title_saveFailed))
-            -3 -> showMsgDialog(getString(R.string.dlg_err_saveWriting), getString(R.string.dlg_title_saveFailed)) //TODO: choose a new path
-            5 -> {} //TODO
-            6 -> {} //TODO
+            -2 -> showMsgDialog(
+                getString(R.string.dlg_err_saveEncryptionProblem),
+                getString(R.string.dlg_title_saveFailed)
+            )
+            -3 -> showMsgDialog(
+                getString(R.string.dlg_err_saveWriting),
+                getString(R.string.dlg_title_saveFailed)
+            ) //TODO: choose a new path
+            5 -> {
+            } //TODO
+            6 -> {
+            } //TODO
         }
         return false
     }
@@ -380,6 +422,8 @@ class TableActivity : AppCompatActivity() {
         binding.btTagBlue.setOnClickListener { v -> searchByTag(3, v as ImageButton) }
         binding.btTagYellow.setOnClickListener { v -> searchByTag(4, v as ImageButton) }
         binding.btTagPurple.setOnClickListener { v -> searchByTag(5, v as ImageButton) }
+
+        binding.etSearch.doAfterTextChanged { text -> searchByData(text.toString())}
 
         binding.btSearch.setOnClickListener { openSearchPanel() }
     }
@@ -424,6 +468,39 @@ class TableActivity : AppCompatActivity() {
 
     private fun openSearchPanel(){
         if (!tagFilter.any { it }) {
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            searchMode = !searchMode
+
+            with(binding) {
+                btTagRed.visibility = if (searchMode) View.GONE else View.VISIBLE
+                btTagGreen.visibility = if (searchMode) View.GONE else View.VISIBLE
+                btTagBlue.visibility = if (searchMode) View.GONE else View.VISIBLE
+                btTagYellow.visibility = if (searchMode) View.GONE else View.VISIBLE
+                btTagPurple.visibility = if (searchMode) View.GONE else View.VISIBLE
+                etSearch.visibility = if (searchMode) View.VISIBLE else View.GONE
+
+                if (searchMode) {
+                    etSearch.requestFocus()
+                    imm.showSoftInput(etSearch, InputMethodManager.SHOW_IMPLICIT)
+                    btSearch.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            this@TableActivity,
+                            R.drawable.ic_close
+                        )
+                    )
+                } else {
+                    etSearch.clearFocus()
+                    imm.hideSoftInputFromWindow(etSearch.windowToken, 0)
+                    etSearch.inputType = InputType.TYPE_NULL
+                    etSearch.text.clear()
+                    btSearch.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            this@TableActivity,
+                            R.drawable.ic_search
+                        )
+                    )
+                }
+            }
 
         }
         else {
@@ -445,5 +522,11 @@ class TableActivity : AppCompatActivity() {
                 btTagPurple.setImageDrawable(ContextCompat.getDrawable(context, dr))
             }
         }
+    }
+
+    private fun searchByData(query: String){
+        mtList.clear()
+        mtList.addAll(if (query.isNotEmpty()) table.searchByData(query) else table.getData())
+        adapter.notifyDataSetChanged()
     }
 }

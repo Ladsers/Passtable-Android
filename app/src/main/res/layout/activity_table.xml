@@ -43,7 +43,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_tag_off" />
+            app:srcCompat="@drawable/ic_tag_off"
+            tools:visibility="gone" />
 
         <ImageButton
             android:id="@+id/btTagGreen"
@@ -57,7 +58,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btTagRed"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_tag_off" />
+            app:srcCompat="@drawable/ic_tag_off"
+            tools:visibility="gone" />
 
         <ImageButton
             android:id="@+id/btTagBlue"
@@ -71,7 +73,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btTagGreen"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_tag_off" />
+            app:srcCompat="@drawable/ic_tag_off"
+            tools:visibility="gone" />
 
         <ImageButton
             android:id="@+id/btTagYellow"
@@ -85,7 +88,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btTagBlue"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_tag_off" />
+            app:srcCompat="@drawable/ic_tag_off"
+            tools:visibility="gone" />
 
         <ImageButton
             android:id="@+id/btTagPurple"
@@ -99,7 +103,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btTagYellow"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_tag_off" />
+            app:srcCompat="@drawable/ic_tag_off"
+            tools:visibility="gone" />
 
         <ImageButton
             android:id="@+id/btSearch"
@@ -113,6 +118,23 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_search" />
+
+        <EditText
+            android:id="@+id/etSearch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:ems="10"
+            android:hint="@string/ui_ct_searchHint"
+            android:imeOptions="actionSearch"
+            android:inputType="textPersonName"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btSearch"
+            app:layout_constraintStart_toEndOf="@+id/btTagRed"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
