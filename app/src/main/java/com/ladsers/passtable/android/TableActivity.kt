@@ -119,7 +119,7 @@ class TableActivity : AppCompatActivity() {
         builder.show()
     }
 
-    private fun askPassword(isInvalidPassword: Boolean = false, newPath: String? = null) {
+    private fun askPassword(isInvalidPassword: Boolean = false, newPath: Uri? = null) {
         val builder = AlertDialog.Builder(this)
         val binding = DialogAskpasswordBinding.inflate(layoutInflater)
         builder.setView(binding.root)
@@ -127,24 +127,24 @@ class TableActivity : AppCompatActivity() {
         if (isInvalidPassword) binding.tvInvalidPassword.visibility = View.VISIBLE
         var closedViaButton = false
         builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ ->
-            if (newPath.isNullOrEmpty()) openProcess(binding.etPassword.text.toString())
+            if (newPath == null) openProcess(binding.etPassword.text.toString())
             else {
-                saving(newPath, binding.etPassword.text.toString()) // TODO: save error check
-                this.binding.toolbar.root.title = getFileName(newPath.toUri())
+                saving(newPath.toString(), binding.etPassword.text.toString()) // TODO: save error check
+                this.binding.toolbar.root.title = getFileName(newPath)
             }
             closedViaButton = true
         }
         newPath?.let {
             builder.setNeutralButton(getString(R.string.app_bt_doNotChangePassword)) { _, _ ->
-                saving(it) // TODO: save error check
-                this.binding.toolbar.root.title = getFileName(it.toUri())
+                saving(it.toString()) // TODO: save error check
+                this.binding.toolbar.root.title = getFileName(it)
                 closedViaButton = true
             }
         }
         builder.setOnDismissListener { if (!closedViaButton){
-            if (newPath.isNullOrEmpty()) finish()
+            if (newPath == null) finish()
             else {
-                //TODO remove empty file
+                DocumentsContract.deleteDocument(contentResolver, newPath)
                 Toast.makeText(
                     this, getString(R.string.ui_msg_canceled), Toast.LENGTH_SHORT
                 ).show()
@@ -573,6 +573,6 @@ class TableActivity : AppCompatActivity() {
         val perms = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         contentResolver.takePersistableUriPermission(uri, perms)
 
-        askPassword(newPath = uri.toString())
+        askPassword(newPath = uri)
     }
 }
