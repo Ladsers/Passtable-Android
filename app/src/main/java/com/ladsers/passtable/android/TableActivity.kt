@@ -23,6 +23,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
@@ -159,7 +160,10 @@ class TableActivity : AppCompatActivity() {
             }
         }
         builder.setOnDismissListener { if (!closedViaButton){
-            if (newPath == null) finish()
+            if (newPath == null) {
+                if (isNewPassword) DocumentsContract.deleteDocument(contentResolver, uriStr.toUri())
+                finish()
+            }
             else {
                 DocumentsContract.deleteDocument(contentResolver, newPath)
                 Toast.makeText(
