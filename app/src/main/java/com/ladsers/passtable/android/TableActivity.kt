@@ -94,6 +94,7 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun creationFileProcess(masterPass: String){
+        RecentFiles.add(this, uriStr.toUri())
         table = DataTableAndroid(uriStr, masterPass, cryptData, contentResolver)
         saving(firstSave = true)
         workWithRecyclerView()
@@ -105,7 +106,10 @@ class TableActivity : AppCompatActivity() {
         when (table.open()) {
             2 -> showErrDialog(getString(R.string.dlg_err_invalidFileVer))
             -2 -> showErrDialog(getString(R.string.dlg_err_corruptedFile))
-            else -> askPassword()
+            else -> {
+                RecentFiles.add(this, uriStr.toUri())
+                askPassword()
+            }
         }
     }
 
@@ -148,6 +152,7 @@ class TableActivity : AppCompatActivity() {
             }
             else {
                 saving(newPath.toString(), pass) // TODO: save error check
+                RecentFiles.add(this, newPath)
                 this.binding.toolbar.root.title = getFileName(newPath)
             }
             closedViaButton = true
@@ -155,6 +160,7 @@ class TableActivity : AppCompatActivity() {
         newPath?.let {
             builder.setNeutralButton(getString(R.string.app_bt_doNotChangePassword)) { _, _ ->
                 saving(it.toString()) // TODO: save error check
+                RecentFiles.add(this, newPath)
                 this.binding.toolbar.root.title = getFileName(it)
                 closedViaButton = true
             }

@@ -1,6 +1,7 @@
 package com.ladsers.passtable.android
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -18,11 +19,14 @@ class MainActivity : AppCompatActivity() {
     private var newFile: Boolean = false
 
     private lateinit var recentList: MutableList<Uri>
+    private lateinit var adapter: RecentAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //RecentFiles.clear(this)
 
         binding.toolbar.root.title = getString(R.string.ui_ct_home)
         //binding.toolbar.root.navigationIcon = //TODO: passtable logo
@@ -30,7 +34,24 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnOpenFile.setOnClickListener { fileWorker(false) }
         binding.btNewFile.setOnClickListener { fileWorker(true) }
-        binding.btAbout.setOnClickListener { FAKE_makeRecentList() } //TODO: remove!
+        binding.btAbout.setOnClickListener { }
+
+        binding.rvRecent.layoutManager = LinearLayoutManager(
+            this,
+            LinearLayoutManager.VERTICAL,
+            false
+        )
+        recentList = mutableListOf()
+        adapter = RecentAdapter(recentList, this) { id -> openRecentFile(id) }
+        binding.rvRecent.adapter = adapter
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        recentList.clear()
+        recentList.addAll(RecentFiles.load(this))
+        adapter.notifyDataSetChanged()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -80,31 +101,6 @@ class MainActivity : AppCompatActivity() {
         intent.putExtra("fileUri", uri)
         intent.putExtra("newFile", newFile)
         startActivity(intent)
-    }
-
-    private fun FAKE_makeRecentList(){
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-        intent.addCategory(Intent.CATEGORY_OPENABLE)
-        intent.type = "application/*" //TODO: try to catch only passtable files.
-        FAKE_ActivityResult.launch(intent)
-    }
-
-    private val FAKE_ActivityResult = registerForActivityResult(
-        ActivityResultContracts
-            .StartActivityForResult()
-    ) { result ->
-        if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
-
-        val uri = result.data?.data ?: return@registerForActivityResult //TODO: err msg
-
-        binding.rvRecent.layoutManager = LinearLayoutManager(
-            this,
-            LinearLayoutManager.VERTICAL,
-            true
-        )
-        recentList = mutableListOf(uri)
-        val adapter = RecentAdapter(recentList, this) { id -> openRecentFile(id) }
-        binding.rvRecent.adapter = adapter
     }
 
     private fun openRecentFile(id: Int){

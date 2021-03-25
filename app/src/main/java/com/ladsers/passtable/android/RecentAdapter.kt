@@ -25,7 +25,7 @@ class RecentAdapter(
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         with(holder) {
             with(recentList[position]) {
-                binding.tvFileName.text = contextActivity.getFileName(this) ?: "File #$position" //TODO
+                binding.tvFileName.text = contextActivity.getFileName(this) ?: "???"
                 binding.clItem.setOnClickListener { open(position) }
             }
         }
