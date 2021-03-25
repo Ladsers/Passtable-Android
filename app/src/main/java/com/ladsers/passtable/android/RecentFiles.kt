@@ -7,6 +7,14 @@ import androidx.core.net.toUri
 object RecentFiles {
 
     fun add(context: Context?, data: Uri): Boolean {
+        return edit(context,data,true)
+    }
+
+    fun remove(context: Context?, data: Uri): Boolean {
+        return edit(context,data,false)
+    }
+
+    private fun edit(context: Context?, data: Uri, isAdding: Boolean): Boolean {
         val shPref = context?.getSharedPreferences("recentFiles", Context.MODE_PRIVATE)
             ?: return false
 
@@ -18,8 +26,10 @@ object RecentFiles {
         val maxItems = shPref.getInt("maxItems", 5)
 
         uriList.remove(data)
-        uriList.add(data)
-        if (uriList.size > maxItems) uriList.removeAt(0)
+        if (isAdding) {
+            uriList.add(data)
+            if (uriList.size > maxItems) uriList.removeAt(0)
+        }
 
         val newStr = uriList.joinToString("|") { it.toString() }
         with(shPref.edit()) {

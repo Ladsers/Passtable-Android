@@ -81,6 +81,7 @@
         <string name="dlg_err_saveWithoutRecords">"Table without records"</string>
         <string name="dlg_err_saveEncryptionProblem">"File encryption error"</string>
         <string name="dlg_err_saveWriting">"Error writing data to the file"</string>
+        <string name="dlg_err_fileLost">"The file is lost."</string>
         <!-- end! -->
 
         <!-- msg (message) -->

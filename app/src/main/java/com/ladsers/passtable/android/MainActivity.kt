@@ -10,6 +10,7 @@ import android.provider.DocumentsContract
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ladsers.passtable.android.databinding.ActivityMainBinding
 
@@ -26,8 +27,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //RecentFiles.clear(this)
-
         binding.toolbar.root.title = getString(R.string.ui_ct_home)
         //binding.toolbar.root.navigationIcon = //TODO: passtable logo
         setSupportActionBar(binding.toolbar.root)
@@ -42,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             false
         )
         recentList = mutableListOf()
-        adapter = RecentAdapter(recentList, this) { id -> openRecentFile(id) }
+        adapter = RecentAdapter(recentList, this) { id, flag -> openRecentFile(id, flag) }
         binding.rvRecent.adapter = adapter
     }
 
@@ -60,7 +59,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId){
+        return when (item.itemId) {
             R.id.btSettings -> {
                 //TODO
                 true
@@ -69,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun fileWorker(newFile: Boolean){
+    private fun fileWorker(newFile: Boolean) {
         this.newFile = newFile
 
         val intent = if (newFile) Intent(Intent.ACTION_CREATE_DOCUMENT)
@@ -103,10 +102,24 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun openRecentFile(id: Int){
-        val intent = Intent(this, TableActivity::class.java)
-        intent.putExtra("fileUri", recentList[id])
-        intent.putExtra("newFile", false)
-        startActivity(intent)
+    private fun openRecentFile(id: Int, canBeOpened: Boolean) {
+        if (canBeOpened) {
+            val intent = Intent(this, TableActivity::class.java)
+            intent.putExtra("fileUri", recentList[id])
+            intent.putExtra("newFile", false)
+            startActivity(intent)
+        } else {
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage(getString(R.string.dlg_err_fileLost))
+            builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ ->
+                RecentFiles.remove(this, recentList[id])
+                adapter.notifyItemRemoved(id)
+            }
+            builder.setOnDismissListener {
+                RecentFiles.remove(this, recentList[id])
+                adapter.notifyItemRemoved(id)
+            }
+            builder.show()
+        }
     }
 }
