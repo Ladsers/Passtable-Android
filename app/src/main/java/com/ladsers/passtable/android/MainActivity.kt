@@ -2,19 +2,22 @@ package com.ladsers.passtable.android
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.DocumentsContract
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ladsers.passtable.android.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private var newFile: Boolean = false
+
+    private lateinit var recentList: MutableList<Uri>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnOpenFile.setOnClickListener { fileWorker(false) }
         binding.btNewFile.setOnClickListener { fileWorker(true) }
+        binding.btAbout.setOnClickListener { FAKE_makeRecentList() } //TODO: remove!
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -75,6 +79,38 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, TableActivity::class.java)
         intent.putExtra("fileUri", uri)
         intent.putExtra("newFile", newFile)
+        startActivity(intent)
+    }
+
+    private fun FAKE_makeRecentList(){
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = "application/*" //TODO: try to catch only passtable files.
+        FAKE_ActivityResult.launch(intent)
+    }
+
+    private val FAKE_ActivityResult = registerForActivityResult(
+        ActivityResultContracts
+            .StartActivityForResult()
+    ) { result ->
+        if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
+
+        val uri = result.data?.data ?: return@registerForActivityResult //TODO: err msg
+
+        binding.rvRecent.layoutManager = LinearLayoutManager(
+            this,
+            LinearLayoutManager.VERTICAL,
+            true
+        )
+        recentList = mutableListOf(uri)
+        val adapter = RecentAdapter(recentList, this) { id -> openRecentFile(id) }
+        binding.rvRecent.adapter = adapter
+    }
+
+    private fun openRecentFile(id: Int){
+        val intent = Intent(this, TableActivity::class.java)
+        intent.putExtra("fileUri", recentList[id])
+        intent.putExtra("newFile", false)
         startActivity(intent)
     }
 }
