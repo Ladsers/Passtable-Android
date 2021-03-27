@@ -6,9 +6,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ladsers.passtable.android.databinding.ItemRecentBinding
+import java.lang.Exception
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.util.*
 
 class RecentAdapter(
-    private val recentList: MutableList<Uri>,
+    private val recentUri: MutableList<Uri>,
+    private val recentDate: MutableList<String>,
     private val contextActivity: Context,
     private val open: (Int, Boolean) -> Unit,
 ) : RecyclerView.Adapter<RecentAdapter.ItemViewHolder>() {
@@ -24,15 +32,40 @@ class RecentAdapter(
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         with(holder) {
-            with(recentList[position]) {
-                val fileName = contextActivity.getFileName(this) ?: "???"
-                binding.tvFileName.text = fileName
-                binding.clItem.setOnClickListener { open(position, fileName != "???") }
-            }
+            val fileName = contextActivity.getFileName(recentUri[position]) ?: "???"
+            binding.tvFileName.text = fileName
+            binding.tvLastDate.text = getFormattedDate(recentDate[position])
+            binding.clItem.setOnClickListener { open(position, fileName != "???") }
         }
     }
 
     override fun getItemCount(): Int {
-        return recentList.size
+        return recentUri.size
+    }
+
+    private fun getFormattedDate(str: String): String {
+        val parser = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ROOT)
+        parser.timeZone = TimeZone.getTimeZone("UTC")
+        val date = try {
+            parser.parse(str)
+        } catch (e: Exception) {
+            null
+        }
+
+        var result = ""
+
+        date?.let {
+            result = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                val dt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault())
+                val formatter =
+                    DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)
+                dt.format(formatter)
+            } else {
+                val formatter = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
+                formatter.format(date)
+            }
+        }
+
+        return result
     }
 }

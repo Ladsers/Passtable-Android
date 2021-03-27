@@ -1,7 +1,6 @@
 package com.ladsers.passtable.android
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -19,7 +18,8 @@ class MainActivity : AppCompatActivity() {
 
     private var newFile: Boolean = false
 
-    private lateinit var recentList: MutableList<Uri>
+    private lateinit var recentUri: MutableList<Uri>
+    private lateinit var recentDate: MutableList<String>
     private lateinit var adapter: RecentAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,16 +40,19 @@ class MainActivity : AppCompatActivity() {
             LinearLayoutManager.VERTICAL,
             false
         )
-        recentList = mutableListOf()
-        adapter = RecentAdapter(recentList, this) { id, flag -> openRecentFile(id, flag) }
+        recentUri = mutableListOf()
+        recentDate = mutableListOf()
+        adapter = RecentAdapter(recentUri, recentDate, this) { id, flag -> openRecentFile(id, flag) }
         binding.rvRecent.adapter = adapter
     }
 
     override fun onResume() {
         super.onResume()
 
-        recentList.clear()
-        recentList.addAll(RecentFiles.load(this))
+        recentUri.clear()
+        recentUri.addAll(RecentFiles.loadUri(this))
+        recentDate.clear()
+        recentDate.addAll(RecentFiles.loadDate(this))
         adapter.notifyDataSetChanged()
     }
 
@@ -105,18 +108,17 @@ class MainActivity : AppCompatActivity() {
     private fun openRecentFile(id: Int, canBeOpened: Boolean) {
         if (canBeOpened) {
             val intent = Intent(this, TableActivity::class.java)
-            intent.putExtra("fileUri", recentList[id])
+            intent.putExtra("fileUri", recentUri[id])
             intent.putExtra("newFile", false)
             startActivity(intent)
         } else {
             val builder = AlertDialog.Builder(this)
             builder.setMessage(getString(R.string.dlg_err_fileLost))
-            builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ ->
-                RecentFiles.remove(this, recentList[id])
-                adapter.notifyItemRemoved(id)
-            }
+            builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ -> }
             builder.setOnDismissListener {
-                RecentFiles.remove(this, recentList[id])
+                RecentFiles.remove(this, recentUri[id])
+                recentUri.removeAt(id)
+                recentDate.removeAt(id)
                 adapter.notifyItemRemoved(id)
             }
             builder.show()
