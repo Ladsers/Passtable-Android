@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private var newFile: Boolean = false
+    private var afterSelecting = false
 
     private lateinit var recentUri: MutableList<Uri>
     private lateinit var recentDate: MutableList<String>
@@ -49,11 +50,14 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        recentUri.clear()
-        recentUri.addAll(RecentFiles.loadUri(this))
-        recentDate.clear()
-        recentDate.addAll(RecentFiles.loadDate(this))
-        adapter.notifyDataSetChanged()
+        if (afterSelecting) afterSelecting = false
+        else {
+            recentUri.clear()
+            recentUri.addAll(RecentFiles.loadUri(this))
+            recentDate.clear()
+            recentDate.addAll(RecentFiles.loadDate(this))
+            adapter.notifyDataSetChanged()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -85,6 +89,8 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts
             .StartActivityForResult()
     ) { result ->
+        afterSelecting = true
+
         if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
 
         var uri = result.data?.data ?: return@registerForActivityResult //TODO: err msg
