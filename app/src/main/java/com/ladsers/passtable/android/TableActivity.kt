@@ -37,7 +37,7 @@ class TableActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTableBinding
     private lateinit var table: DataTableAndroid
 
-    private lateinit var uriStr: String
+    private lateinit var mainUri: Uri
     private lateinit var cryptData: String
 
     private lateinit var adapter: TableAdapter
@@ -54,10 +54,10 @@ class TableActivity : AppCompatActivity() {
         turnOnPanel()
 
         val uri = intent.getParcelableExtra<Uri>("fileUri")
-        val newFile = intent.getBooleanExtra("newFile", false)
         if (uri == null) showErrDialog(getString(R.string.dlg_err_uriIsNull))
         else {
-            binding.toolbar.root.title = getFileName(uri) ?: getString(R.string.app_info_appName)
+            mainUri = uri
+            binding.toolbar.root.title = getFileName(mainUri) ?: getString(R.string.app_info_appName)
             binding.toolbar.root.navigationIcon = ContextCompat.getDrawable(
                 this,
                 R.drawable.ic_close
@@ -65,11 +65,11 @@ class TableActivity : AppCompatActivity() {
             setSupportActionBar(binding.toolbar.root)
             binding.toolbar.root.setNavigationOnClickListener { finish() }
 
-            val inputStream = contentResolver.openInputStream(uri)
+            val inputStream = contentResolver.openInputStream(mainUri)
             cryptData =
                 BufferedReader(InputStreamReader(inputStream)).readText() //is protection required?
-            uriStr = uri.toString()
 
+            val newFile = intent.getBooleanExtra("newFile", false)
             if (newFile) askPassword(isNewPassword = true) else checkFileProcess()
         }
     }
@@ -94,20 +94,20 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun creationFileProcess(masterPass: String){
-        RecentFiles.add(this, uriStr.toUri())
-        table = DataTableAndroid(uriStr, masterPass, cryptData, contentResolver)
+        RecentFiles.add(this, mainUri)
+        table = DataTableAndroid(mainUri.toString(), masterPass, cryptData, contentResolver)
         saving(firstSave = true)
         workWithRecyclerView()
     }
 
     private fun checkFileProcess() {
         /* Testing for errors in the file. */
-        table = DataTableAndroid(uriStr, "/test", cryptData, contentResolver)
+        table = DataTableAndroid(mainUri.toString(), "/test", cryptData, contentResolver)
         when (table.open()) {
             2 -> showErrDialog(getString(R.string.dlg_err_invalidFileVer))
             -2 -> showErrDialog(getString(R.string.dlg_err_corruptedFile))
             else -> {
-                RecentFiles.add(this, uriStr.toUri())
+                RecentFiles.add(this, mainUri)
                 askPassword()
             }
         }
@@ -167,7 +167,7 @@ class TableActivity : AppCompatActivity() {
         }
         builder.setOnDismissListener { if (!closedViaButton){
             if (newPath == null) {
-                if (isNewPassword) DocumentsContract.deleteDocument(contentResolver, uriStr.toUri())
+                if (isNewPassword) DocumentsContract.deleteDocument(contentResolver, mainUri)
                 finish()
             }
             else {
@@ -196,7 +196,7 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun openProcess(masterPass: String) {
-        table = DataTableAndroid(uriStr, masterPass, cryptData, contentResolver)
+        table = DataTableAndroid(mainUri.toString(), masterPass, cryptData, contentResolver)
         when (table.open()) {
             0 -> workWithRecyclerView()
             3 -> askPassword(true)
