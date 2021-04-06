@@ -20,6 +20,8 @@
         <string name="app_bt_ok">ok</string>
         <string name="app_bt_open">open</string>
         <string name="app_bt_new">new</string>
+        <string name="app_bt_edit">edit</string>
+        <string name="app_bt_undo">undo</string>
         <string name="app_bt_editItem">Edit item</string>
         <string name="app_bt_removeItem">Remove item</string>
         <string name="app_bt_showPassword">Show password</string>
@@ -79,8 +81,8 @@
         <string name="dlg_err_saveIdentity">"Identity check failed"</string>
         <string name="dlg_err_saveSpecifiedDir">"Failed to save the file in the specified directory"</string>
         <string name="dlg_err_saveWithoutRecords">"Table without records"</string>
-        <string name="dlg_err_saveEncryptionProblem">"File encryption error"</string>
-        <string name="dlg_err_saveWriting">"Error writing data to the file"</string>
+        <string name="dlg_err_saveEncryptionProblem">"File encryption error. Undo the last action or try to edit the last item."</string>
+        <string name="dlg_err_saveWriting">"Error writing data to the file. Choose a new file path to avoid losing data."</string>
         <string name="dlg_err_fileLost">"The file is lost."</string>
         <!-- end! -->
 

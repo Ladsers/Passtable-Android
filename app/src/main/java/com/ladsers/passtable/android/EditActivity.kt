@@ -17,8 +17,9 @@ import com.ladsers.passtable.android.databinding.ActivityEditBinding
 
 class EditActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditBinding
-    private var editMode: Boolean = false
+    private var editMode = false
     private lateinit var selectedTag: String
+    private var blockClosing = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +32,7 @@ class EditActivity : AppCompatActivity() {
         val originalPassword = intent.getStringExtra("dataPassword") ?: ""
 
         editMode = intent.getBooleanExtra("modeEdit", false)
+        blockClosing = intent.getBooleanExtra("blockClosing", false)
 
         if (!editMode) {
             binding.toolbar.root.title = getString(R.string.ui_ct_addItem)
@@ -42,10 +44,12 @@ class EditActivity : AppCompatActivity() {
             binding.toolbar.root.title = getString(R.string.ui_ct_editItem)
         }
 
-        binding.toolbar.root.navigationIcon =
-            ContextCompat.getDrawable(this, R.drawable.ic_back_arrow)
-        setSupportActionBar(binding.toolbar.root)
-        binding.toolbar.root.setNavigationOnClickListener { finish() }
+        if (!blockClosing) {
+            binding.toolbar.root.navigationIcon =
+                ContextCompat.getDrawable(this, R.drawable.ic_back_arrow)
+            setSupportActionBar(binding.toolbar.root)
+            binding.toolbar.root.setNavigationOnClickListener { finish() }
+        }
 
         binding.etNote.inputType = EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE
         binding.etNote.setHorizontallyScrolling(false)
@@ -160,5 +164,9 @@ class EditActivity : AppCompatActivity() {
             scaleX = scale
             scaleY = scale
         }
+    }
+
+    override fun onBackPressed() {
+        if (!blockClosing) super.onBackPressed()
     }
 }

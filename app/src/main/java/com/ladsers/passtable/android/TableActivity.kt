@@ -23,7 +23,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
@@ -46,6 +45,8 @@ class TableActivity : AppCompatActivity() {
     private var editId = -1
     private val tagFilter = MutableList(6) {false}
     private var searchMode = false
+    private var saveAsMode = false
+    private var afterRemoval = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,7 +87,7 @@ class TableActivity : AppCompatActivity() {
                 true
             }
             R.id.btSaveAs -> {
-                saveAs()
+                saveToOtherFile()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -103,7 +104,7 @@ class TableActivity : AppCompatActivity() {
     private fun checkFileProcess() {
         /* Testing for errors in the file. */
         table = DataTableAndroid(mainUri.toString(), "/test", cryptData, contentResolver)
-        when (table.open()) {
+        when (table.fill()) {
             2 -> showErrDialog(getString(R.string.dlg_err_invalidFileVer))
             -2 -> showErrDialog(getString(R.string.dlg_err_corruptedFile))
             else -> {
@@ -151,17 +152,19 @@ class TableActivity : AppCompatActivity() {
                 if (isNewPassword) creationFileProcess(pass) else openProcess(pass)
             }
             else {
-                saving(newPath.toString(), pass) // TODO: save error check
-                RecentFiles.add(this, newPath)
-                this.binding.toolbar.root.title = getFileName(newPath)
+                if (saving(newPath.toString(), pass)) {
+                    RecentFiles.add(this, newPath)
+                    this.binding.toolbar.root.title = getFileName(newPath)
+                }
             }
             closedViaButton = true
         }
         newPath?.let {
             builder.setNeutralButton(getString(R.string.app_bt_doNotChangePassword)) { _, _ ->
-                saving(it.toString()) // TODO: save error check
-                RecentFiles.add(this, newPath)
-                this.binding.toolbar.root.title = getFileName(it)
+                if (saving(it.toString())) {
+                    RecentFiles.add(this, newPath)
+                    this.binding.toolbar.root.title = getFileName(it)
+                }
                 closedViaButton = true
             }
         }
@@ -197,7 +200,7 @@ class TableActivity : AppCompatActivity() {
 
     private fun openProcess(masterPass: String) {
         table = DataTableAndroid(mainUri.toString(), masterPass, cryptData, contentResolver)
-        when (table.open()) {
+        when (table.fill()) {
             0 -> workWithRecyclerView()
             3 -> askPassword(true)
         }
@@ -328,7 +331,7 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
-    private fun editItem() {
+    private fun editItem(blockClosing: Boolean = false) {
         val tableId = if (mtList[editId].id == -1) editId else mtList[editId].id
         val intent = Intent(this, EditActivity::class.java)
         intent.putExtra("dataTag", table.getData(tableId, "t"))
@@ -337,6 +340,7 @@ class TableActivity : AppCompatActivity() {
         intent.putExtra("dataPassword", table.getData(tableId, "p"))
 
         intent.putExtra("modeEdit", true)
+        intent.putExtra("blockClosing", blockClosing)
         editActivityResult.launch(intent)
     }
 
@@ -350,7 +354,6 @@ class TableActivity : AppCompatActivity() {
             val tableId = if (mtList[editId].id == -1) editId else mtList[editId].id
             table.setData(tableId, data[0], data[1], data[2], data[3])
 
-            showCard(editId)
             if (!tagFilter.any { it } || tagFilter[data[0].toInt()]) {
                 mtList[editId].tag = data[0]
                 mtList[editId].note = data[1]
@@ -358,12 +361,12 @@ class TableActivity : AppCompatActivity() {
                 mtList[editId].password = if (data[3].isNotEmpty()) "/yes" else "/no"
 
                 adapter.notifyItemChanged(editId)
-            } else{
+            } else {
                 mtList.removeAt(editId)
                 adapter.notifyItemRemoved(editId)
             }
 
-            saving() // TODO: save error check
+            if (saving()) showCard(editId)
         } else {
             showCard(editId)
             Toast.makeText(
@@ -388,14 +391,14 @@ class TableActivity : AppCompatActivity() {
 
             if (!tagFilter.any { it } || tagFilter[data[0].toInt()]) {
                 val hasPassword = if (data[3].isNotEmpty()) "/yes" else "/no"
-                mtList.add(DataItem(data[0], data[1], data[2], hasPassword))
+                mtList.add(DataItem(data[0], data[1], data[2], hasPassword, table.getSize() - 1))
                 adapter.notifyItemInserted(mtList.lastIndex)
                 binding.rvTable.postDelayed({
                     binding.rvTable.smoothScrollToPosition(mtList.lastIndex)
                 }, 500)
             }
 
-            saving() // TODO: save error check
+            saving()
         } else {
             Toast.makeText(
                 this, getString(R.string.ui_msg_canceled), Toast.LENGTH_SHORT
@@ -407,14 +410,15 @@ class TableActivity : AppCompatActivity() {
         newPath: String? = null,
         newPassword: String? = null,
         firstSave: Boolean = false
-    ): Boolean {
-        val resCode = when (true){
+    ) : Boolean {
+        val resCode = when (true) {
             newPath != null && newPassword == null -> table.save(newPath)
             newPath != null && newPassword != null -> table.save(newPath, newPassword)
             else -> table.save()
         }
         when (resCode) {
             0 -> {
+                afterRemoval = false
                 Toast.makeText(
                     applicationContext,
                     if (firstSave) getString(R.string.ui_msg_fileCreated)
@@ -423,29 +427,8 @@ class TableActivity : AppCompatActivity() {
                 ).show()
                 return true
             }
-            2 -> showMsgDialog(
-                getString(R.string.dlg_err_saveIdentity),
-                getString(R.string.dlg_title_saveFailed)
-            )
-            3 -> {
-                showMsgDialog(
-                    getString(R.string.dlg_err_saveSpecifiedDir),
-                    getString(R.string.dlg_title_saveFailed)
-                ) //TODO: remove?
-                return true
-            }
-            -2 -> showMsgDialog(
-                getString(R.string.dlg_err_saveEncryptionProblem),
-                getString(R.string.dlg_title_saveFailed)
-            )
-            -3 -> showMsgDialog(
-                getString(R.string.dlg_err_saveWriting),
-                getString(R.string.dlg_title_saveFailed)
-            ) //TODO: choose a new path
-            5 -> {
-            } //TODO
-            6 -> {
-            } //TODO
+            2, -2 -> fixSaveErrEncryption(resCode)
+            -3 -> fixSaveErrFileCorrupted()
         }
         return false
     }
@@ -462,7 +445,8 @@ class TableActivity : AppCompatActivity() {
             mtList.removeAt(id)
             adapter.notifyItemRemoved(id)
 
-            saving() // TODO: save error check
+            afterRemoval = true
+            saving()
         }
         builder.setNegativeButton(getString(R.string.app_bt_no)) { _, _ -> }
         builder.show()
@@ -582,17 +566,22 @@ class TableActivity : AppCompatActivity() {
         adapter.notifyDataSetChanged()
     }
 
-    private fun saveAs(){
+    private fun saveToOtherFile(isSaveAs: Boolean = true){
+        saveAsMode = isSaveAs
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
         intent.addCategory(Intent.CATEGORY_OPENABLE)
         intent.type = "application/*" //TODO: try to catch only passtable files.
-        saveAsResult.launch(intent)
+        toOtherFileResult.launch(intent)
     }
 
-    private val saveAsResult = registerForActivityResult(
+    private val toOtherFileResult = registerForActivityResult(
         ActivityResultContracts
             .StartActivityForResult()
     ) { result ->
+        if (result.resultCode != Activity.RESULT_OK && !saveAsMode) {
+            saving() // if the user canceled the creation of another file, return err message again.
+            return@registerForActivityResult
+        }
         if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
 
         var uri = result.data?.data ?: return@registerForActivityResult //TODO: err msg
@@ -605,6 +594,41 @@ class TableActivity : AppCompatActivity() {
         val perms = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         contentResolver.takePersistableUriPermission(uri, perms)
 
-        askPassword(newPath = uri)
+        if (saveAsMode) askPassword(newPath = uri) else {
+            if (saving(uri.toString())) {
+                RecentFiles.add(this, uri)
+                this.binding.toolbar.root.title = getFileName(uri)
+            }
+        }
+    }
+
+    private fun fixSaveErrEncryption(errCode: Int) {
+        val builder = AlertDialog.Builder(this)
+        //TODO: show different err code
+        builder.setMessage(getString(R.string.dlg_err_saveEncryptionProblem))
+        builder.setTitle(getString(R.string.dlg_title_saveFailed))
+        builder.setCancelable(false)
+        builder.setPositiveButton(getString(R.string.app_bt_edit)) { _, _ ->
+            //editItem(blockClosing = true) //TODO: before need to set correct id
+        }
+        builder.setNegativeButton(getString(R.string.app_bt_undo)) { _, _ ->
+            table.fill()
+            mtList.clear()
+            mtList.addAll(table.getData())
+            adapter.notifyDataSetChanged()
+            if (tagFilter.any { it } || searchMode) openSearchPanel()
+        }
+        builder.show().apply {
+            if (afterRemoval) this.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+        }
+    }
+
+    private fun fixSaveErrFileCorrupted() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage(getString(R.string.dlg_err_saveWriting))
+        builder.setTitle(getString(R.string.dlg_title_saveFailed))
+        builder.setCancelable(false)
+        builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ -> saveToOtherFile(false)}
+        builder.show()
     }
 }
