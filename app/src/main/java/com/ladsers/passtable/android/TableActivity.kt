@@ -106,7 +106,10 @@ class TableActivity : AppCompatActivity() {
         table = DataTableAndroid(mainUri.toString(), "/test", cryptData, contentResolver)
         when (table.fill()) {
             2 -> showErrDialog(getString(R.string.dlg_err_invalidFileVer))
-            -2 -> showErrDialog(getString(R.string.dlg_err_corruptedFile))
+            -2 -> {
+                RecentFiles.remove(this, mainUri)
+                showErrDialog(getString(R.string.dlg_err_corruptedFile))
+            }
             else -> {
                 RecentFiles.add(this, mainUri)
                 askPassword()
