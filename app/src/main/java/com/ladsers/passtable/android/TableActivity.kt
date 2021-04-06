@@ -391,10 +391,11 @@ class TableActivity : AppCompatActivity() {
             val data = parseDataFromEditActivity(result.data) ?: return@registerForActivityResult
 
             table.add(data[0], data[1], data[2], data[3])
+            editId = table.getSize() - 1
 
             if (!tagFilter.any { it } || tagFilter[data[0].toInt()]) {
                 val hasPassword = if (data[3].isNotEmpty()) "/yes" else "/no"
-                mtList.add(DataItem(data[0], data[1], data[2], hasPassword, table.getSize() - 1))
+                mtList.add(DataItem(data[0], data[1], data[2], hasPassword, editId))
                 adapter.notifyItemInserted(mtList.lastIndex)
                 binding.rvTable.postDelayed({
                     binding.rvTable.smoothScrollToPosition(mtList.lastIndex)
@@ -606,20 +607,24 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun fixSaveErrEncryption(errCode: Int) {
+        mtList.clear()
+        mtList.addAll(table.getData())
+        adapter.notifyDataSetChanged()
+        if (tagFilter.any { it } || searchMode) openSearchPanel()
+
         val builder = AlertDialog.Builder(this)
         //TODO: show different err code
         builder.setMessage(getString(R.string.dlg_err_saveEncryptionProblem))
         builder.setTitle(getString(R.string.dlg_title_saveFailed))
         builder.setCancelable(false)
         builder.setPositiveButton(getString(R.string.app_bt_edit)) { _, _ ->
-            //editItem(blockClosing = true) //TODO: before need to set correct id
+            editItem(blockClosing = true)
         }
         builder.setNegativeButton(getString(R.string.app_bt_undo)) { _, _ ->
             table.fill()
             mtList.clear()
             mtList.addAll(table.getData())
             adapter.notifyDataSetChanged()
-            if (tagFilter.any { it } || searchMode) openSearchPanel()
         }
         builder.show().apply {
             if (afterRemoval) this.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
