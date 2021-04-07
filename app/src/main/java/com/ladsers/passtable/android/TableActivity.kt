@@ -12,10 +12,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.DocumentsContract
 import android.text.InputType
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
 import android.widget.Toast
@@ -73,6 +70,10 @@ class TableActivity : AppCompatActivity() {
             val newFile = intent.getBooleanExtra("newFile", false)
             if (newFile) askPassword(isNewPassword = true) else checkFileProcess()
         }
+    }
+
+    override fun onBackPressed() {
+        if (searchMode) openSearchPanel() else super.onBackPressed()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -521,6 +522,7 @@ class TableActivity : AppCompatActivity() {
 
                 if (searchMode) {
                     etSearch.requestFocus()
+                    etSearch.inputType = InputType.TYPE_CLASS_TEXT
                     imm.showSoftInput(etSearch, InputMethodManager.SHOW_IMPLICIT)
                     btSearch.setImageDrawable(
                         ContextCompat.getDrawable(
@@ -638,5 +640,31 @@ class TableActivity : AppCompatActivity() {
         builder.setCancelable(false)
         builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ -> saveToOtherFile(false)}
         builder.show()
+    }
+
+   override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        when (keyCode){
+            KeyEvent.KEYCODE_F -> {
+                if (event?.isCtrlPressed ?: return super.onKeyDown(keyCode, event)) {
+                    if (tagFilter.any { it }) openSearchPanel()
+                    if (!searchMode) openSearchPanel()
+                }
+            }
+            KeyEvent.KEYCODE_ESCAPE -> {
+                searchMode = true
+                openSearchPanel()
+            }
+            KeyEvent.KEYCODE_N -> {
+                if (event?.isCtrlPressed ?: return super.onKeyDown(keyCode, event)) {
+                    addItem()
+                }
+            }
+            KeyEvent.KEYCODE_Q -> {
+                if (event?.isCtrlPressed ?: return super.onKeyDown(keyCode, event)) {
+                    finish()
+                }
+            }
+        }
+        return super.onKeyDown(keyCode, event)
     }
 }
