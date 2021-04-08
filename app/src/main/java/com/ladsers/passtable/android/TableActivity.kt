@@ -76,7 +76,7 @@ class TableActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (searchMode) openSearchPanel() else super.onBackPressed()
+        if (tagFilter.any { it } || searchMode) openSearchPanel() else super.onBackPressed()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
