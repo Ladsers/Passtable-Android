@@ -45,6 +45,9 @@ class TableActivity : AppCompatActivity() {
     private var saveAsMode = false
     private var afterRemoval = false
 
+    private var overlayCard = false
+    private var overlayRmWin = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTableBinding.inflate(layoutInflater)
@@ -218,7 +221,7 @@ class TableActivity : AppCompatActivity() {
         )
 
         mtList = table.getData()
-        adapter = TableAdapter(mtList, { id -> showCard(id) },
+        adapter = TableAdapter(mtList, { id -> if (!overlayCard) showCard(id) },
             { id -> showPassword(id) })
         binding.rvTable.adapter = adapter
     }
@@ -271,6 +274,9 @@ class TableActivity : AppCompatActivity() {
                 getString(R.string.app_com_passwordSecret)) p else getString(R.string.app_com_passwordSecret)
         }
 
+        overlayCard = true
+        builder.setOnDismissListener { overlayCard = false }
+
         builder.show().apply {
             this.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
@@ -280,7 +286,7 @@ class TableActivity : AppCompatActivity() {
                 this.dismiss()
             }
             binding.btDelete.setOnClickListener {
-                removeItem(id, this)
+                if (!overlayRmWin) removeItem(id, this)
             }
 
             binding.btOk.setOnClickListener { this.dismiss() }
@@ -454,6 +460,10 @@ class TableActivity : AppCompatActivity() {
             saving()
         }
         builder.setNegativeButton(getString(R.string.app_bt_no)) { _, _ -> }
+
+        overlayRmWin = true
+        builder.setOnDismissListener { overlayRmWin = false }
+
         builder.show()
     }
 
