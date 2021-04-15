@@ -38,12 +38,14 @@ class TableActivity : AppCompatActivity() {
 
     private lateinit var adapter: TableAdapter
     private lateinit var mtList: MutableList<DataItem>
+    private lateinit var biometricAuth: BiometricAuth
 
     private var editId = -1
     private val tagFilter = MutableList(6) {false}
     private var searchMode = false
     private var saveAsMode = false
     private var afterRemoval = false
+    private var rememberMasterPass = false
 
     private var overlayCard = false
     private var overlayRmWin = false
@@ -52,6 +54,12 @@ class TableActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityTableBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        biometricAuth = BiometricAuth(
+            this,
+            this,
+            { askPassword() },
+            { workWithRecyclerView() },
+            { mp -> openProcess(mp) })
         turnOnPanel()
 
         val uri = intent.getParcelableExtra<Uri>("fileUri")
@@ -116,7 +124,9 @@ class TableActivity : AppCompatActivity() {
             }
             else -> {
                 RecentFiles.add(this, mainUri)
-                askPassword()
+                val mpEncrypted = RecentFiles.getLastMpEncrypted(this)
+                if (mpEncrypted.isNullOrBlank()) askPassword()
+                else biometricAuth.startAuth(mpEncrypted)
             }
         }
     }
@@ -154,6 +164,7 @@ class TableActivity : AppCompatActivity() {
         val posBtnText = if (isNewPassword) getString(R.string.app_bt_save)
         else getString(R.string.app_bt_ok)
         builder.setPositiveButton(posBtnText) { _, _ ->
+            rememberMasterPass = binding.cbRememberPass.isChecked
             val pass = binding.etPassword.text.toString()
             if (newPath == null) {
                 if (isNewPassword) creationFileProcess(pass) else openProcess(pass)
@@ -208,7 +219,10 @@ class TableActivity : AppCompatActivity() {
     private fun openProcess(masterPass: String) {
         table = DataTableAndroid(mainUri.toString(), masterPass, cryptData, contentResolver)
         when (table.fill()) {
-            0 -> workWithRecyclerView()
+            0 -> {
+                if (rememberMasterPass) biometricAuth.activateAuth(masterPass)
+                else workWithRecyclerView()
+            }
             3 -> askPassword(true)
         }
     }

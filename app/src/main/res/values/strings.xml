@@ -22,6 +22,7 @@
         <string name="app_bt_new">new</string>
         <string name="app_bt_edit">edit</string>
         <string name="app_bt_undo">undo</string>
+        <string name="app_bt_cancel">cancel</string>
         <string name="app_bt_editItem">Edit item</string>
         <string name="app_bt_removeItem">Remove item</string>
         <string name="app_bt_showPassword">Show password</string>
@@ -33,6 +34,7 @@
         <string name="app_bt_about">About</string>
         <string name="app_bt_doNotChangePassword">don\'t change</string>
         <string name="app_bt_save">Save</string>
+        <string name="app_bt_enterPassword">enter password</string>
         <!-- end! -->
 
     <!-- END -->
@@ -54,6 +56,7 @@
         <string name="ui_msg_saved">Saved</string>
         <string name="ui_msg_canceled">Canceled</string>
         <string name="ui_msg_fileCreated">File created</string>
+        <string name="ui_msg_fingerprintErr">There are problems with the fingerprint sensor. Try again later.</string>
         <!-- end! -->
 
     <!-- END -->
@@ -66,10 +69,13 @@
         <string name="dlg_title_notSaved">Not saved</string>
         <string name="dlg_title_saveFailed">Save failed</string>
         <string name="dlg_title_areYouSure">Are you sure?</string>
+        <string name="dlg_title_loginByFingerprint">Login by fingerprint</string>
+        <string name="dlg_title_activateLoginByFingerprint">Activate login by fingerprint</string>
         <!-- end! -->
 
         <!-- ct (content) -->
         <string name="dlg_ct_invalidPassword">"InvalidPassword"</string>
+        <string name="dlg_ct_rememberPassword">"Remember password (fingerprint)"</string>
         <!-- end! -->
 
         <!-- err (error) -->
@@ -84,6 +90,9 @@
         <string name="dlg_err_saveEncryptionProblem">"File encryption error. Undo the last action or try to edit the last item."</string>
         <string name="dlg_err_saveWriting">"Error writing data to the file. Choose a new file path to avoid losing data."</string>
         <string name="dlg_err_fileLost">"The file is lost."</string>
+        <string name="dlg_err_biometricSensorNotAvailable">Biometric sensor is not available.</string>
+        <string name="dlg_err_encryptedMasterPassNotFound">Encrypted master password not found. Remove all saved passwords.</string>
+        <string name="dlg_err_encryptedMasterPassSaveFail">Failed to encrypt the master password. Try again later.</string>
         <!-- end! -->
 
         <!-- msg (message) -->
