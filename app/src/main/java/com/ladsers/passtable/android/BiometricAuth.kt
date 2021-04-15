@@ -88,9 +88,13 @@ class BiometricAuth(
         val data = Base64.toBase64String(mpEncrypted)
         val outStr = "$iv@$data"
         strToBiometricPrompt = null
-        if (!RecentFiles.rememberLastMpEncrypted(context, outStr)) {
-            showMsgDialog(context.getString(R.string.dlg_err_encryptedMasterPassSaveFail))
-        }
+        if (RecentFiles.rememberLastMpEncrypted(context, outStr)) {
+            Toast.makeText(
+                context,
+                context.getString(R.string.ui_msg_fingerprintActivated),
+                Toast.LENGTH_SHORT
+            ).show()
+        } else showMsgDialog(context.getString(R.string.dlg_err_encryptedMasterPassSaveFail))
         afterActivation()
     }
 
@@ -139,7 +143,7 @@ class BiometricAuth(
 
     private val promptInfoLogin = BiometricPrompt.PromptInfo.Builder()
         .setTitle(context.getString(R.string.dlg_title_loginByFingerprint))
-        .setNegativeButtonText(context.getString(R.string.app_bt_enterPassword))
+        .setNegativeButtonText(context.getString(R.string.app_bt_usePassword))
         .build()
 
     private val biometricPrompt = BiometricPrompt(activity, executor,
@@ -149,21 +153,35 @@ class BiometricAuth(
                 errString: CharSequence
             ) {
                 super.onAuthenticationError(errorCode, errString)
-                if (errorCode != BiometricPrompt.ERROR_USER_CANCELED &&
-                    errorCode != BiometricPrompt.ERROR_NEGATIVE_BUTTON
-                ) {
-                    if (isActivation) {
-                        showMsgDialog(context.getString(R.string.dlg_err_encryptedMasterPassSaveFail))
-                    } else {
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.ui_msg_fingerprintErr),
-                            Toast.LENGTH_LONG
-                        ).show()
+
+                when (errorCode) {
+                    BiometricPrompt.ERROR_USER_CANCELED, BiometricPrompt.ERROR_NEGATIVE_BUTTON -> {
+                        if (isActivation) {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.ui_msg_canceled),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            afterActivation()
+                        } else {
+                            if (errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON) authFailed()
+                            else activity.finish()
+                        }
+                    }
+                    else -> {
+                        if (isActivation) {
+                            showMsgDialog(context.getString(R.string.dlg_err_encryptedMasterPassSaveFail))
+                            afterActivation()
+                        } else {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.ui_msg_fingerprintErr),
+                                Toast.LENGTH_LONG
+                            ).show()
+                            authFailed()
+                        }
                     }
                 }
-                if (isActivation) afterActivation()
-                else authFailed()
             }
 
             override fun onAuthenticationSucceeded(
