@@ -46,6 +46,7 @@ class TableActivity : AppCompatActivity() {
     private var saveAsMode = false
     private var afterRemoval = false
     private var rememberMasterPass = false
+    private var canRememberMasterPass = true
 
     private var overlayCard = false
     private var overlayRmWin = false
@@ -57,9 +58,9 @@ class TableActivity : AppCompatActivity() {
         biometricAuth = BiometricAuth(
             this,
             this,
-            { askPassword() },
-            { workWithRecyclerView() },
-            { mp -> openProcess(mp) })
+            { loginSucceeded() },
+            { mp -> openProcess(mp) },
+            { askPassword(canRememberPass = false) })
         turnOnPanel()
 
         val uri = intent.getParcelableExtra<Uri>("fileUri")
@@ -110,7 +111,19 @@ class TableActivity : AppCompatActivity() {
         RecentFiles.add(this, mainUri)
         table = DataTableAndroid(mainUri.toString(), masterPass, cryptData, contentResolver)
         saving(firstSave = true)
-        workWithRecyclerView()
+        if (rememberMasterPass) biometricAuth.activateAuth(masterPass)
+        else loginSucceeded()
+    }
+
+    private fun openProcess(masterPass: String) {
+        table = DataTableAndroid(mainUri.toString(), masterPass, cryptData, contentResolver)
+        when (table.fill()) {
+            0 -> {
+                if (rememberMasterPass) biometricAuth.activateAuth(masterPass)
+                else loginSucceeded()
+            }
+            3 -> askPassword(true)
+        }
     }
 
     private fun checkFileProcess() {
@@ -151,7 +164,8 @@ class TableActivity : AppCompatActivity() {
     private fun askPassword(
         isInvalidPassword: Boolean = false,
         newPath: Uri? = null,
-        isNewPassword: Boolean = false
+        isNewPassword: Boolean = false,
+        canRememberPass: Boolean = true
     ) {
         val builder = AlertDialog.Builder(this)
         val binding = DialogAskpasswordBinding.inflate(layoutInflater)
@@ -159,12 +173,21 @@ class TableActivity : AppCompatActivity() {
         val title = if (newPath == null) getString(R.string.dlg_title_enterMasterPassword)
         else getString(R.string.dlg_title_enterNewMasterPassword)
         builder.setTitle(title)
-        if (isInvalidPassword) binding.tvInvalidPassword.visibility = View.VISIBLE
+        rememberMasterPass = false
+        val biometricAuthAvailable = biometricAuth.checkAvailability()
+        if (!canRememberPass) canRememberMasterPass = false
+        binding.cbRememberPass.visibility =
+            if (biometricAuthAvailable && canRememberMasterPass) View.VISIBLE else View.GONE
+        if (isInvalidPassword) {
+            binding.cbRememberPass.isChecked = false
+            binding.tvInvalidPassword.visibility = View.VISIBLE
+        }
         var closedViaButton = false
         val posBtnText = if (isNewPassword) getString(R.string.app_bt_save)
         else getString(R.string.app_bt_ok)
         builder.setPositiveButton(posBtnText) { _, _ ->
-            rememberMasterPass = binding.cbRememberPass.isChecked
+            if (biometricAuthAvailable && canRememberMasterPass) rememberMasterPass =
+                binding.cbRememberPass.isChecked
             val pass = binding.etPassword.text.toString()
             if (newPath == null) {
                 if (isNewPassword) creationFileProcess(pass) else openProcess(pass)
@@ -216,18 +239,7 @@ class TableActivity : AppCompatActivity() {
 
     }
 
-    private fun openProcess(masterPass: String) {
-        table = DataTableAndroid(mainUri.toString(), masterPass, cryptData, contentResolver)
-        when (table.fill()) {
-            0 -> {
-                if (rememberMasterPass) biometricAuth.activateAuth(masterPass)
-                else workWithRecyclerView()
-            }
-            3 -> askPassword(true)
-        }
-    }
-
-    private fun workWithRecyclerView() {
+    private fun loginSucceeded() {
         binding.rvTable.layoutManager = LinearLayoutManager(
             this,
             LinearLayoutManager.VERTICAL,
@@ -624,7 +636,7 @@ class TableActivity : AppCompatActivity() {
         val perms = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         contentResolver.takePersistableUriPermission(uri, perms)
 
-        if (saveAsMode) askPassword(newPath = uri) else {
+        if (saveAsMode) askPassword(newPath = uri, canRememberPass = false) else {
             if (saving(uri.toString())) {
                 RecentFiles.add(this, uri)
                 this.binding.toolbar.root.title = getFileName(uri)

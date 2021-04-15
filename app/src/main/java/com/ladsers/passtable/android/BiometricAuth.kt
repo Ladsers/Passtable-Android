@@ -21,9 +21,9 @@ class BiometricAuth(
     private val context: Context,
     private val activity: FragmentActivity,
 
-    private val askPassword: () -> Unit,
-    private val biometricAfterActivation: () -> Unit,
-    private val biometricAuthSucceeded: (String) -> Unit
+    private val afterActivation: () -> Unit,
+    private val authSucceeded: (String) -> Unit,
+    private val authFailed: () -> Unit
 ) {
 
     private val executor = ContextCompat.getMainExecutor(context)
@@ -33,12 +33,12 @@ class BiometricAuth(
     fun startAuth(masterPassEncrypted: String) {
         if (!checkAvailability()) {
             showMsgDialog(context.getString(R.string.dlg_err_biometricSensorNotAvailable))
-            askPassword()
+            authFailed()
             return
         }
         if (masterPassEncrypted.isBlank() || masterPassEncrypted == "@") {
             showMsgDialog(context.getString(R.string.dlg_err_encryptedMasterPassNotFound))
-            askPassword()
+            authFailed()
             return
         }
         isActivation = false
@@ -59,7 +59,7 @@ class BiometricAuth(
     fun activateAuth(masterPass: String) {
         if (!checkAvailability()) {
             showMsgDialog(context.getString(R.string.dlg_err_biometricSensorNotAvailable))
-            biometricAfterActivation()
+            afterActivation()
             return
         }
         isActivation = true
@@ -91,13 +91,13 @@ class BiometricAuth(
         if (!RecentFiles.rememberLastMpEncrypted(context, outStr)) {
             showMsgDialog(context.getString(R.string.dlg_err_encryptedMasterPassSaveFail))
         }
-        biometricAfterActivation()
+        afterActivation()
     }
 
     private fun decrypt(mpEncrypted: String, cipher: Cipher) {
         val mp = cipher.doFinal(Base64.decode(mpEncrypted))
         strToBiometricPrompt = null
-        biometricAuthSucceeded(String(mp, StandardCharsets.UTF_8))
+        authSucceeded(String(mp, StandardCharsets.UTF_8))
     }
 
     private fun getCipher() = Cipher.getInstance(
@@ -162,8 +162,8 @@ class BiometricAuth(
                         ).show()
                     }
                 }
-                if (isActivation) biometricAfterActivation()
-                else askPassword()
+                if (isActivation) afterActivation()
+                else authFailed()
             }
 
             override fun onAuthenticationSucceeded(
