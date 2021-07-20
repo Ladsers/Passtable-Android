@@ -14,7 +14,7 @@ class DataTableAndroid(
 
     override fun writeToFile(pathToFile: String, cryptData: String) {
         val uri = pathToFile.toUri()
-        val outputStream = contentResolver.openOutputStream(uri)
+        val outputStream = contentResolver.openOutputStream(uri, "wt")
         val bufferedWriter = BufferedWriter(OutputStreamWriter(outputStream))
         bufferedWriter.use { out -> out.write(cryptData) }
     }
