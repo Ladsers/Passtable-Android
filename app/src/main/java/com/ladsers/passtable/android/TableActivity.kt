@@ -128,6 +128,14 @@ class TableActivity : AppCompatActivity() {
 
     private fun checkFileProcess() {
         /* Testing for errors in the file. */
+        val fileExtension = getString(R.string.app_com_fileExtension)
+        getFileNameWithExt(mainUri)?.let { it ->
+            if (!it.endsWith(fileExtension)) {
+                showErrDialog(getString(R.string.dlg_err_unsupportedFile))
+                return
+            }
+        }
+
         table = DataTableAndroid(mainUri.toString(), "/test", cryptData, contentResolver)
         when (table.fill()) {
             2 -> showErrDialog(getString(R.string.dlg_err_invalidFileVer))

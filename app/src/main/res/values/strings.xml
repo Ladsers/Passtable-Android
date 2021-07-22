@@ -12,6 +12,7 @@
         <string name="app_com_tag">tag</string>
         <string name="app_com_passwordSecret">********</string>
         <string name="app_com_itemHasNoNote">&#60; no note &#62;</string>
+        <string name="app_com_fileExtension">.passtable</string>
         <!-- end! -->
 
         <!-- bt (button) -->
@@ -71,6 +72,7 @@
         <!-- title -->
         <string name="dlg_title_enterMasterPassword">Enter master password</string>
         <string name="dlg_title_enterNewMasterPassword">Enter new master password</string>
+        <string name="dlg_title_enterFileName">Enter file name</string>
         <string name="dlg_title_notSaved">Not saved</string>
         <string name="dlg_title_saveFailed">Save failed</string>
         <string name="dlg_title_areYouSure">Are you sure?</string>
@@ -87,6 +89,7 @@
         <string name="dlg_err_uriIsNull">"UriIsNull"</string>
         <string name="dlg_err_invalidFileVer">"InvalidFileVer"</string>
         <string name="dlg_err_corruptedFile">"CorruptedFile"</string>
+        <string name="dlg_err_unsupportedFile">"UnsupportedFile"</string>
         <string name="dlg_err_noDataReceived">"Reason: No data received"</string>
         <string name="dlg_err_someDataNull">"Reason: Not all data received"</string>
         <string name="dlg_err_saveIdentity">"Identity check failed"</string>

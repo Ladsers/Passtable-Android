@@ -3,6 +3,7 @@ package com.ladsers.passtable.android
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.DocumentsContract
@@ -10,6 +11,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ladsers.passtable.android.databinding.ActivityMainBinding
 
@@ -22,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recentUri: MutableList<Uri>
     private lateinit var recentDate: MutableList<String>
     private lateinit var adapter: RecentAdapter
+    private lateinit var askFileName: AskFileName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,8 +35,8 @@ class MainActivity : AppCompatActivity() {
         //binding.toolbar.root.navigationIcon = //TODO: passtable logo
         setSupportActionBar(binding.toolbar.root)
 
-        binding.btnOpenFile.setOnClickListener { fileWorker(false) }
-        binding.btNewFile.setOnClickListener { fileWorker(true) }
+        binding.btnOpenFile.setOnClickListener { openFileExplorer(false) }
+        binding.btNewFile.setOnClickListener { openFileExplorer(true) }
         binding.btAbout.setOnClickListener { }
 
         binding.rvRecent.layoutManager = LinearLayoutManager(
@@ -43,8 +46,12 @@ class MainActivity : AppCompatActivity() {
         )
         recentUri = mutableListOf()
         recentDate = mutableListOf()
-        adapter = RecentAdapter(recentUri, recentDate, this) { id, flag -> openRecentFile(id, flag) }
+        adapter =
+            RecentAdapter(recentUri, recentDate, this) { id, flag -> openRecentFile(id, flag) }
         binding.rvRecent.adapter = adapter
+
+        askFileName =
+            AskFileName(this, window) { uri, fileName -> createAndOpenNewFile(uri, fileName) }
     }
 
     override fun onResume() {
@@ -76,17 +83,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun fileWorker(newFile: Boolean) {
+    private fun openFileExplorer(newFile: Boolean) {
         this.newFile = newFile
 
-        val intent = if (newFile) Intent(Intent.ACTION_CREATE_DOCUMENT)
+        val intent = if (newFile) Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
         else Intent(Intent.ACTION_OPEN_DOCUMENT)
-        intent.addCategory(Intent.CATEGORY_OPENABLE)
-        intent.type = "application/*" //TODO: try to catch only passtable files.
-        fileActivityResult.launch(intent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val docsDir =
+                "content://com.android.externalstorage.documents/document/primary:Documents".toUri()
+            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, docsDir)
+        }
+        intent.putExtra("android.content.extra.SHOW_ADVANCED", true)
+
+        if (!newFile) {
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            intent.type = "application/octet-stream"
+        }
+
+        explorerResult.launch(intent)
     }
 
-    private val fileActivityResult = registerForActivityResult(
+    private val explorerResult = registerForActivityResult(
         ActivityResultContracts
             .StartActivityForResult()
     ) { result ->
@@ -94,21 +111,33 @@ class MainActivity : AppCompatActivity() {
 
         if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
 
-        var uri = result.data?.data ?: return@registerForActivityResult //TODO: err msg
-        if (newFile) {
-            val originalName =
-                getFileNameWithExt(uri) ?: return@registerForActivityResult //TODO: err msg
-            if (!originalName.endsWith(".passtable")) {
-                val saveName = "$originalName.passtable"
-                uri = DocumentsContract.renameDocument(contentResolver, uri, saveName)!!
-            }
-        }
+        val uri = result.data?.data ?: return@registerForActivityResult //TODO: err msg
         val perms = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         contentResolver.takePersistableUriPermission(uri, perms)
 
+        if (newFile) askFileName.ask(uri)
+        else {
+            val intent = Intent(this, TableActivity::class.java)
+            intent.putExtra("fileUri", uri)
+            intent.putExtra("newFile", false)
+            startActivity(intent)
+        }
+    }
+
+    private fun createAndOpenNewFile(uri: Uri, fileName: String) {
+        val docId = DocumentsContract.getTreeDocumentId(uri)
+        val docUri = DocumentsContract.buildDocumentUriUsingTree(uri, docId)
+
+        val file = DocumentsContract.createDocument(
+            contentResolver,
+            docUri,
+            "application/octet-stream",
+            fileName
+        )!!
+
         val intent = Intent(this, TableActivity::class.java)
-        intent.putExtra("fileUri", uri)
-        intent.putExtra("newFile", newFile)
+        intent.putExtra("fileUri", file)
+        intent.putExtra("newFile", true)
         startActivity(intent)
     }
 
