@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/btRefresh"
-        android:icon="@drawable/ic_refresh"
+        android:icon="@drawable/ic_cloud_refresh"
         android:title="@string/app_bt_refreshList"
         app:showAsAction="always"
         android:visible="false"/>

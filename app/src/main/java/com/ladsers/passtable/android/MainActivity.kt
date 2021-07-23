@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        menu?.findItem(R.id.btRefresh)?.isVisible = checkLostFiles()
+        menu?.findItem(R.id.btRefresh)?.isVisible = checkLostCloudFiles()
         return true
     }
 
@@ -143,8 +143,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkLostFiles(): Boolean {
-        for (r in recentUri) if (getFileName(r) == null) return true
+    private fun checkLostCloudFiles(): Boolean {
+        val cloudUriPattern = "content://com.google.android.apps.docs.storage"
+        for (r in recentUri) {
+            if (getFileName(r) == null && r.toString().startsWith(cloudUriPattern)) return true
+        }
         return false
     }
 

@@ -24,6 +24,7 @@
         <string name="app_bt_edit">edit</string>
         <string name="app_bt_undo">undo</string>
         <string name="app_bt_cancel">cancel</string>
+        <string name="app_bt_next">next</string>
         <string name="app_bt_editItem">Edit item</string>
         <string name="app_bt_removeItem">Remove item</string>
         <string name="app_bt_showPassword">Show password</string>
