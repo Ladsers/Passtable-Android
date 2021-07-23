@@ -9,6 +9,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.DocumentsContract
 import android.text.InputType
@@ -20,6 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
@@ -39,6 +41,7 @@ class TableActivity : AppCompatActivity() {
     private lateinit var adapter: TableAdapter
     private lateinit var mtList: MutableList<DataItem>
     private lateinit var biometricAuth: BiometricAuth
+    private lateinit var fileCreator: FileCreator
 
     private var editId = -1
     private val tagFilter = MutableList(6) {false}
@@ -61,6 +64,11 @@ class TableActivity : AppCompatActivity() {
             { loginSucceeded() },
             { mp -> openProcess(mp) },
             { askPassword(canRememberPass = false) })
+        fileCreator = FileCreator(
+            this,
+            contentResolver,
+            window
+        ) { uri -> savingToOtherFile(uri) }
         turnOnPanel()
 
         val uri = intent.getParcelableExtra<Uri>("fileUri")
@@ -219,7 +227,12 @@ class TableActivity : AppCompatActivity() {
         }
         builder.setOnDismissListener { if (!closedViaButton){
             if (newPath == null) {
-                if (isNewPassword) DocumentsContract.deleteDocument(contentResolver, mainUri)
+                if (isNewPassword) {
+                    DocumentsContract.deleteDocument(contentResolver, mainUri)
+                    Toast.makeText(
+                        this, getString(R.string.ui_msg_canceled), Toast.LENGTH_SHORT
+                    ).show()
+                }
                 finish()
             }
             else {
@@ -618,32 +631,35 @@ class TableActivity : AppCompatActivity() {
 
     private fun saveToOtherFile(isSaveAs: Boolean = true){
         saveAsMode = isSaveAs
-        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
-        intent.addCategory(Intent.CATEGORY_OPENABLE)
-        intent.type = "application/*" //TODO: try to catch only passtable files.
-        toOtherFileResult.launch(intent)
+
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val docsDir =
+                "content://com.android.externalstorage.documents/document/primary:Documents".toUri()
+            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, docsDir)
+        }
+        intent.putExtra("android.content.extra.SHOW_ADVANCED", true)
+
+        explorerResult.launch(intent)
     }
 
-    private val toOtherFileResult = registerForActivityResult(
+    private val explorerResult = registerForActivityResult(
         ActivityResultContracts
             .StartActivityForResult()
     ) { result ->
-        if (result.resultCode != Activity.RESULT_OK && !saveAsMode) {
-            saving() // if the user canceled the creation of another file, return err message again.
+        if (result.resultCode != Activity.RESULT_OK) {
+            if (!saveAsMode) saving() // if the user canceled the creation of another file, return err message again.
             return@registerForActivityResult
         }
-        if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
 
-        var uri = result.data?.data ?: return@registerForActivityResult //TODO: err msg
-
-        val originalName = getFileNameWithExt(uri) ?: return@registerForActivityResult //TODO: err msg
-        if (!originalName.endsWith(".passtable")){
-            val saveName = "$originalName.passtable"
-            uri = DocumentsContract.renameDocument(contentResolver, uri, saveName)!!
-        }
+        val uri = result.data?.data ?: return@registerForActivityResult //TODO: err msg
         val perms = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         contentResolver.takePersistableUriPermission(uri, perms)
 
+        fileCreator.askName(uri, saveAsMode)
+    }
+
+    private fun savingToOtherFile(uri: Uri){
         if (saveAsMode) askPassword(newPath = uri, canRememberPass = false) else {
             if (saving(uri.toString())) {
                 RecentFiles.add(this, uri)

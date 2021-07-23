@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recentUri: MutableList<Uri>
     private lateinit var recentDate: MutableList<String>
     private lateinit var adapter: RecentAdapter
-    private lateinit var askFileName: AskFileName
+    private lateinit var fileCreator: FileCreator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,8 +50,8 @@ class MainActivity : AppCompatActivity() {
             RecentAdapter(recentUri, recentDate, this) { id, flag -> openRecentFile(id, flag) }
         binding.rvRecent.adapter = adapter
 
-        askFileName =
-            AskFileName(this, window) { uri, fileName -> createAndOpenNewFile(uri, fileName) }
+        fileCreator =
+            FileCreator(this, contentResolver, window) { uri -> openFile(uri) }
     }
 
     override fun onResume() {
@@ -115,29 +115,14 @@ class MainActivity : AppCompatActivity() {
         val perms = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         contentResolver.takePersistableUriPermission(uri, perms)
 
-        if (newFile) askFileName.ask(uri)
-        else {
-            val intent = Intent(this, TableActivity::class.java)
-            intent.putExtra("fileUri", uri)
-            intent.putExtra("newFile", false)
-            startActivity(intent)
-        }
+        if (newFile) fileCreator.askName(uri)
+        else openFile(uri)
     }
 
-    private fun createAndOpenNewFile(uri: Uri, fileName: String) {
-        val docId = DocumentsContract.getTreeDocumentId(uri)
-        val docUri = DocumentsContract.buildDocumentUriUsingTree(uri, docId)
-
-        val file = DocumentsContract.createDocument(
-            contentResolver,
-            docUri,
-            "application/octet-stream",
-            fileName
-        )!!
-
+    private fun openFile(uri: Uri) {
         val intent = Intent(this, TableActivity::class.java)
-        intent.putExtra("fileUri", file)
-        intent.putExtra("newFile", true)
+        intent.putExtra("fileUri", uri)
+        intent.putExtra("newFile", newFile)
         startActivity(intent)
     }
 
