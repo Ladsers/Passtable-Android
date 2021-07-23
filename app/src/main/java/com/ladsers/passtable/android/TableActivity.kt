@@ -68,7 +68,7 @@ class TableActivity : AppCompatActivity() {
             this,
             contentResolver,
             window
-        ) { uri -> savingToOtherFile(uri) }
+        ) { openFileExplorer() }
         turnOnPanel()
 
         val uri = intent.getParcelableExtra<Uri>("fileUri")
@@ -108,7 +108,8 @@ class TableActivity : AppCompatActivity() {
                 true
             }
             R.id.btSaveAs -> {
-                saveToOtherFile()
+                saveAsMode = true
+                fileCreator.askName(getFileName(mainUri))
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -629,9 +630,7 @@ class TableActivity : AppCompatActivity() {
         adapter.notifyDataSetChanged()
     }
 
-    private fun saveToOtherFile(isSaveAs: Boolean = true){
-        saveAsMode = isSaveAs
-
+    private fun openFileExplorer(){
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val docsDir =
@@ -652,18 +651,16 @@ class TableActivity : AppCompatActivity() {
             return@registerForActivityResult
         }
 
-        val uri = result.data?.data ?: return@registerForActivityResult //TODO: err msg
+        val tree = result.data?.data ?: return@registerForActivityResult //TODO: err msg
         val perms = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-        contentResolver.takePersistableUriPermission(uri, perms)
+        contentResolver.takePersistableUriPermission(tree, perms)
 
-        fileCreator.askName(uri, saveAsMode)
-    }
+        val file = fileCreator.createFile(tree)
 
-    private fun savingToOtherFile(uri: Uri){
-        if (saveAsMode) askPassword(newPath = uri, canRememberPass = false) else {
-            if (saving(uri.toString())) {
-                RecentFiles.add(this, uri)
-                this.binding.toolbar.root.title = getFileName(uri)
+        if (saveAsMode) askPassword(newPath = file, canRememberPass = false) else {
+            if (saving(file.toString())) {
+                RecentFiles.add(this, file)
+                this.binding.toolbar.root.title = getFileName(file)
             }
         }
     }
@@ -698,7 +695,9 @@ class TableActivity : AppCompatActivity() {
         builder.setMessage(getString(R.string.dlg_err_saveWriting))
         builder.setTitle(getString(R.string.dlg_title_saveFailed))
         builder.setCancelable(false)
-        builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ -> saveToOtherFile(false)}
+        builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ ->
+            saveAsMode = false
+            fileCreator.askName(getFileName(mainUri), false)}
         builder.show()
     }
 

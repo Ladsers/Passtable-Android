@@ -18,7 +18,7 @@ import com.ladsers.passtable.android.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
-    private var newFile: Boolean = false
+    private var newFile = false
     private var afterSelecting = false
 
     private lateinit var recentUri: MutableList<Uri>
@@ -35,8 +35,11 @@ class MainActivity : AppCompatActivity() {
         //binding.toolbar.root.navigationIcon = //TODO: passtable logo
         setSupportActionBar(binding.toolbar.root)
 
+        fileCreator =
+            FileCreator(this, contentResolver, window) { openFileExplorer(true) }
+
         binding.btnOpenFile.setOnClickListener { openFileExplorer(false) }
-        binding.btNewFile.setOnClickListener { openFileExplorer(true) }
+        binding.btNewFile.setOnClickListener { fileCreator.askName() }
         binding.btAbout.setOnClickListener { }
 
         binding.rvRecent.layoutManager = LinearLayoutManager(
@@ -49,9 +52,6 @@ class MainActivity : AppCompatActivity() {
         adapter =
             RecentAdapter(recentUri, recentDate, this) { id, flag -> openRecentFile(id, flag) }
         binding.rvRecent.adapter = adapter
-
-        fileCreator =
-            FileCreator(this, contentResolver, window) { uri -> openFile(uri) }
     }
 
     override fun onResume() {
@@ -110,15 +110,12 @@ class MainActivity : AppCompatActivity() {
 
         if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
 
-        val uri = result.data?.data ?: return@registerForActivityResult //TODO: err msg
+        var uri = result.data?.data ?: return@registerForActivityResult //TODO: err msg
         val perms = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         contentResolver.takePersistableUriPermission(uri, perms)
 
-        if (newFile) fileCreator.askName(uri)
-        else openFile(uri)
-    }
+        if (newFile) uri = fileCreator.createFile(uri)
 
-    private fun openFile(uri: Uri) {
         val intent = Intent(this, TableActivity::class.java)
         intent.putExtra("fileUri", uri)
         intent.putExtra("newFile", newFile)
