@@ -50,7 +50,7 @@ object RecentFiles {
             uriList.add(data)
             dateList.add(getCurrentDateAsStr())
             mpEncryptedList.add(currentMpEncrypted)
-            val maxItems = shPref.getInt("maxItems", 5)
+            val maxItems = shPref.getInt("maxItems", 15)
             if (uriList.size > maxItems) {
                 uriList.removeAt(0)
                 dateList.removeAt(0)

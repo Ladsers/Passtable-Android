@@ -58,17 +58,12 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         if (afterSelecting) afterSelecting = false
-        else {
-            recentUri.clear()
-            recentUri.addAll(RecentFiles.loadUri(this))
-            recentDate.clear()
-            recentDate.addAll(RecentFiles.loadDate(this))
-            adapter.notifyDataSetChanged()
-        }
+        else refreshRecentList()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
+        menu?.findItem(R.id.btRefresh)?.isVisible = checkLostFiles()
         return true
     }
 
@@ -77,6 +72,10 @@ class MainActivity : AppCompatActivity() {
             R.id.btSettings -> {
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
+                true
+            }
+            R.id.btRefresh -> {
+                refreshRecentList()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -141,8 +140,23 @@ class MainActivity : AppCompatActivity() {
                 recentUri.removeAt(id)
                 recentDate.removeAt(id)
                 adapter.notifyItemRemoved(id)
+                invalidateOptionsMenu()
             }
             builder.show()
         }
+    }
+
+    private fun checkLostFiles(): Boolean {
+        for (r in recentUri) if (getFileName(r) == null) return true
+        return false
+    }
+
+    private fun refreshRecentList(){
+        recentUri.clear()
+        recentUri.addAll(RecentFiles.loadUri(this))
+        recentDate.clear()
+        recentDate.addAll(RecentFiles.loadDate(this))
+        adapter.notifyDataSetChanged()
+        invalidateOptionsMenu()
     }
 }
