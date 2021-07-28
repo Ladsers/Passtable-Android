@@ -2,8 +2,12 @@ package com.ladsers.passtable.android
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
+import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.ladsers.passtable.android.databinding.ItemRecentBinding
 import java.lang.Exception
@@ -17,8 +21,10 @@ import java.util.*
 class RecentAdapter(
     private val recentUri: MutableList<Uri>,
     private val recentDate: MutableList<String>,
+    private val recentMps: MutableList<Boolean>,
     private val contextActivity: Context,
     private val open: (Int, Boolean) -> Unit,
+    private val popupAction: (Int, Int) -> Unit,
 ) : RecyclerView.Adapter<RecentAdapter.ItemViewHolder>() {
 
     class ItemViewHolder(val binding: ItemRecentBinding) :
@@ -36,6 +42,7 @@ class RecentAdapter(
             binding.tvFileName.text = fileName
             binding.tvLastDate.text = getFormattedDate(recentDate[position])
             binding.clItem.setOnClickListener { open(position, fileName != "???") }
+            binding.clItem.setOnLongClickListener { showPopupMenu(it, position) }
         }
     }
 
@@ -55,7 +62,7 @@ class RecentAdapter(
         var result = ""
 
         date?.let {
-            result = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            result = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val dt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault())
                 val formatter =
                     DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)
@@ -67,5 +74,23 @@ class RecentAdapter(
         }
 
         return result
+    }
+
+    private fun showPopupMenu(view: View, position: Int): Boolean {
+        val pop = PopupMenu(contextActivity, view, Gravity.CENTER, 0, R.style.PopupMenuCustomPos)
+        pop.inflate(R.menu.menu_recentfiles)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) pop.setForceShowIcon(true)
+
+        pop.menu.findItem(R.id.btForgetPassword).isVisible = recentMps[position]
+        pop.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.btRemoveFromList -> popupAction(position, 1)
+                R.id.btForgetPassword -> popupAction(position, 2)
+            }
+            true
+        }
+        pop.show()
+
+        return true
     }
 }

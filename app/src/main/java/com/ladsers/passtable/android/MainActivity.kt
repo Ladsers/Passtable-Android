@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var recentUri: MutableList<Uri>
     private lateinit var recentDate: MutableList<String>
+    private lateinit var recentMps: MutableList<Boolean>
     private lateinit var adapter: RecentAdapter
     private lateinit var fileCreator: FileCreator
 
@@ -49,8 +50,14 @@ class MainActivity : AppCompatActivity() {
         )
         recentUri = mutableListOf()
         recentDate = mutableListOf()
-        adapter =
-            RecentAdapter(recentUri, recentDate, this) { id, flag -> openRecentFile(id, flag) }
+        recentMps = mutableListOf()
+        adapter = RecentAdapter(
+                recentUri,
+                recentDate,
+                recentMps,
+                this,
+                { id, flag -> openRecentFile(id, flag) },
+                { id, resCode -> popupAction(id, resCode) })
         binding.rvRecent.adapter = adapter
     }
 
@@ -133,13 +140,23 @@ class MainActivity : AppCompatActivity() {
             builder.setMessage(getString(R.string.dlg_err_fileLost))
             builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ -> }
             builder.setOnDismissListener {
-                RecentFiles.remove(this, recentUri[id])
-                recentUri.removeAt(id)
-                recentDate.removeAt(id)
-                adapter.notifyItemRemoved(id)
-                invalidateOptionsMenu()
+                removeFromRecentList(id)
+                //invalidateOptionsMenu() //TODO: remove
             }
             builder.show()
+        }
+    }
+
+    private fun popupAction(id: Int, resCode: Int){
+        when (resCode){
+            1 -> { // remove from list
+                removeFromRecentList(id)
+            }
+            2 -> { // forget password
+                RecentFiles.forgetMpEncrypted(this, recentUri[id])
+                recentMps[id] = false
+                adapter.notifyItemChanged(id)
+            }
         }
     }
 
@@ -156,7 +173,18 @@ class MainActivity : AppCompatActivity() {
         recentUri.addAll(RecentFiles.loadUri(this))
         recentDate.clear()
         recentDate.addAll(RecentFiles.loadDate(this))
+        recentMps.clear()
+        recentMps.addAll(RecentFiles.loadMpsEncrypted(this))
         adapter.notifyDataSetChanged()
         invalidateOptionsMenu()
+    }
+
+    private fun removeFromRecentList(id: Int){
+        RecentFiles.remove(this, recentUri[id])
+        recentUri.removeAt(id)
+        recentDate.removeAt(id)
+        recentMps.removeAt(id)
+        adapter.notifyItemRemoved(id)
+        adapter.notifyItemRangeChanged(id, adapter.itemCount)
     }
 }

@@ -38,6 +38,8 @@
         <string name="app_bt_doNotChangePassword">don\'t change</string>
         <string name="app_bt_save">Save</string>
         <string name="app_bt_usePassword">use password</string>
+        <string name="app_bt_removeFromList">Remove from list</string>
+        <string name="app_bt_forgetPassword">Forget password</string>
         <!-- end! -->
 
     <!-- END -->

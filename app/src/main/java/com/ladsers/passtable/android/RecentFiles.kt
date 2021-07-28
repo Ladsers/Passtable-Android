@@ -90,6 +90,16 @@ object RecentFiles {
         return strList.reversed().toMutableList()
     }
 
+    fun loadMpsEncrypted(context: Context?): MutableList<Boolean> {
+        val shPref = context?.getSharedPreferences("recentFiles", Context.MODE_PRIVATE)
+            ?: return mutableListOf()
+
+        val str = shPref.getString("mpEncrypted", "")
+        if (str.isNullOrEmpty()) return mutableListOf()
+        val strList = str.split("|")
+        return strList.map { it.isNotBlank() }.reversed().toMutableList()
+    }
+
     fun getLastMpEncrypted(context: Context?): String? {
         val shPref = context?.getSharedPreferences("recentFiles", Context.MODE_PRIVATE)
             ?: return null
@@ -106,6 +116,32 @@ object RecentFiles {
             putString("uri", "")
             putString("date", "")
             putString("mpEncrypted", "")
+            apply()
+        }
+        return true
+    }
+
+    fun forgetMpEncrypted(context: Context?, data: Uri): Boolean {
+        val shPref = context?.getSharedPreferences("recentFiles", Context.MODE_PRIVATE)
+            ?: return false
+
+        val strUri = shPref.getString("uri", "")
+        val uriList = if (!strUri.isNullOrEmpty()) {
+            val strList = strUri.split("|")
+            strList.map { it.toUri() }.toMutableList()
+        } else mutableListOf()
+
+        val strMpEncrypted = shPref.getString("mpEncrypted", "")
+        val mpEncryptedList = if (!strMpEncrypted.isNullOrEmpty()) {
+            strMpEncrypted.split("|").toMutableList()
+        } else mutableListOf()
+
+        val index = uriList.indexOf(data)
+        if (index != -1) mpEncryptedList[index] = " "
+
+        val newStrMpEncrypted = mpEncryptedList.joinToString("|")
+        with(shPref.edit()) {
+            putString("mpEncrypted", newStrMpEncrypted)
             apply()
         }
         return true

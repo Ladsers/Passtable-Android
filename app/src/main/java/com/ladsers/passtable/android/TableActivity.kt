@@ -422,6 +422,7 @@ class TableActivity : AppCompatActivity() {
             } else {
                 mtList.removeAt(editId)
                 adapter.notifyItemRemoved(editId)
+                adapter.notifyItemRangeChanged(editId, adapter.itemCount)
             }
 
             if (saving()) showCard(editId)
@@ -503,6 +504,7 @@ class TableActivity : AppCompatActivity() {
             table.remove(tableId)
             mtList.removeAt(id)
             adapter.notifyItemRemoved(id)
+            adapter.notifyItemRangeChanged(id, adapter.itemCount)
 
             afterRemoval = true
             saving()
