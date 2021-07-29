@@ -29,6 +29,7 @@ import com.ladsers.passtable.android.databinding.DialogAskpasswordBinding
 import com.ladsers.passtable.android.databinding.DialogItemBinding
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.lang.Exception
 
 
 class TableActivity : AppCompatActivity() {
@@ -83,9 +84,14 @@ class TableActivity : AppCompatActivity() {
             setSupportActionBar(binding.toolbar.root)
             binding.toolbar.root.setNavigationOnClickListener { finish() }
 
-            val inputStream = contentResolver.openInputStream(mainUri)
-            cryptData =
-                BufferedReader(InputStreamReader(inputStream)).readText() //is protection required?
+            try {
+                val inputStream = contentResolver.openInputStream(mainUri)
+                cryptData = BufferedReader(InputStreamReader(inputStream)).readText()
+            } catch (e: Exception) {
+                RecentFiles.remove(this, mainUri)
+                showErrDialog(getString(R.string.dlg_err_unableToOpenFile))
+                return
+            }
 
             val newFile = intent.getBooleanExtra("newFile", false)
             if (newFile) askPassword(isNewPassword = true) else checkFileProcess()

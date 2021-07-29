@@ -94,6 +94,7 @@
         <string name="dlg_err_invalidFileVer">"InvalidFileVer"</string>
         <string name="dlg_err_corruptedFile">"CorruptedFile"</string>
         <string name="dlg_err_unsupportedFile">"UnsupportedFile"</string>
+        <string name="dlg_err_unableToOpenFile">The file at the specified path does not exist or the app does not have sufficient permissions to open it.</string>
         <string name="dlg_err_noDataReceived">"Reason: No data received"</string>
         <string name="dlg_err_someDataNull">"Reason: Not all data received"</string>
         <string name="dlg_err_saveIdentity">"Identity check failed"</string>
