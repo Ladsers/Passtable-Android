@@ -411,7 +411,7 @@ class TableActivity : AppCompatActivity() {
 
             val tableId = if (mtList[editId].id == -1) editId else mtList[editId].id
             table.setData(tableId, data[0], data[1], data[2], data[3])
-            if (saving()) showCard(editId)
+            saving()
 
             if (!tagFilter.any { it } || tagFilter[data[0].toInt()]) {
                 mtList[editId].tag = data[0]
@@ -427,7 +427,6 @@ class TableActivity : AppCompatActivity() {
             }
 
         } else {
-            showCard(editId)
             Toast.makeText(
                 this, getString(R.string.ui_msg_canceled), Toast.LENGTH_SHORT
             ).show()
