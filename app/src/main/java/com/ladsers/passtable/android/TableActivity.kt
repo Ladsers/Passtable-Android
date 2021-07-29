@@ -411,6 +411,7 @@ class TableActivity : AppCompatActivity() {
 
             val tableId = if (mtList[editId].id == -1) editId else mtList[editId].id
             table.setData(tableId, data[0], data[1], data[2], data[3])
+            if (saving()) showCard(editId)
 
             if (!tagFilter.any { it } || tagFilter[data[0].toInt()]) {
                 mtList[editId].tag = data[0]
@@ -425,7 +426,6 @@ class TableActivity : AppCompatActivity() {
                 adapter.notifyItemRangeChanged(editId, adapter.itemCount)
             }
 
-            if (saving()) showCard(editId)
         } else {
             showCard(editId)
             Toast.makeText(
@@ -451,7 +451,8 @@ class TableActivity : AppCompatActivity() {
 
             if (!tagFilter.any { it } || tagFilter[data[0].toInt()]) {
                 val hasPassword = if (data[3].isNotEmpty()) "/yes" else "/no"
-                mtList.add(DataItem(data[0], data[1], data[2], hasPassword, editId))
+                val id = if (!tagFilter.any { it }) -1 else editId
+                mtList.add(DataItem(data[0], data[1], data[2], hasPassword, id))
                 adapter.notifyItemInserted(mtList.lastIndex)
                 binding.rvTable.postDelayed({
                     binding.rvTable.smoothScrollToPosition(mtList.lastIndex)
@@ -502,6 +503,15 @@ class TableActivity : AppCompatActivity() {
 
             val tableId = if (mtList[id].id == -1) id else mtList[id].id
             table.remove(tableId)
+
+            if (mtList[id].id != -1) { // id correction for search result
+                val tl = mtList.toList()
+                for (i in id+1..tl.lastIndex){
+                    mtList[i] =
+                        DataItem(tl[i].tag, tl[i].note, tl[i].login, tl[i].password, tl[i].id - 1)
+                }
+            }
+
             mtList.removeAt(id)
             adapter.notifyItemRemoved(id)
             adapter.notifyItemRangeChanged(id, adapter.itemCount)
