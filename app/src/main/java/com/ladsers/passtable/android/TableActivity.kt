@@ -435,6 +435,10 @@ class TableActivity : AppCompatActivity() {
 
     private fun addItem(){
         val intent = Intent(this, EditActivity::class.java)
+        if (tagFilter.count { it } == 1){
+            intent.putExtra("dataTag", tagFilter.indexOf(true).toString())
+        }
+        if (searchMode) openSearchPanel()
         addActivityResult.launch(intent)
     }
 
