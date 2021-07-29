@@ -23,7 +23,7 @@ class RecentAdapter(
     private val recentDate: MutableList<String>,
     private val recentMps: MutableList<Boolean>,
     private val contextActivity: Context,
-    private val open: (Int, Boolean) -> Unit,
+    private val open: (Int, Int) -> Unit,
     private val popupAction: (Int, Int) -> Unit,
 ) : RecyclerView.Adapter<RecentAdapter.ItemViewHolder>() {
 
@@ -41,7 +41,23 @@ class RecentAdapter(
             val fileName = contextActivity.getFileName(recentUri[position]) ?: "???"
             binding.tvFileName.text = fileName
             binding.tvLastDate.text = getFormattedDate(recentDate[position])
-            binding.clItem.setOnClickListener { open(position, fileName != "???") }
+
+            val gdriveFile: Boolean
+            val gdrivePattern = "content://com.google.android.apps.docs.storage"
+            if (recentUri[position].toString().startsWith(gdrivePattern)) {
+                gdriveFile = true
+                binding.ivGdrive.visibility = View.VISIBLE
+            } else {
+                gdriveFile = false
+                binding.ivGdrive.visibility = View.INVISIBLE
+            }
+
+            val openCode = when (true) {
+                fileName != "???" -> 0
+                fileName == "???" && gdriveFile -> 1
+                else -> 2
+            }
+            binding.clItem.setOnClickListener { open(position, openCode) }
             binding.clItem.setOnLongClickListener { showPopupMenu(it, position) }
         }
     }

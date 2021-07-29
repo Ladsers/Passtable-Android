@@ -3,15 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/btRefresh"
-        android:icon="@drawable/ic_cloud_refresh"
-        android:title="@string/app_bt_refreshList"
-        app:showAsAction="always"
-        android:visible="false"/>
-
-    <item
         android:id="@+id/btSettings"
         android:icon="@drawable/ic_settings"
         android:title="@string/app_bt_settings"
         app:showAsAction="always" />
+
 </menu>

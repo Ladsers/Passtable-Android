@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.provider.DocumentsContract
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.net.toUri
@@ -70,7 +71,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        menu?.findItem(R.id.btRefresh)?.isVisible = checkLostCloudFiles()
         return true
     }
 
@@ -79,10 +79,6 @@ class MainActivity : AppCompatActivity() {
             R.id.btSettings -> {
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
-                true
-            }
-            R.id.btRefresh -> {
-                refreshRecentList()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -129,21 +125,27 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun openRecentFile(id: Int, canBeOpened: Boolean) {
-        if (canBeOpened) {
-            val intent = Intent(this, TableActivity::class.java)
-            intent.putExtra("fileUri", recentUri[id])
-            intent.putExtra("newFile", false)
-            startActivity(intent)
-        } else {
-            val builder = AlertDialog.Builder(this)
-            builder.setMessage(getString(R.string.dlg_err_fileLost))
-            builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ -> }
-            builder.setOnDismissListener {
-                removeFromRecentList(id)
-                //invalidateOptionsMenu() //TODO: remove
+    private fun openRecentFile(id: Int, resCode: Int) {
+        when (resCode) {
+            0 -> { // ok
+                val intent = Intent(this, TableActivity::class.java)
+                intent.putExtra("fileUri", recentUri[id])
+                intent.putExtra("newFile", false)
+                startActivity(intent)
             }
-            builder.show()
+            1 -> { // file from gdisk is lost
+                refreshRecentList()
+                Toast.makeText(
+                    this, getString(R.string.ui_msg_recentFilesUpdated), Toast.LENGTH_SHORT
+                ).show()
+            }
+            2 -> { // local file is lost
+                val builder = AlertDialog.Builder(this)
+                builder.setMessage(getString(R.string.dlg_err_fileLost))
+                builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ -> }
+                builder.setOnDismissListener { removeFromRecentList(id) }
+                builder.show()
+            }
         }
     }
 
@@ -160,14 +162,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkLostCloudFiles(): Boolean {
-        val cloudUriPattern = "content://com.google.android.apps.docs.storage"
-        for (r in recentUri) {
-            if (getFileName(r) == null && r.toString().startsWith(cloudUriPattern)) return true
-        }
-        return false
-    }
-
     private fun refreshRecentList(){
         recentUri.clear()
         recentUri.addAll(RecentFiles.loadUri(this))
@@ -176,7 +170,6 @@ class MainActivity : AppCompatActivity() {
         recentMps.clear()
         recentMps.addAll(RecentFiles.loadMpsEncrypted(this))
         adapter.notifyDataSetChanged()
-        invalidateOptionsMenu()
     }
 
     private fun removeFromRecentList(id: Int){
