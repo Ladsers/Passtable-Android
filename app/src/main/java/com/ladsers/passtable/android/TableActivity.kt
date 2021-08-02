@@ -2,10 +2,7 @@ package com.ladsers.passtable.android
 
 import DataItem
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -29,7 +26,6 @@ import com.ladsers.passtable.android.databinding.DialogAskpasswordBinding
 import com.ladsers.passtable.android.databinding.DialogItemBinding
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.lang.Exception
 
 
 class TableActivity : AppCompatActivity() {
@@ -55,6 +51,8 @@ class TableActivity : AppCompatActivity() {
     private var overlayCard = false
     private var overlayRmWin = false
 
+    private var quickView = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTableBinding.inflate(layoutInflater)
@@ -72,30 +70,38 @@ class TableActivity : AppCompatActivity() {
         ) { openFileExplorer() }
         turnOnPanel()
 
-        val uri = intent.getParcelableExtra<Uri>("fileUri")
-        if (uri == null) showErrDialog(getString(R.string.dlg_err_uriIsNull))
-        else {
-            mainUri = uri
-            binding.toolbar.root.title = getFileName(mainUri) ?: getString(R.string.app_info_appName)
-            binding.toolbar.root.navigationIcon = ContextCompat.getDrawable(
-                this,
-                R.drawable.ic_close
-            )
-            setSupportActionBar(binding.toolbar.root)
-            binding.toolbar.root.setNavigationOnClickListener { finish() }
-
-            try {
-                val inputStream = contentResolver.openInputStream(mainUri)
-                cryptData = BufferedReader(InputStreamReader(inputStream)).readText()
-            } catch (e: Exception) {
-                RecentFiles.remove(this, mainUri)
-                showErrDialog(getString(R.string.dlg_err_unableToOpenFile))
-                return
+        var uri = intent.getParcelableExtra<Uri>("fileUri")
+        intent.action?.let {
+            if (it == Intent.ACTION_VIEW && intent.scheme == ContentResolver.SCHEME_CONTENT) {
+                uri = intent.data
+                quickView = true
             }
-
-            val newFile = intent.getBooleanExtra("newFile", false)
-            if (newFile) askPassword(isNewPassword = true) else checkFileProcess()
         }
+        if (uri == null) {
+            showErrDialog(getString(R.string.dlg_err_uriIsNull))
+            return
+        }
+
+        mainUri = uri!!
+        binding.toolbar.root.title = getFileName(mainUri) ?: getString(R.string.app_info_appName)
+        binding.toolbar.root.navigationIcon = ContextCompat.getDrawable(
+            this,
+            R.drawable.ic_close
+        )
+        setSupportActionBar(binding.toolbar.root)
+        binding.toolbar.root.setNavigationOnClickListener { finish() }
+
+        try {
+            val inputStream = contentResolver.openInputStream(mainUri)
+            cryptData = BufferedReader(InputStreamReader(inputStream)).readText()
+        } catch (e: Exception) {
+            RecentFiles.remove(this, mainUri)
+            showErrDialog(getString(R.string.dlg_err_unableToOpenFile))
+            return
+        }
+
+        val newFile = intent.getBooleanExtra("newFile", false)
+        if (newFile) askPassword(isNewPassword = true) else checkFileProcess()
     }
 
     override fun onBackPressed() {
@@ -159,10 +165,12 @@ class TableActivity : AppCompatActivity() {
                 showErrDialog(getString(R.string.dlg_err_corruptedFile))
             }
             else -> {
-                RecentFiles.add(this, mainUri)
-                val mpEncrypted = RecentFiles.getLastMpEncrypted(this)
-                if (mpEncrypted.isNullOrBlank()) askPassword()
-                else biometricAuth.startAuth(mpEncrypted)
+                if (!quickView) {
+                    RecentFiles.add(this, mainUri)
+                    val mpEncrypted = RecentFiles.getLastMpEncrypted(this)
+                    if (mpEncrypted.isNullOrBlank()) askPassword()
+                    else biometricAuth.startAuth(mpEncrypted)
+                } else askPassword(canRememberPass = false)
             }
         }
     }

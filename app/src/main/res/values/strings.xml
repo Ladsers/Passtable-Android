@@ -13,6 +13,7 @@
         <string name="app_com_passwordSecret">********</string>
         <string name="app_com_itemHasNoNote">&#60; no note &#62;</string>
         <string name="app_com_fileExtension">.passtable</string>
+        <string name="app_com_fileLabel">Passtable File</string>
         <!-- end! -->
 
         <!-- bt (button) -->

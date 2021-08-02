@@ -11,11 +11,21 @@
         android:theme="@style/Theme.Passtable">
         <activity android:name=".SettingsActivity" />
         <activity android:name=".EditActivity" />
-        <activity android:name=".TableActivity" />
+        <activity android:name=".TableActivity">
+            <intent-filter android:label='@string/app_com_fileLabel' >
+                <action android:name='android.intent.action.VIEW' />
+                <category android:name='android.intent.category.DEFAULT' />
+
+                <data
+                    android:host='*'
+                    android:mimeType="application/octet-stream"
+                    android:pathPattern=".*\\.passtable"
+                    android:scheme="content" />
+            </intent-filter>
+        </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
