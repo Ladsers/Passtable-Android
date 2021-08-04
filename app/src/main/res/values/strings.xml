@@ -53,9 +53,17 @@
         <string name="ui_ct_addItem">Add item</string>
         <string name="ui_ct_settings">Settings</string>
         <string name="ui_ct_searchHint">Search by notes and logins</string>
-        <string name="ui_ct_ui">UI</string>
-        <string name="ui_ct_security">Security</string>
-        <string name="ui_ct_recentFiles">Recent files</string>
+        <string name="ui_ct_showPasswordInCard">Show the password in the card</string>
+        <string name="ui_ct_checkboxRememberPasswordByDefault">The checkbox \"remember password\" is checked by default</string>
+        <string name="ui_ct_rememberRecentFiles">Remember recently opened files</string>
+        <string name="ui_ct_clearRecentFiles">Clear the list of recent files</string>
+        <string name="ui_ct_clearRecentFilesAndForgetPasswords">Clear the list of recent files and forget all passwords</string>
+        <string name="ui_ct_forgetPasswords">Forget all passwords</string>
+        <string name="ui_ct_lockFile">Lock the file</string>
+        <string name="ui_ct_lockTimePeriod">After the specified time period after minimizing the app</string>
+        <string name="ui_ct_lockMinAndLockPhone">When minimizing the app or locking the phone</string>
+        <string name="ui_ct_lockDoNotLock">Do not lock</string>
+        <string name="ui_ct_timePeriodForLocking">Time period for locking (seconds):</string>
         <!-- end! -->
 
         <!-- msg (message) -->
@@ -68,6 +76,7 @@
         <string name="ui_msg_fingerprintErr">There are problems with the fingerprint sensor. Try again later.</string>
         <string name="ui_msg_fingerprintActivated">Login by fingerprint was activated</string>
         <string name="ui_msg_recentFilesUpdated">The list of recent files has been updated</string>
+        <string name="ui_msg_done">Done</string>
         <!-- end! -->
 
     <!-- END -->
@@ -111,6 +120,11 @@
 
         <!-- msg (message) -->
         <string name="dlg_msg_permanentRemoval">The entry will be permanently deleted</string>
+        <string name="dlg_msg_disableRememberingRecentFiles">This action will cause the list of recent files to be cleared</string>
+        <string name="dlg_msg_disableRememberingRecentFilesAndPasswords">This action will cause the list of recent files to be cleared and all passwords will be forgotten</string>
+        <string name="dlg_msg_recentFilesWillBeCleared">The list of recent files will be cleared</string>
+        <string name="dlg_msg_recentFilesAndPasswordsWillBeCleared">The list of recent files will be cleared and all passwords will be forgotten</string>
+        <string name="dlg_msg_passwordsWillBeForgotten">All passwords will be forgotten</string>
         <!-- end! -->
 
     <!-- END -->

@@ -70,6 +70,27 @@ object RecentFiles {
         return true
     }
 
+    fun clear(context: Context?): Boolean {
+        val shPref = context?.getSharedPreferences("recentFiles", Context.MODE_PRIVATE)
+            ?: return false
+
+        with(shPref.edit()) {
+            putString("uri", "")
+            putString("date", "")
+            putString("mpEncrypted", "")
+            apply()
+        }
+        return true
+    }
+
+    fun isNotEmpty(context: Context?): Boolean {
+        val shPref = context?.getSharedPreferences("recentFiles", Context.MODE_PRIVATE)
+            ?: return false
+
+        val strUri = shPref.getString("uri", "")
+        return !strUri.isNullOrEmpty()
+    }
+
     fun loadUri(context: Context?): MutableList<Uri> {
         val shPref = context?.getSharedPreferences("recentFiles", Context.MODE_PRIVATE)
             ?: return mutableListOf()
@@ -106,19 +127,6 @@ object RecentFiles {
         val strMpEncrypted = shPref.getString("mpEncrypted", "")
         val mpEncryptedList = strMpEncrypted!!.split("|").toMutableList()
         return mpEncryptedList[mpEncryptedList.lastIndex]
-    }
-
-    fun clear(context: Context?): Boolean {
-        val shPref = context?.getSharedPreferences("recentFiles", Context.MODE_PRIVATE)
-            ?: return false
-
-        with(shPref.edit()) {
-            putString("uri", "")
-            putString("date", "")
-            putString("mpEncrypted", "")
-            apply()
-        }
-        return true
     }
 
     fun forgetMpEncrypted(context: Context?, data: Uri): Boolean {
