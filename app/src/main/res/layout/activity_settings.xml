@@ -97,6 +97,18 @@
                     android:text="@string/ui_ct_lockDoNotLock" />
             </RadioGroup>
 
+            <CheckBox
+                android:id="@+id/cbLockAllowWhenEditing"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/ui_ct_lockAllowWhenEditing"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rbLockMode" />
+
             <TextView
                 android:id="@+id/tvLockSecs"
                 android:layout_width="0dp"
@@ -107,7 +119,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/etLockSecs"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rbLockMode" />
+                app:layout_constraintTop_toBottomOf="@+id/cbLockAllowWhenEditing" />
 
             <com.ladsers.passtable.android.EditTextLockSecs
                 android:id="@+id/etLockSecs"
@@ -119,7 +131,7 @@
                 android:inputType="number"
                 android:maxLength="3"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rbLockMode" />
+                app:layout_constraintTop_toBottomOf="@+id/cbLockAllowWhenEditing" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/swRememberRecentFiles"

@@ -51,6 +51,11 @@ class SettingsActivity : AppCompatActivity() {
             1 -> binding.rbLockModeAlways.isChecked = true
             2 -> binding.rbLockModeNever.isChecked = true
         }
+
+        if (lockMode == 2) binding.cbLockAllowWhenEditing.isEnabled = false
+        binding.cbLockAllowWhenEditing.isChecked =
+            ParamStorage.getBool(this, Param.LOCK_ALLOW_WHEN_EDITING)
+
         if (lockMode != 0) binding.etLockSecs.isEnabled = false
         binding.etLockSecs.setText(ParamStorage.getInt(this, Param.LOCK_SECS).toString())
 
@@ -81,6 +86,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.rbLockModeTimePeriod.setOnClickListener {
             if (ParamStorage.getInt(this, Param.LOCK_MODE) != 0) {
                 ParamStorage.set(this, Param.LOCK_MODE, 0)
+                binding.cbLockAllowWhenEditing.isEnabled = true
                 binding.etLockSecs.isEnabled = true
                 binding.etLockSecs.clearFocus()
             }
@@ -88,14 +94,20 @@ class SettingsActivity : AppCompatActivity() {
 
         binding.rbLockModeAlways.setOnClickListener {
             ParamStorage.set(this, Param.LOCK_MODE, 1)
+            binding.cbLockAllowWhenEditing.isEnabled = true
             binding.etLockSecs.isEnabled = false
             binding.etLockSecs.setText(ParamStorage.getInt(this, Param.LOCK_SECS).toString())
         }
 
         binding.rbLockModeNever.setOnClickListener {
             ParamStorage.set(this, Param.LOCK_MODE, 2)
+            binding.cbLockAllowWhenEditing.isEnabled = false
             binding.etLockSecs.isEnabled = false
             binding.etLockSecs.setText(ParamStorage.getInt(this, Param.LOCK_SECS).toString())
+        }
+
+        binding.cbLockAllowWhenEditing.setOnCheckedChangeListener { _, isChecked ->
+            ParamStorage.set(this, Param.LOCK_ALLOW_WHEN_EDITING, isChecked)
         }
 
         etLockSecsInit()

@@ -14,6 +14,7 @@ enum class Param(
     CHECKBOX_REMEMBER_PASSWORD_BY_DEFAULT("checkboxRememberPasswordByDefault", defBool = true),
     LOCK_MODE("lockMode", defInt = 0),
     LOCK_SECS("lockSecs", defInt = 120),
+    LOCK_ALLOW_WHEN_EDITING("lockAllowWhenEditing", defBool = true),
     REMEMBER_RECENT_FILES("rememberRecentFiles", defBool = true)
 }
 

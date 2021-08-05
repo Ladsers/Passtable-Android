@@ -8,7 +8,6 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
@@ -177,7 +176,7 @@ class EditActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
 
-        if (!blockClosing) {
+        if (!blockClosing && ParamStorage.getBool(this, Param.LOCK_ALLOW_WHEN_EDITING)) {
             isBackgrounded = true
             backgroundSecs = Date().time / 1000
         }
