@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import com.ladsers.passtable.android.databinding.ActivityEditBinding
+import java.util.*
 
 
 class EditActivity : AppCompatActivity() {
@@ -20,6 +21,9 @@ class EditActivity : AppCompatActivity() {
     private var editMode = false
     private lateinit var selectedTag: String
     private var blockClosing = false
+
+    private var isBackgrounded = false
+    private var backgroundSecs = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -168,5 +172,38 @@ class EditActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         if (!blockClosing) super.onBackPressed()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        if (!blockClosing) {
+            isBackgrounded = true
+            backgroundSecs = Date().time / 1000
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (isBackgrounded) {
+            isBackgrounded = false
+
+            when (ParamStorage.getInt(this, Param.LOCK_MODE)) {
+                0 -> {
+                    val secs = Date().time / 1000
+                    val allowedTime = ParamStorage.getInt(this, Param.LOCK_SECS)
+                    if (secs - backgroundSecs >= allowedTime) lockFile()
+                }
+                1 -> lockFile()
+            }
+        }
+    }
+
+    private fun lockFile() {
+        val intent = Intent()
+        intent.putExtra("needToLock", true)
+        setResult(RESULT_OK, intent)
+        finish()
     }
 }

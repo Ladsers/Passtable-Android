@@ -26,6 +26,7 @@ import com.ladsers.passtable.android.databinding.DialogAskpasswordBinding
 import com.ladsers.passtable.android.databinding.DialogItemBinding
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.util.*
 
 
 class TableActivity : AppCompatActivity() {
@@ -52,6 +53,10 @@ class TableActivity : AppCompatActivity() {
     private var overlayRmWin = false
 
     private var quickView = false
+
+    private var isBackgrounded = false
+    private var disableLockFileSystem = true
+    private var backgroundSecs = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -165,7 +170,7 @@ class TableActivity : AppCompatActivity() {
                 showErrDialog(getString(R.string.dlg_err_corruptedFile))
             }
             else -> {
-                if (!quickView) {
+                if (!quickView && ParamStorage.getBool(this, Param.REMEMBER_RECENT_FILES)) {
                     RecentFiles.add(this, mainUri)
                     val mpEncrypted = RecentFiles.getLastMpEncrypted(this)
                     if (mpEncrypted.isNullOrBlank()) askPassword()
@@ -207,12 +212,11 @@ class TableActivity : AppCompatActivity() {
         rememberMasterPass = false
         val biometricAuthAvailable = biometricAuth.checkAvailability()
         if (!canRememberPass) canRememberMasterPass = false
+        binding.cbRememberPass.isChecked =
+            ParamStorage.getBool(this, Param.CHECKBOX_REMEMBER_PASSWORD_BY_DEFAULT)
         binding.cbRememberPass.visibility =
             if (biometricAuthAvailable && canRememberMasterPass) View.VISIBLE else View.GONE
-        if (isInvalidPassword) {
-            binding.cbRememberPass.isChecked = false
-            binding.tvInvalidPassword.visibility = View.VISIBLE
-        }
+        if (isInvalidPassword) binding.tvInvalidPassword.visibility = View.VISIBLE
         var closedViaButton = false
         val posBtnText = if (isNewPassword) getString(R.string.app_bt_save)
         else getString(R.string.app_bt_ok)
@@ -225,8 +229,9 @@ class TableActivity : AppCompatActivity() {
             }
             else {
                 if (saving(newPath.toString(), pass)) {
-                    RecentFiles.add(this, newPath)
-                    this.binding.toolbar.root.title = getFileName(newPath)
+                    mainUri = newPath
+                    RecentFiles.add(this, mainUri)
+                    this.binding.toolbar.root.title = getFileName(mainUri)
                 }
             }
             closedViaButton = true
@@ -234,8 +239,9 @@ class TableActivity : AppCompatActivity() {
         newPath?.let {
             builder.setNeutralButton(getString(R.string.app_bt_doNotChangePassword)) { _, _ ->
                 if (saving(it.toString())) {
-                    RecentFiles.add(this, newPath)
-                    this.binding.toolbar.root.title = getFileName(it)
+                    mainUri = it
+                    RecentFiles.add(this, mainUri)
+                    this.binding.toolbar.root.title = getFileName(mainUri)
                 }
                 closedViaButton = true
             }
@@ -276,6 +282,7 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun loginSucceeded() {
+        disableLockFileSystem = false
         binding.rvTable.layoutManager = LinearLayoutManager(
             this,
             LinearLayoutManager.VERTICAL,
@@ -321,7 +328,11 @@ class TableActivity : AppCompatActivity() {
             binding.btCopyLogin.visibility = View.INVISIBLE
         }
 
-        if (p.isNotEmpty()) binding.tbPassword.text = getString(R.string.app_com_passwordSecret)
+        if (p.isNotEmpty()) {
+            binding.tbPassword.text =
+                if (ParamStorage.getBool(this, Param.SHOW_PASSWORD_IN_CARD)) p
+                else getString(R.string.app_com_passwordSecret)
+        }
         else {
             binding.tbPassword.visibility = View.INVISIBLE
             binding.btCopyPassword.visibility = View.INVISIBLE
@@ -403,6 +414,10 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
+    private fun needToLock(intent: Intent?): Boolean {
+        return (intent?.getBooleanExtra("needToLock", false)) ?: return false
+    }
+
     private fun editItem(blockClosing: Boolean = false) {
         val tableId = if (mtList[editId].id == -1) editId else mtList[editId].id
         val intent = Intent(this, EditActivity::class.java)
@@ -413,6 +428,7 @@ class TableActivity : AppCompatActivity() {
 
         intent.putExtra("modeEdit", true)
         intent.putExtra("blockClosing", blockClosing)
+        disableLockFileSystem = true
         editActivityResult.launch(intent)
     }
 
@@ -420,7 +436,16 @@ class TableActivity : AppCompatActivity() {
         ActivityResultContracts
             .StartActivityForResult()
     ) { result ->
+        disableLockFileSystem = false
         if (result.resultCode == Activity.RESULT_OK) {
+            if (needToLock(result.data)){
+                Toast.makeText(
+                    this, getString(R.string.ui_msg_canceled), Toast.LENGTH_SHORT
+                ).show()
+                lockFile()
+                return@registerForActivityResult
+            }
+
             val data = parseDataFromEditActivity(result.data) ?: return@registerForActivityResult
 
             val tableId = if (mtList[editId].id == -1) editId else mtList[editId].id
@@ -453,6 +478,7 @@ class TableActivity : AppCompatActivity() {
             intent.putExtra("dataTag", tagFilter.indexOf(true).toString())
         }
         if (searchMode) openSearchPanel()
+        disableLockFileSystem = true
         addActivityResult.launch(intent)
     }
 
@@ -460,7 +486,16 @@ class TableActivity : AppCompatActivity() {
         ActivityResultContracts
             .StartActivityForResult()
     ) { result ->
+        disableLockFileSystem = false
         if (result.resultCode == Activity.RESULT_OK) {
+            if (needToLock(result.data)){
+                Toast.makeText(
+                    this, getString(R.string.ui_msg_canceled), Toast.LENGTH_SHORT
+                ).show()
+                lockFile()
+                return@registerForActivityResult
+            }
+
             val data = parseDataFromEditActivity(result.data) ?: return@registerForActivityResult
 
             table.add(data[0], data[1], data[2], data[3])
@@ -668,6 +703,7 @@ class TableActivity : AppCompatActivity() {
         }
         intent.putExtra("android.content.extra.SHOW_ADVANCED", true)
 
+        disableLockFileSystem = true
         explorerResult.launch(intent)
     }
 
@@ -675,6 +711,7 @@ class TableActivity : AppCompatActivity() {
         ActivityResultContracts
             .StartActivityForResult()
     ) { result ->
+        disableLockFileSystem = false
         if (result.resultCode != Activity.RESULT_OK) {
             if (!saveAsMode) saving() // if the user canceled the creation of another file, return err message again.
             return@registerForActivityResult
@@ -688,13 +725,15 @@ class TableActivity : AppCompatActivity() {
 
         if (saveAsMode) askPassword(newPath = file, canRememberPass = false) else {
             if (saving(file.toString())) {
-                RecentFiles.add(this, file)
-                this.binding.toolbar.root.title = getFileName(file)
+                mainUri = file
+                RecentFiles.add(this, mainUri)
+                this.binding.toolbar.root.title = getFileName(mainUri)
             }
         }
     }
 
     private fun fixSaveErrEncryption(errCode: Int) {
+        disableLockFileSystem = true
         mtList.clear()
         mtList.addAll(table.getData())
         adapter.notifyDataSetChanged()
@@ -713,6 +752,7 @@ class TableActivity : AppCompatActivity() {
             mtList.clear()
             mtList.addAll(table.getData())
             adapter.notifyDataSetChanged()
+            disableLockFileSystem = false
         }
         builder.show().apply {
             if (afterRemoval) this.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
@@ -720,6 +760,7 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun fixSaveErrFileCorrupted() {
+        disableLockFileSystem = true
         val builder = AlertDialog.Builder(this)
         builder.setMessage(getString(R.string.dlg_err_saveWriting))
         builder.setTitle(getString(R.string.dlg_title_saveFailed))
@@ -754,5 +795,40 @@ class TableActivity : AppCompatActivity() {
             }
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        if (!disableLockFileSystem) {
+            isBackgrounded = true
+            backgroundSecs = Date().time / 1000
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (isBackgrounded) {
+            isBackgrounded = false
+
+            when (ParamStorage.getInt(this, Param.LOCK_MODE)) {
+                0 -> {
+                    val secs = Date().time / 1000
+                    val allowedTime = ParamStorage.getInt(this, Param.LOCK_SECS)
+                    if (secs - backgroundSecs >= allowedTime) lockFile()
+                }
+                1 -> lockFile()
+            }
+        }
+    }
+
+    private fun lockFile() {
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+        intent.putExtra("fileUri", mainUri)
+        intent.putExtra("newFile", false)
+        finish()
+        startActivity(intent)
     }
 }
