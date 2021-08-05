@@ -125,6 +125,7 @@ class TableActivity : AppCompatActivity() {
                 true
             }
             R.id.btSaveAs -> {
+                disableLockFileSystem = true
                 saveAsMode = true
                 fileCreator.askName(getFileName(mainUri))
                 true
@@ -136,7 +137,7 @@ class TableActivity : AppCompatActivity() {
     private fun creationFileProcess(masterPass: String){
         RecentFiles.add(this, mainUri)
         table = DataTableAndroid(mainUri.toString(), masterPass, cryptData, contentResolver)
-        saving(firstSave = true)
+        if (!saving(firstSave = true)) return
         if (rememberMasterPass) biometricAuth.activateAuth(masterPass)
         else loginSucceeded()
     }
@@ -229,6 +230,7 @@ class TableActivity : AppCompatActivity() {
             }
             else {
                 if (saving(newPath.toString(), pass)) {
+                    disableLockFileSystem = false
                     mainUri = newPath
                     RecentFiles.add(this, mainUri)
                     this.binding.toolbar.root.title = getFileName(mainUri)
@@ -239,6 +241,7 @@ class TableActivity : AppCompatActivity() {
         newPath?.let {
             builder.setNeutralButton(getString(R.string.app_bt_doNotChangePassword)) { _, _ ->
                 if (saving(it.toString())) {
+                    disableLockFileSystem = false
                     mainUri = it
                     RecentFiles.add(this, mainUri)
                     this.binding.toolbar.root.title = getFileName(mainUri)
@@ -702,8 +705,6 @@ class TableActivity : AppCompatActivity() {
             intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, docsDir)
         }
         intent.putExtra("android.content.extra.SHOW_ADVANCED", true)
-
-        disableLockFileSystem = true
         explorerResult.launch(intent)
     }
 
@@ -711,7 +712,6 @@ class TableActivity : AppCompatActivity() {
         ActivityResultContracts
             .StartActivityForResult()
     ) { result ->
-        disableLockFileSystem = false
         if (result.resultCode != Activity.RESULT_OK) {
             if (!saveAsMode) saving() // if the user canceled the creation of another file, return err message again.
             return@registerForActivityResult
@@ -725,6 +725,7 @@ class TableActivity : AppCompatActivity() {
 
         if (saveAsMode) askPassword(newPath = file, canRememberPass = false) else {
             if (saving(file.toString())) {
+                disableLockFileSystem = false
                 mainUri = file
                 RecentFiles.add(this, mainUri)
                 this.binding.toolbar.root.title = getFileName(mainUri)
@@ -824,8 +825,6 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun lockFile() {
-        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
         intent.putExtra("fileUri", mainUri)
         intent.putExtra("newFile", false)
         finish()
