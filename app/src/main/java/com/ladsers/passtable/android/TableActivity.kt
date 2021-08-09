@@ -22,7 +22,6 @@ import androidx.core.net.toUri
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
-import com.ladsers.passtable.android.databinding.DialogAskpasswordBinding
 import com.ladsers.passtable.android.databinding.DialogItemBinding
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -39,6 +38,7 @@ class TableActivity : AppCompatActivity() {
     private lateinit var adapter: TableAdapter
     private lateinit var mtList: MutableList<DataItem>
     private lateinit var biometricAuth: BiometricAuth
+    private lateinit var mpRequester: MpRequester
     private lateinit var fileCreator: FileCreator
 
     private var editId = -1
@@ -46,8 +46,6 @@ class TableActivity : AppCompatActivity() {
     private var searchMode = false
     private var saveAsMode = false
     private var afterRemoval = false
-    private var rememberMasterPass = false
-    private var canRememberMasterPass = true
 
     private var overlayCard = false
     private var overlayRmWin = false
@@ -67,7 +65,19 @@ class TableActivity : AppCompatActivity() {
             this,
             { loginSucceeded() },
             { mp -> openProcess(mp) },
-            { askPassword(canRememberPass = false) })
+            { mpRequester.startRequest(mainUri, false, canRememberPass = false) })
+        mpRequester = MpRequester(
+            this,
+            contentResolver,
+            this,
+            window,
+            biometricAuth,
+            { password -> creationFileProcess(password) },
+            { password -> openProcess(password) },
+            { newPath -> saving(newPath) },
+            { newPath, newPass -> saving(newPath, newPass) },
+            { newPath -> completeSavingToOtherFile(newPath) }
+        )
         fileCreator = FileCreator(
             this,
             contentResolver,
@@ -106,7 +116,7 @@ class TableActivity : AppCompatActivity() {
         }
 
         val newFile = intent.getBooleanExtra("newFile", false)
-        if (newFile) askPassword(isNewPassword = true) else checkFileProcess()
+        if (newFile) mpRequester.startRequest(mainUri, true) else checkFileProcess()
     }
 
     override fun onBackPressed() {
@@ -138,7 +148,7 @@ class TableActivity : AppCompatActivity() {
         RecentFiles.add(this, mainUri)
         table = DataTableAndroid(mainUri.toString(), masterPass, cryptData, contentResolver)
         if (!saving(firstSave = true)) return
-        if (rememberMasterPass) biometricAuth.activateAuth(masterPass)
+        if (mpRequester.isNeedToRemember()) biometricAuth.activateAuth(masterPass)
         else loginSucceeded()
     }
 
@@ -146,10 +156,10 @@ class TableActivity : AppCompatActivity() {
         table = DataTableAndroid(mainUri.toString(), masterPass, cryptData, contentResolver)
         when (table.fill()) {
             0 -> {
-                if (rememberMasterPass) biometricAuth.activateAuth(masterPass)
+                if (mpRequester.isNeedToRemember()) biometricAuth.activateAuth(masterPass)
                 else loginSucceeded()
             }
-            3 -> askPassword(true)
+            3 -> mpRequester.startRequest(mainUri, isFileCreation = false, showErrInvalidPass = true)
         }
     }
 
@@ -174,9 +184,9 @@ class TableActivity : AppCompatActivity() {
                 if (!quickView && ParamStorage.getBool(this, Param.REMEMBER_RECENT_FILES)) {
                     RecentFiles.add(this, mainUri)
                     val mpEncrypted = RecentFiles.getLastMpEncrypted(this)
-                    if (mpEncrypted.isNullOrBlank()) askPassword()
+                    if (mpEncrypted.isNullOrBlank()) mpRequester.startRequest(mainUri, false)
                     else biometricAuth.startAuth(mpEncrypted)
-                } else askPassword(canRememberPass = false)
+                } else mpRequester.startRequest(mainUri, false, canRememberPass = false)
             }
         }
     }
@@ -196,92 +206,6 @@ class TableActivity : AppCompatActivity() {
         builder.setCancelable(false)
         builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ -> finish() }
         builder.show()
-    }
-
-    private fun askPassword(
-        isInvalidPassword: Boolean = false,
-        newPath: Uri? = null,
-        isNewPassword: Boolean = false,
-        canRememberPass: Boolean = true
-    ) {
-        val builder = AlertDialog.Builder(this)
-        val binding = DialogAskpasswordBinding.inflate(layoutInflater)
-        builder.setView(binding.root)
-        val title = if (newPath == null) getString(R.string.dlg_title_enterMasterPassword)
-        else getString(R.string.dlg_title_enterNewMasterPassword)
-        builder.setTitle(title)
-        rememberMasterPass = false
-        val biometricAuthAvailable = biometricAuth.checkAvailability()
-        if (!canRememberPass) canRememberMasterPass = false
-        binding.cbRememberPass.isChecked =
-            ParamStorage.getBool(this, Param.CHECKBOX_REMEMBER_PASSWORD_BY_DEFAULT)
-        binding.cbRememberPass.visibility =
-            if (biometricAuthAvailable && canRememberMasterPass) View.VISIBLE else View.GONE
-        if (isInvalidPassword) binding.tvInvalidPassword.visibility = View.VISIBLE
-        var closedViaButton = false
-        val posBtnText = if (isNewPassword) getString(R.string.app_bt_save)
-        else getString(R.string.app_bt_ok)
-        builder.setPositiveButton(posBtnText) { _, _ ->
-            if (biometricAuthAvailable && canRememberMasterPass) rememberMasterPass =
-                binding.cbRememberPass.isChecked
-            val pass = binding.etPassword.text.toString()
-            if (newPath == null) {
-                if (isNewPassword) creationFileProcess(pass) else openProcess(pass)
-            }
-            else {
-                if (saving(newPath.toString(), pass)) {
-                    disableLockFileSystem = false
-                    mainUri = newPath
-                    RecentFiles.add(this, mainUri)
-                    this.binding.toolbar.root.title = getFileName(mainUri)
-                }
-            }
-            closedViaButton = true
-        }
-        newPath?.let {
-            builder.setNeutralButton(getString(R.string.app_bt_doNotChangePassword)) { _, _ ->
-                if (saving(it.toString())) {
-                    disableLockFileSystem = false
-                    mainUri = it
-                    RecentFiles.add(this, mainUri)
-                    this.binding.toolbar.root.title = getFileName(mainUri)
-                }
-                closedViaButton = true
-            }
-        }
-        builder.setOnDismissListener { if (!closedViaButton){
-            if (newPath == null) {
-                if (isNewPassword) {
-                    DocumentsContract.deleteDocument(contentResolver, mainUri)
-                    Toast.makeText(
-                        this, getString(R.string.ui_msg_canceled), Toast.LENGTH_SHORT
-                    ).show()
-                }
-                finish()
-            }
-            else {
-                DocumentsContract.deleteDocument(contentResolver, newPath)
-                Toast.makeText(
-                    this, getString(R.string.ui_msg_canceled), Toast.LENGTH_SHORT
-                ).show()
-            }
-        } }
-
-        builder.show().apply {
-            this.setCanceledOnTouchOutside(false)
-
-            this.window!!.setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
-            )
-            binding.etPassword.requestFocus()
-
-            val button = this.getButton(AlertDialog.BUTTON_POSITIVE)
-            button.isEnabled = false
-            binding.etPassword.doAfterTextChanged { x ->
-                button.isEnabled = x.toString().isNotEmpty()
-            }
-        }
-
     }
 
     private fun loginSucceeded() {
@@ -723,7 +647,7 @@ class TableActivity : AppCompatActivity() {
 
         val file = fileCreator.createFile(tree)
 
-        if (saveAsMode) askPassword(newPath = file, canRememberPass = false) else {
+        if (saveAsMode) mpRequester.forNewFileRequest(file) else {
             if (saving(file.toString())) {
                 disableLockFileSystem = false
                 mainUri = file
@@ -731,6 +655,13 @@ class TableActivity : AppCompatActivity() {
                 this.binding.toolbar.root.title = getFileName(mainUri)
             }
         }
+    }
+
+    private fun completeSavingToOtherFile(newPath: Uri){
+        disableLockFileSystem = false
+        mainUri = newPath
+        RecentFiles.add(this, mainUri)
+        this.binding.toolbar.root.title = getFileName(mainUri)
     }
 
     private fun fixSaveErrEncryption(errCode: Int) {
