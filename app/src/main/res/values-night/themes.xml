@@ -4,19 +4,31 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_200</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorOnPrimary">@color/textPrimaryLight</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">?toolbarBackground</item>
         <!-- Customize your theme here. -->
         <item name="android:fontFamily">@font/manrope</item>
+        <item name="android:textColor">@color/textPrimaryDark</item>
+        <item name="android:windowBackground">@color/black</item>
+        <item name="toolbarBackground">@color/grayOverlay</item>
+        <item name="overlayBackground">@color/grayOverlay</item>
+        <item name="iconTint">@color/white</item>
+        <item name="panelTableBackground">@color/tablePanelDark</item>
     </style>
 
     <style name="PopupMenuCustomPos" parent="@style/Widget.AppCompat.PopupMenu">
+        <item name="background">@color/black</item>
         <item name="android:dropDownHorizontalOffset">16dp</item>
         <item name="android:dropDownVerticalOffset">-10dp</item>
+    </style>
+
+    <style name="ToolbarTint" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="tint">?iconTint</item>
+    </style>
+
+    <style name="ToolbarTitle" parent="@style/Base.TextAppearance.AppCompat.Title">
+        <item name="fontFamily">@font/manrope_semibold</item>
+        <item name="android:textSize">20sp</item>
     </style>
 </resources>

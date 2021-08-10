@@ -3,6 +3,8 @@ package com.ladsers.passtable.android
 import android.app.Activity
 import android.content.ContentResolver
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.provider.DocumentsContract
 import android.text.Editable
@@ -42,7 +44,7 @@ class MpRequester(
         val builder = AlertDialog.Builder(context)
         val binding = DialogAskpasswordBinding.inflate(window.layoutInflater)
         builder.setView(binding.root)
-        builder.setTitle(context.getString(R.string.dlg_title_enterMasterPassword))
+        binding.tvTitle.text = context.getString(R.string.dlg_title_enterMasterPassword)
 
         rememberMasterPass = false
         val biometricAuthAvailable = biometricAuth.checkAvailability()
@@ -89,7 +91,7 @@ class MpRequester(
         val builder = AlertDialog.Builder(context)
         val binding = DialogAskpasswordBinding.inflate(window.layoutInflater)
         builder.setView(binding.root)
-        builder.setTitle(context.getString(R.string.dlg_title_enterNewMasterPassword))
+        binding.tvTitle.text = context.getString(R.string.dlg_title_enterNewMasterPassword)
         binding.cbRememberPass.visibility = View.GONE
 
         var closedViaButton = false
@@ -123,6 +125,7 @@ class MpRequester(
     fun isNeedToRemember() = rememberMasterPass
 
     private fun setupDialog(alertDialog: AlertDialog){
+        alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         alertDialog.setCanceledOnTouchOutside(false)
         alertDialog.window!!.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE

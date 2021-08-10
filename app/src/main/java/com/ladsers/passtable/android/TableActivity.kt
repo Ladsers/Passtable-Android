@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
 import com.ladsers.passtable.android.databinding.DialogItemBinding
 import java.io.BufferedReader
@@ -215,6 +216,13 @@ class TableActivity : AppCompatActivity() {
             LinearLayoutManager.VERTICAL,
             false
         )
+        binding.rvTable.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                binding.toolbar.root.elevation =
+                    if (!recyclerView.canScrollVertically(-1)) 0f else 7f
+            }
+        })
 
         mtList = table.getData()
         adapter = TableAdapter(mtList, { id -> if (!overlayCard) showCard(id) },

@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.ladsers.passtable.android.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -49,6 +50,13 @@ class MainActivity : AppCompatActivity() {
             LinearLayoutManager.VERTICAL,
             false
         )
+        binding.rvRecent.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                binding.toolbar.root.elevation =
+                    if (!recyclerView.canScrollVertically(-1)) 0f else 7f
+            }
+        })
         recentUri = mutableListOf()
         recentDate = mutableListOf()
         recentMps = mutableListOf()

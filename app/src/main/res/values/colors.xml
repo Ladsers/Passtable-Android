@@ -7,7 +7,13 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="grayOverlay">#121212</color>
 
+    <color name="textPrimaryLight">#3F3F3F</color>
+    <color name="textSecondaryLight">#B3B3B3</color>
+    <color name="iconTintLight">#616161</color>
+    <color name="textPrimaryDark">#FFFFFF</color>
+    <color name="textSecondaryDark">#757575</color>
 
     <color name="tagNone">#00000000</color>
     <color name="tagRed">#FF8F8F</color>
@@ -16,5 +22,7 @@
     <color name="tagYellow">#FFD28F</color>
     <color name="tagPurple">#E28FFF</color>
 
-    <color name="tablePanel">#FAFFFFFF</color>
+    <!-- TODO -->
+    <color name="tablePanelLight">#FAFFFFFF</color>
+    <color name="tablePanelDark">#FA121212</color>
 </resources>

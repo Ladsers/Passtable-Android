@@ -27,6 +27,11 @@ class SettingsActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar.root)
         binding.toolbar.root.setNavigationOnClickListener { finish() }
 
+        binding.svLayout.setOnScrollChangeListener { _, _, y, _, oldY ->
+            if (y > oldY || y < oldY) binding.toolbar.root.elevation = 7f
+            if (y == 0) binding.toolbar.root.elevation = 0f
+        }
+
         componentValInit()
         componentActionInit()
     }

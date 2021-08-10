@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="toolbarBackground" format="color" />
+    <attr name="overlayBackground" format="color" />
+    <attr name="panelTableBackground" format="color" />
+    <attr name="iconTint" format="color" />
+</resources>
