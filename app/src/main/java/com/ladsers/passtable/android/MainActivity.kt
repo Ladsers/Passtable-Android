@@ -12,6 +12,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,7 +36,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.toolbar.root.title = getString(R.string.ui_ct_home)
-        //binding.toolbar.root.navigationIcon = //TODO: passtable logo
+        binding.toolbar.root.navigationIcon = ContextCompat.getDrawable(
+            this,
+            R.drawable.ic_logo
+        )
+        binding.toolbar.root.navigationIcon?.setTintList(null)
         setSupportActionBar(binding.toolbar.root)
 
         fileCreator =
@@ -43,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnOpenFile.setOnClickListener { openFileExplorer(false) }
         binding.btNewFile.setOnClickListener { fileCreator.askName() }
-        binding.btAbout.setOnClickListener { }
+        //binding.btAbout.setOnClickListener { }
 
         binding.rvRecent.layoutManager = LinearLayoutManager(
             this,

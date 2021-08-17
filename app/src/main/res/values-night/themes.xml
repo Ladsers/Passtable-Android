@@ -15,6 +15,7 @@
         <item name="overlayBackground">@color/grayOverlay</item>
         <item name="iconTint">@color/white</item>
         <item name="panelTableBackground">@color/tablePanelDark</item>
+        <item name="tagNoneStroke">@color/tagNoneStrokeDark</item>
     </style>
 
     <style name="PopupMenuCustomPos" parent="@style/Widget.AppCompat.PopupMenu">
@@ -30,5 +31,9 @@
     <style name="ToolbarTitle" parent="@style/Base.TextAppearance.AppCompat.Title">
         <item name="fontFamily">@font/manrope_semibold</item>
         <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="MainButton" parent="Widget.MaterialComponents.Button">
+        <item name="background">@drawable/background_mainbutton</item>
     </style>
 </resources>

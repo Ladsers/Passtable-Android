@@ -4,4 +4,5 @@
     <attr name="overlayBackground" format="color" />
     <attr name="panelTableBackground" format="color" />
     <attr name="iconTint" format="color" />
+    <attr name="tagNoneStroke" format="color" />
 </resources>

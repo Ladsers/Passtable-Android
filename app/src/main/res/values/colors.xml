@@ -9,6 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="grayOverlay">#121212</color>
 
+    <color name="actionRed">#B61C24</color>
+
     <color name="textPrimaryLight">#3F3F3F</color>
     <color name="textSecondaryLight">#B3B3B3</color>
     <color name="iconTintLight">#616161</color>
@@ -21,6 +23,9 @@
     <color name="tagBlue">#8FDEFF</color>
     <color name="tagYellow">#FFD28F</color>
     <color name="tagPurple">#E28FFF</color>
+
+    <color name="tagNoneStrokeLight">#DCDCDC</color>
+    <color name="tagNoneStrokeDark">#404040</color>
 
     <!-- TODO -->
     <color name="tablePanelLight">#FAFFFFFF</color>
