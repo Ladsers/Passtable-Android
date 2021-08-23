@@ -3,10 +3,7 @@ package com.ladsers.passtable.android
 import android.content.Context
 import android.net.Uri
 import android.os.Build
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.ladsers.passtable.android.databinding.ItemRecentBinding
@@ -58,7 +55,13 @@ class RecentAdapter(
                 else -> 2
             }
             binding.clItem.setOnClickListener { open(position, openCode) }
-            binding.clItem.setOnLongClickListener { showPopupMenu(it, position) }
+            binding.clItem.setOnLongClickListener {
+                it.performHapticFeedback(
+                    HapticFeedbackConstants.VIRTUAL_KEY,
+                    HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
+                )
+                showPopupMenu(it, position)
+            }
         }
     }
 
