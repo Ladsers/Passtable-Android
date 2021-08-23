@@ -1,16 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.Passtable" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/textPrimaryLight</item>
+        <item name="colorPrimary">@color/gray</item>
+        <item name="colorSecondary">@color/actionRed</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?toolbarBackground</item>
         <item name="android:windowLightStatusBar">true</item>
         <!-- Customize your theme here. -->
         <item name="android:fontFamily">@font/manrope</item>
         <item name="android:textColor">@color/textPrimaryLight</item>
+        <item name="textSecondary">@color/textSecondaryLight</item>
         <item name="android:windowBackground">@color/white</item>
         <item name="toolbarBackground">@color/white</item>
         <item name="overlayBackground">@color/white</item>
@@ -22,8 +21,8 @@
 
     <style name="PopupMenuCustomPos" parent="@style/Widget.AppCompat.PopupMenu">
         <item name="background">?whiteOrBlack</item>
-        <item name="android:dropDownHorizontalOffset">16dp</item>
-        <item name="android:dropDownVerticalOffset">-10dp</item>
+        <item name="android:dropDownHorizontalOffset">38dp</item>
+        <item name="android:dropDownVerticalOffset">-34dp</item>
     </style>
 
     <style name="ToolbarTint" parent="Theme.MaterialComponents.DayNight.NoActionBar">

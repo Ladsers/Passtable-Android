@@ -6,4 +6,5 @@
     <attr name="iconTint" format="color" />
     <attr name="tagNoneStroke" format="color" />
     <attr name="whiteOrBlack" format="color" />
+    <attr name="textSecondary" format="color" />
 </resources>
