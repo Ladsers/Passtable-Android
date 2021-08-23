@@ -20,12 +20,12 @@
         <string name="app_bt_yes">yes</string>
         <string name="app_bt_no">no</string>
         <string name="app_bt_ok">ok</string>
-        <string name="app_bt_open">open</string>
-        <string name="app_bt_new">new</string>
         <string name="app_bt_edit">edit</string>
         <string name="app_bt_undo">undo</string>
         <string name="app_bt_cancel">cancel</string>
         <string name="app_bt_next">next</string>
+        <string name="app_bt_create">Create</string>
+        <string name="app_bt_open">Open</string>
         <string name="app_bt_editItem">Edit item</string>
         <string name="app_bt_removeItem">Remove item</string>
         <string name="app_bt_showPassword">Show password</string>

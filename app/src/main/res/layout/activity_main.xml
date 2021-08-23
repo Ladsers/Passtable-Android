@@ -24,21 +24,25 @@
 
     <Button
         android:id="@+id/btnOpenFile"
+        style="@style/AdditionalButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="24dp"
+        android:elevation="2dp"
         android:text="@string/app_bt_open"
+        app:icon="@drawable/ic_open"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btNewFile" />
 
     <Button
         android:id="@+id/btNewFile"
+        style="@style/MainButton"
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/app_bt_new"
+        android:layout_marginBottom="24dp"
+        android:elevation="2dp"
+        android:text="@string/app_bt_create"
+        app:icon="@drawable/ic_new_file"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
