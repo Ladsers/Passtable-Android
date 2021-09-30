@@ -46,7 +46,7 @@ class RecentAdapter(
                 binding.ivGdrive.visibility = View.VISIBLE
             } else {
                 gdriveFile = false
-                binding.ivGdrive.visibility = View.INVISIBLE
+                binding.ivGdrive.visibility = View.GONE
             }
 
             val openCode = when (true) {

@@ -53,6 +53,7 @@
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
         <item name="android:backgroundTint">?toolbarBackground</item>
+        <item name="rippleColor">?colorControlHighlight</item>
         <item name="iconTint">?iconTint</item>
         <item name="android:textColor">?iconTint</item>
         <item name="android:textSize">16sp</item>

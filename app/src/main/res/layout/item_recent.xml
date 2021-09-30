@@ -8,7 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clItem"
         android:layout_width="0dp"
-        android:layout_height="80dp"
+        android:layout_height="82dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
@@ -20,41 +20,50 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
-        <ImageView
-            android:id="@+id/ivIcon"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="12dp"
-            app:layout_constraintBottom_toBottomOf="@+id/tvFileName"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tvFileName"
-            app:srcCompat="@drawable/ic_file" />
-
-        <TextView
-            android:id="@+id/tvFileName"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="12dp"
             android:layout_marginEnd="16dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ivGdrive"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/ivIcon"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="File name" />
+            app:layout_constraintVertical_bias="0.45">
 
-        <TextView
-            android:id="@+id/tvLastDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:textColor="?textSecondary"
-            app:layout_constraintStart_toStartOf="@+id/tvFileName"
-            app:layout_constraintTop_toBottomOf="@+id/tvFileName"
-            tools:text="last opened date" />
+            <ImageView
+                android:id="@+id/ivIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tvFileName"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvFileName"
+                app:srcCompat="@drawable/ic_file" />
+
+            <TextView
+                android:id="@+id/tvFileName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ivIcon"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="File name" />
+
+            <TextView
+                android:id="@+id/tvLastDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="?textSecondary"
+                app:layout_constraintStart_toStartOf="@+id/tvFileName"
+                app:layout_constraintTop_toBottomOf="@+id/tvFileName"
+                tools:text="last opened date" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
             android:id="@+id/ivGdrive"
