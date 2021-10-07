@@ -15,11 +15,13 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySettingsBinding
 
     private var biometricAuthIsAvailable = false
+    private lateinit var msgDialog: MsgDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        msgDialog = MsgDialog(this, window)
 
         binding.toolbar.root.title = getString(R.string.ui_ct_settings)
         binding.toolbar.root.navigationIcon =
@@ -122,10 +124,18 @@ class SettingsActivity : AppCompatActivity() {
                 val msg =
                     if (biometricAuthIsAvailable) getString(R.string.dlg_msg_disableRememberingRecentFilesAndPasswords)
                     else getString(R.string.dlg_msg_disableRememberingRecentFiles)
-                dlgConfirmation(
-                    msg,
-                    { changeRememberingRecentFiles(false) },
-                    { binding.swRememberRecentFiles.isChecked = true })
+
+                msgDialog.create(getString(R.string.dlg_title_warning), msg)
+                msgDialog.addPositiveBtn(
+                    getString(R.string.app_bt_ok),
+                    R.drawable.ic_accept
+                ) { changeRememberingRecentFiles(false) }
+                msgDialog.addNegativeBtn(
+                    getString(R.string.app_bt_cancel),
+                    R.drawable.ic_close
+                ) { binding.swRememberRecentFiles.isChecked = true }
+                msgDialog.addSkipAction { binding.swRememberRecentFiles.isChecked = true }
+                msgDialog.show(it)
             } else changeRememberingRecentFiles(binding.swRememberRecentFiles.isChecked)
         }
 
@@ -133,21 +143,25 @@ class SettingsActivity : AppCompatActivity() {
             val msg =
                 if (biometricAuthIsAvailable) getString(R.string.dlg_msg_recentFilesAndPasswordsWillBeCleared)
                 else getString(R.string.dlg_msg_recentFilesWillBeCleared)
-            dlgConfirmation(msg, {
+
+            msgDialog.quickDialog(getString(R.string.dlg_title_warning), msg, {
                 RecentFiles.clear(this)
                 Toast.makeText(
                     this, getString(R.string.ui_msg_done), Toast.LENGTH_SHORT
                 ).show()
-            })
+            }, it)
         }
 
         binding.btForgetPasswords.setOnClickListener {
-            dlgConfirmation(getString(R.string.dlg_msg_passwordsWillBeForgotten), {
-                RecentFiles.forgetMpsEncrypted(this)
-                Toast.makeText(
-                    this, getString(R.string.ui_msg_done), Toast.LENGTH_SHORT
-                ).show()
-            })
+            msgDialog.quickDialog(
+                getString(R.string.dlg_title_warning),
+                getString(R.string.dlg_msg_passwordsWillBeForgotten), {
+                    RecentFiles.forgetMpsEncrypted(this)
+                    Toast.makeText(
+                        this, getString(R.string.ui_msg_done), Toast.LENGTH_SHORT
+                    ).show()
+                }, it
+            )
         }
     }
 
@@ -186,19 +200,5 @@ class SettingsActivity : AppCompatActivity() {
         ParamStorage.set(this, Param.REMEMBER_RECENT_FILES, isEnabled)
         updateComponentsForRecentFiles(isEnabled)
         RecentFiles.clear(this)
-    }
-
-    private fun dlgConfirmation(msg: String, yesFunc: () -> Unit, dismissFunc: () -> Unit = {}) {
-        var closedViaOk = false
-        val builder = AlertDialog.Builder(this)
-        builder.setMessage(msg)
-        builder.setTitle(getString(R.string.dlg_title_areYouSure))
-        builder.setPositiveButton(getString(R.string.app_bt_yes)) { _, _ ->
-            closedViaOk = true
-            yesFunc()
-        }
-        builder.setNegativeButton(getString(R.string.app_bt_no)) { _, _ -> }
-        builder.setOnDismissListener { if (!closedViaOk) dismissFunc() }
-        builder.show()
     }
 }

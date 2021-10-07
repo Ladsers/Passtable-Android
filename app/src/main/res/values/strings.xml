@@ -19,7 +19,7 @@
         <!-- bt (button) -->
         <string name="app_bt_yes">yes</string>
         <string name="app_bt_no">no</string>
-        <string name="app_bt_ok">ok</string>
+        <string name="app_bt_ok">OK</string>
         <string name="app_bt_edit">edit</string>
         <string name="app_bt_undo">undo</string>
         <string name="app_bt_cancel">cancel</string>
@@ -91,6 +91,7 @@
         <string name="dlg_title_notSaved">Not saved</string>
         <string name="dlg_title_saveFailed">Save failed</string>
         <string name="dlg_title_areYouSure">Are you sure?</string>
+        <string name="dlg_title_warning">Warning!</string>
         <string name="dlg_title_loginByFingerprint">Login by fingerprint</string>
         <string name="dlg_title_activateLoginByFingerprint">Activate login by fingerprint</string>
         <!-- end! -->

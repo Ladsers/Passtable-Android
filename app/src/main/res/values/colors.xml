@@ -6,6 +6,8 @@
     <color name="grayOverlay">#121212</color>
 
     <color name="actionRed">#B61C24</color>
+    <color name="actionPositive">#00C853</color>
+    <color name="actionNegative">#F44336</color>
 
     <color name="textPrimaryLight">#3F3F3F</color>
     <color name="textSecondaryLight">#B3B3B3</color>

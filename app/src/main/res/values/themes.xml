@@ -1,6 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.Passtable" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:splitMotionEvents">false</item>
+        <item name="android:windowEnableSplitTouch">false</item>
+
         <item name="colorPrimary">@color/gray</item>
         <item name="colorSecondary">@color/actionRed</item>
         <!-- Status bar color. -->
@@ -45,7 +48,7 @@
         <item name="fontFamily">@font/manrope_medium</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:stateListAnimator">@null</item>
-        <item name="shapeAppearanceOverlay">@style/ButtonCorners</item>
+        <item name="shapeAppearanceOverlay">@style/ButtonRoundCorners</item>
     </style>
 
     <style name="AdditionalButton" parent="Widget.MaterialComponents.Button">
@@ -60,10 +63,28 @@
         <item name="fontFamily">@font/manrope_medium</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:stateListAnimator">@null</item>
-        <item name="shapeAppearanceOverlay">@style/ButtonCorners</item>
+        <item name="shapeAppearanceOverlay">@style/ButtonRoundCorners</item>
     </style>
 
-    <style name="ButtonCorners" parent="Widget.MaterialComponents.Button">
+    <style name="DialogButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog.Flush">
+        <item name="android:layout_height">50dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="iconTint">?iconTint</item>
+        <item name="iconGravity">textStart</item>
+        <item name="android:textColor">?iconTint</item>
+        <item name="android:textSize">16sp</item>
+        <item name="fontFamily">@font/manrope_medium</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="shapeAppearanceOverlay">@style/ButtonSharpCorners</item>
+    </style>
+
+    <style name="ButtonRoundCorners" parent="Widget.MaterialComponents.Button">
         <item name="cornerSize">100%</item>
+    </style>
+
+    <style name="ButtonSharpCorners" parent="Widget.MaterialComponents.Button">
+        <item name="cornerSize">0%</item>
     </style>
 </resources>
