@@ -144,7 +144,7 @@ class SettingsActivity : AppCompatActivity() {
                 if (biometricAuthIsAvailable) getString(R.string.dlg_msg_recentFilesAndPasswordsWillBeCleared)
                 else getString(R.string.dlg_msg_recentFilesWillBeCleared)
 
-            msgDialog.quickDialog(getString(R.string.dlg_title_warning), msg, {
+            msgDialog.quickDialog(getString(R.string.dlg_title_areYouSure), msg, {
                 RecentFiles.clear(this)
                 Toast.makeText(
                     this, getString(R.string.ui_msg_done), Toast.LENGTH_SHORT
@@ -154,7 +154,7 @@ class SettingsActivity : AppCompatActivity() {
 
         binding.btForgetPasswords.setOnClickListener {
             msgDialog.quickDialog(
-                getString(R.string.dlg_title_warning),
+                getString(R.string.dlg_title_areYouSure),
                 getString(R.string.dlg_msg_passwordsWillBeForgotten), {
                     RecentFiles.forgetMpsEncrypted(this)
                     Toast.makeText(

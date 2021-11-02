@@ -12,6 +12,7 @@
         <!-- Customize your theme here. -->
         <item name="android:fontFamily">@font/manrope</item>
         <item name="android:textColor">@color/textPrimaryLight</item>
+        <item name="checkboxStyle">@style/DefaultCheckbox</item>
         <item name="textSecondary">@color/textSecondaryLight</item>
         <item name="android:windowBackground">@color/white</item>
         <item name="toolbarBackground">@color/white</item>
@@ -20,6 +21,10 @@
         <item name="panelTableBackground">@color/tablePanelLight</item>
         <item name="tagNoneStroke">@color/tagNoneStrokeLight</item>
         <item name="whiteOrBlack">@color/white</item>
+        <item name="editBackground">@color/editBackgroundLight</item>
+        <item name="actionDisabled">@color/actionDisabledLight</item>
+        <item name="infoErrorForeground">@color/infoRedPrimaryLight</item>
+        <item name="infoErrorBackground">@color/infoRedSecondaryLight</item>
     </style>
 
     <style name="PopupMenuCustomPos" parent="@style/Widget.AppCompat.PopupMenu">
@@ -80,11 +85,33 @@
         <item name="shapeAppearanceOverlay">@style/ButtonSharpCorners</item>
     </style>
 
+    <style name="IconButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:backgroundTint">?toolbarBackground</item>
+        <item name="rippleColor">?colorControlHighlight</item>
+        <item name="iconTint">?iconTint</item>
+        <item name="android:textColor">?iconTint</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="shapeAppearanceOverlay">@style/ButtonRoundCorners</item>
+    </style>
+
     <style name="ButtonRoundCorners" parent="Widget.MaterialComponents.Button">
         <item name="cornerSize">100%</item>
     </style>
 
     <style name="ButtonSharpCorners" parent="Widget.MaterialComponents.Button">
         <item name="cornerSize">0%</item>
+    </style>
+
+    <style name="DefaultCheckbox" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:layout_height">26dp</item>
+        <item name="android:paddingStart">6dp</item>
+        <item name="android:paddingEnd">2dp</item>
+        <item name="android:button">@drawable/selector_checkbox</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">?iconTint</item>
+        <item name="android:fontFamily">@font/manrope_semibold</item>
+        <item name="buttonTint">@color/selector_checkbox</item>
     </style>
 </resources>

@@ -8,6 +8,7 @@
         <!-- Customize your theme here. -->
         <item name="android:fontFamily">@font/manrope</item>
         <item name="android:textColor">@color/textPrimaryDark</item>
+        <item name="checkboxStyle">@style/DefaultCheckbox</item>
         <item name="textSecondary">@color/textSecondaryDark</item>
         <item name="android:windowBackground">@color/black</item>
         <item name="toolbarBackground">@color/grayOverlay</item>
@@ -16,5 +17,9 @@
         <item name="panelTableBackground">@color/tablePanelDark</item>
         <item name="tagNoneStroke">@color/tagNoneStrokeDark</item>
         <item name="whiteOrBlack">@color/black</item>
+        <item name="editBackground">@color/editBackgroundDark</item>
+        <item name="actionDisabled">@color/actionDisabledDark</item>
+        <item name="infoErrorForeground">@color/infoRedPrimaryDark</item>
+        <item name="infoErrorBackground">@color/infoRedSecondaryDark</item>
     </style>
 </resources>

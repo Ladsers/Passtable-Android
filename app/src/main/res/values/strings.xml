@@ -98,7 +98,10 @@
 
         <!-- ct (content) -->
         <string name="dlg_ct_invalidPassword">"InvalidPassword"</string>
-        <string name="dlg_ct_rememberPassword">"Remember password (fingerprint)"</string>
+        <string name="dlg_ct_fingerprintLogin">Fingerprint login</string>
+        <string name="dlg_ct_fileName">File name</string>
+        <string name="dlg_ct_password">Password</string>
+        <string name="dlg_ct_fileExtension">.passtable</string>
         <!-- end! -->
 
         <!-- err (error) -->
