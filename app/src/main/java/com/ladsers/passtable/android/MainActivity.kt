@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
             FileCreator(this, contentResolver, window) { openFileExplorer(true) }
 
         binding.btnOpenFile.setOnClickListener { openFileExplorer(false) }
-        binding.btNewFile.setOnClickListener { fileCreator.askName() }
+        binding.btNewFile.setOnClickListener { v -> fileCreator.askName(btView = v) }
         //binding.btAbout.setOnClickListener { }
 
         binding.rvRecent.layoutManager = LinearLayoutManager(

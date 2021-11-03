@@ -1,14 +1,22 @@
 package com.ladsers.passtable.android
 
+import Verifier
 import android.app.AlertDialog
 import android.content.ContentResolver
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.provider.DocumentsContract
+import android.view.View
+import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
-import com.ladsers.passtable.android.databinding.DialogAskfilenameBinding
+import com.ladsers.passtable.android.databinding.DialogEnterdataBinding
+import java.util.*
+
 
 class FileCreator(
     private val context: Context,
@@ -18,46 +26,93 @@ class FileCreator(
 ) {
     private var fileName = ""
 
-    fun askName(oldName: String? = null, cancelable: Boolean = true) {
+    fun askName(oldName: String? = null, isCancelable: Boolean = true, btView: View? = null) {
         fileName = ""
 
+        val binding: DialogEnterdataBinding = DialogEnterdataBinding.inflate(window.layoutInflater)
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-        val binding: DialogAskfilenameBinding =
-            DialogAskfilenameBinding.inflate(window.layoutInflater)
         builder.setView(binding.root)
-        val title = context.getString(R.string.dlg_title_enterFileName)
-        builder.setTitle(title)
-        builder.setCancelable(cancelable)
+        builder.setCancelable(isCancelable)
 
-        builder.setPositiveButton(context.getString(R.string.app_bt_next)) { _, _ ->
-            fileName =
-                binding.etFileName.text.toString() + context.getString(R.string.app_com_fileExtension)
-            selectTree()
-        }
+        binding.tvTitle.text = context.getString(R.string.dlg_ct_createNewFile)
+        binding.clFileName.visibility = View.VISIBLE
 
         oldName?.let { it ->
             binding.etFileName.setText(it)
             binding.etFileName.selectAll()
+            binding.tvTitle.text = context.getString(R.string.dlg_ct_saveAs)
+            binding.tvExtension.visibility = View.VISIBLE
         }
 
+        binding.btPositive.text = context.getString(R.string.app_bt_selectFolder)
+        binding.btPositive.icon = ContextCompat.getDrawable(context, R.drawable.ic_next_arrow)
+
+        binding.btNegative.text = context.getString(R.string.app_bt_cancel).replaceFirstChar {
+            if (it.isLowerCase()) it.titlecase(
+                Locale.getDefault()
+            ) else it.toString()
+        }
+        binding.btNegative.icon = ContextCompat.getDrawable(context, R.drawable.ic_close)
+
         builder.show().apply {
+            var maxWidthIsSet = false
+
+            this.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             this.setCanceledOnTouchOutside(false)
+
+            binding.btPositive.isEnabled = binding.etFileName.text.isNotBlank()
 
             this.window!!.setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
             )
             binding.etFileName.requestFocus()
 
-            val button = this.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)
-            button.isEnabled = binding.etFileName.text.isNotBlank()
             binding.etFileName.doAfterTextChanged { x ->
-                button.isEnabled = x.toString().isNotBlank() &&
-                        x.toString().matches("^[^.\\\\/:*?\"<>|]?[^\\\\/:*?\"<>|]*".toRegex())
+                binding.tvExtension.visibility =
+                    if (x.toString().isNotEmpty()) View.VISIBLE else View.INVISIBLE
+                binding.etFileName.hint =
+                    if (x.toString().isEmpty()) context.getString(R.string.dlg_ct_fileName) else ""
+
+                if (!maxWidthIsSet) {
+                    binding.etFileName.maxWidth = binding.etFileName.width
+                    binding.etFileName.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                    binding.etFileName.requestLayout()
+                    maxWidthIsSet = true
+                }
+
+                val res = Verifier.verifyFileName(x.toString())
+                binding.btPositive.isEnabled = res == 0
+                binding.clErr.visibility = if (res == 0) View.GONE else View.VISIBLE
+                val errMsg = when (res) {
+                    1 -> context.getString(R.string.dlg_err_fileNameBlank)
+                    2 -> context.getString(R.string.dlg_err_fileNameInvalidChars) + ' ' + Verifier.fileNameInvalidChars
+                    3 -> context.getString(R.string.dlg_err_fileNameWhitespaceChar)
+                    4 -> context.getString(R.string.dlg_err_fileNameInvalidForWindows) + ' ' + Verifier.fileNameInvalidWinWords
+                    else -> ""
+                }
+                binding.tvErrMsg.text = errMsg
             }
+
+            binding.btPositive.setOnClickListener {
+                fileName =
+                    binding.etFileName.text.toString() + context.getString(R.string.app_com_fileExtension)
+                selectTree()
+                this.dismiss()
+            }
+
+            binding.btNegative.setOnClickListener {
+                this.dismiss()
+            }
+        }
+
+        // Protection against two copies of the same dialog.
+        btView?.let { it ->
+            it.isClickable = false
+            it.postDelayed({ it.isClickable = true }, 200)
         }
     }
 
-    fun createFile(tree: Uri): Uri{
+    fun createFile(tree: Uri): Uri {
         val docId = DocumentsContract.getTreeDocumentId(tree)
         val docUri = DocumentsContract.buildDocumentUriUsingTree(tree, docId)
 

@@ -40,6 +40,7 @@
         <string name="app_bt_usePassword">use password</string>
         <string name="app_bt_removeFromList">Remove from list</string>
         <string name="app_bt_forgetPassword">Forget password</string>
+        <string name="app_bt_selectFolder">Select folder</string>
         <!-- end! -->
 
     <!-- END -->
@@ -101,7 +102,8 @@
         <string name="dlg_ct_fingerprintLogin">Fingerprint login</string>
         <string name="dlg_ct_fileName">File name</string>
         <string name="dlg_ct_password">Password</string>
-        <string name="dlg_ct_fileExtension">.passtable</string>
+        <string name="dlg_ct_createNewFile">Create a new file</string>
+        <string name="dlg_ct_saveAs">Save as</string>
         <!-- end! -->
 
         <!-- err (error) -->
@@ -121,6 +123,10 @@
         <string name="dlg_err_biometricSensorNotAvailable">Biometric sensor is not available.</string>
         <string name="dlg_err_encryptedMasterPassNotFound">Encrypted master password not found. Remove all saved passwords.</string>
         <string name="dlg_err_encryptedMasterPassSaveFail">Failed to encrypt the master password. Try again later.</string>
+        <string name="dlg_err_fileNameBlank">File name cannot be empty</string>
+        <string name="dlg_err_fileNameInvalidChars">File name contains invalid characters:</string>
+        <string name="dlg_err_fileNameWhitespaceChar">File name cannot start with whitespace</string>
+        <string name="dlg_err_fileNameInvalidForWindows">File name is invalid word for Windows.\nInvalid words:</string>
         <!-- end! -->
 
         <!-- msg (message) -->

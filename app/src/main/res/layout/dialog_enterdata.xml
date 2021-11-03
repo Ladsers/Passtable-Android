@@ -46,10 +46,11 @@
             android:hint="@string/dlg_ct_fileName"
             android:importantForAutofill="no"
             android:inputType="textPersonName"
+            android:maxLength="200"
             android:textColorHint="?textSecondary"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tvExtension"
+            app:layout_constraintEnd_toStartOf="@+id/tvExtensionLimiter"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -58,16 +59,33 @@
             android:id="@+id/tvExtension"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
-            android:text="@string/dlg_ct_fileExtension"
+            android:text="@string/app_com_fileExtension"
             android:textColor="?textSecondary"
             android:textSize="14sp"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/etFileName"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tvExtensionLimiter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:text="@string/app_com_fileExtension"
+            android:textColor="?textSecondary"
+            android:textSize="14sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
