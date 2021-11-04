@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
+import android.widget.EditText
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import com.ladsers.passtable.android.databinding.DialogEnterdataBinding
@@ -34,15 +35,9 @@ class FileCreator(
         builder.setView(binding.root)
         builder.setCancelable(isCancelable)
 
-        binding.tvTitle.text = context.getString(R.string.dlg_ct_createNewFile)
+        binding.tvTitle.text =
+            context.getString(if (oldName == null) R.string.dlg_ct_createNewFile else R.string.dlg_ct_saveAs)
         binding.clFileName.visibility = View.VISIBLE
-
-        oldName?.let { it ->
-            binding.etFileName.setText(it)
-            binding.etFileName.selectAll()
-            binding.tvTitle.text = context.getString(R.string.dlg_ct_saveAs)
-            binding.tvExtension.visibility = View.VISIBLE
-        }
 
         binding.btPositive.text = context.getString(R.string.app_bt_selectFolder)
         binding.btPositive.icon = ContextCompat.getDrawable(context, R.drawable.ic_next_arrow)
@@ -91,6 +86,15 @@ class FileCreator(
                     else -> ""
                 }
                 binding.tvErrMsg.text = errMsg
+            }
+
+            oldName?.let { it ->
+                with(binding.etFileName) {
+                    post {
+                        setText(it)
+                        selectAll()
+                    }
+                }
             }
 
             binding.btPositive.setOnClickListener {
