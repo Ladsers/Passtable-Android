@@ -14,6 +14,7 @@
         <string name="app_com_itemHasNoNote">&#60; no note &#62;</string>
         <string name="app_com_fileExtension">.passtable</string>
         <string name="app_com_fileLabel">Passtable File</string>
+        <string name="app_com_spaceChar">space</string>
         <!-- end! -->
 
         <!-- bt (button) -->
@@ -41,6 +42,8 @@
         <string name="app_bt_removeFromList">Remove from list</string>
         <string name="app_bt_forgetPassword">Forget password</string>
         <string name="app_bt_selectFolder">Select folder</string>
+        <string name="app_bt_enter">Enter</string>
+        <string name="app_bt_saveWithCurrent">Save with current password</string>
         <!-- end! -->
 
     <!-- END -->
@@ -98,12 +101,13 @@
         <!-- end! -->
 
         <!-- ct (content) -->
-        <string name="dlg_ct_invalidPassword">"InvalidPassword"</string>
+        <string name="dlg_ct_incorrectPassword">Incorrect password</string>
         <string name="dlg_ct_fingerprintLogin">Fingerprint login</string>
         <string name="dlg_ct_fileName">File name</string>
-        <string name="dlg_ct_password">Password</string>
+        <string name="dlg_ct_password">Primary password</string>
         <string name="dlg_ct_createNewFile">Create a new file</string>
         <string name="dlg_ct_saveAs">Save as</string>
+        <string name="dlg_ct_openTheFile">Open the file</string>
         <!-- end! -->
 
         <!-- err (error) -->
@@ -125,8 +129,11 @@
         <string name="dlg_err_encryptedMasterPassSaveFail">Failed to encrypt the master password. Try again later.</string>
         <string name="dlg_err_fileNameBlank">File name cannot be empty</string>
         <string name="dlg_err_fileNameInvalidChars">File name contains invalid characters:</string>
-        <string name="dlg_err_fileNameWhitespaceChar">File name cannot start with whitespace</string>
+        <string name="dlg_err_fileNameWhitespaceChar">File name cannot start with a space character</string>
         <string name="dlg_err_fileNameInvalidForWindows">File name is invalid word for Windows.\nInvalid words:</string>
+        <string name="dlg_err_mpEmpty">Primary password cannot be empty</string>
+        <string name="dlg_err_mpInvalidChars">Primary password contains invalid characters.\nAllowed characters:</string>
+        <string name="dlg_err_mpSlashChar">Primary password cannot start with a forward slash</string>
         <!-- end! -->
 
         <!-- msg (message) -->
