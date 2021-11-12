@@ -66,7 +66,7 @@ class TableActivity : AppCompatActivity() {
             this,
             { loginSucceeded() },
             { mp -> openProcess(mp) },
-            { mpRequester.startRequest(mainUri, false, canRememberPass = false) })
+            { mpRequester.start(MpRequester.Mode.OPEN, canRememberPass = false) })
         mpRequester = MpRequester(
             this,
             contentResolver,
@@ -117,7 +117,7 @@ class TableActivity : AppCompatActivity() {
         }
 
         val newFile = intent.getBooleanExtra("newFile", false)
-        if (newFile) mpRequester.startRequest(mainUri, true) else checkFileProcess()
+        if (newFile) mpRequester.start(MpRequester.Mode.NEW, mainUri) else checkFileProcess()
     }
 
     override fun onBackPressed() {
@@ -160,7 +160,7 @@ class TableActivity : AppCompatActivity() {
                 if (mpRequester.isNeedToRemember()) biometricAuth.activateAuth(masterPass)
                 else loginSucceeded()
             }
-            3 -> mpRequester.startRequest(mainUri, isFileCreation = false, showErrInvalidPass = true)
+            3 -> mpRequester.start(MpRequester.Mode.OPEN, incorrectPassword = true)
         }
     }
 
@@ -185,9 +185,9 @@ class TableActivity : AppCompatActivity() {
                 if (!quickView && ParamStorage.getBool(this, Param.REMEMBER_RECENT_FILES)) {
                     RecentFiles.add(this, mainUri)
                     val mpEncrypted = RecentFiles.getLastMpEncrypted(this)
-                    if (mpEncrypted.isNullOrBlank()) mpRequester.startRequest(mainUri, false)
+                    if (mpEncrypted.isNullOrBlank()) mpRequester.start(MpRequester.Mode.OPEN)
                     else biometricAuth.startAuth(mpEncrypted)
-                } else mpRequester.startRequest(mainUri, false, canRememberPass = false)
+                } else mpRequester.start(MpRequester.Mode.OPEN, canRememberPass = false)
             }
         }
     }
@@ -655,7 +655,7 @@ class TableActivity : AppCompatActivity() {
 
         val file = fileCreator.createFile(tree)
 
-        if (saveAsMode) mpRequester.forNewFileRequest(file) else {
+        if (saveAsMode) mpRequester.start(MpRequester.Mode.SAVEAS, file) else {
             if (saving(file.toString())) {
                 disableLockFileSystem = false
                 mainUri = file
