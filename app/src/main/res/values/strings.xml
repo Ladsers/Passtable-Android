@@ -108,6 +108,8 @@
         <string name="dlg_ct_createNewFile">Create a new file</string>
         <string name="dlg_ct_saveAs">Save as</string>
         <string name="dlg_ct_openTheFile">Open the file</string>
+        <string name="dlg_ct_confirm">Confirm</string>
+        <string name="dlg_ct_passwordsDoNotMatch">Passwords don\'t match</string>
         <!-- end! -->
 
         <!-- err (error) -->

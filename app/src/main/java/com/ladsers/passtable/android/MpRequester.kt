@@ -20,6 +20,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.doAfterTextChanged
+import androidx.core.widget.doBeforeTextChanged
 import com.google.android.material.button.MaterialButton
 import com.ladsers.passtable.android.databinding.DialogEnterdataBinding
 import java.util.*
@@ -43,6 +44,9 @@ class MpRequester(
     private var rememberingAvailable = true
 
     private var passwordIsVisible = false
+    private var confirmIsVisible = false
+
+    private var btConfirmClicked = false
 
     fun start(
         mode: Mode,
@@ -98,6 +102,15 @@ class MpRequester(
                 showHidePassword(binding.etPassword, binding.btShowPass, passwordIsVisible)
         }
 
+        if (mode != Mode.OPEN) {
+            binding.clConfirm.visibility = View.VISIBLE
+            binding.btShowConfirm.setOnClickListener {
+                btConfirmClicked = true
+                confirmIsVisible =
+                    showHidePassword(binding.etConfirm, binding.btShowConfirm, confirmIsVisible)
+            }
+        }
+
         if (incorrectPassword) {
             binding.clErr.visibility = View.VISIBLE
             binding.tvErrMsg.text = context.getString(R.string.dlg_ct_incorrectPassword)
@@ -123,13 +136,18 @@ class MpRequester(
             )
             binding.etPassword.requestFocus()
 
-            binding.etPassword.doAfterTextChanged { x ->
-                widgetBehavior(x, binding.etPassword, binding.btShowPass)
+            var errCode = -1
 
-                val res = Verifier.verifyMp(x.toString())
-                binding.btPositive.isEnabled = res == 0
-                binding.clErr.visibility = if (res == 0) View.GONE else View.VISIBLE
-                val errMsg = when (res) {
+            binding.etPassword.doAfterTextChanged { x ->
+                passwordIsVisible =
+                    widgetBehavior(x, binding.etPassword, binding.btShowPass, passwordIsVisible)
+                binding.btNeutral.isEnabled =
+                    x.toString().isEmpty() && binding.etConfirm.text.toString().isEmpty()
+
+                errCode = Verifier.verifyMp(x.toString())
+                binding.btPositive.isEnabled = errCode == 0
+                binding.clErr.visibility = if (errCode == 0) View.GONE else View.VISIBLE
+                val errMsg = when (errCode) {
                     1 -> context.getString(R.string.dlg_err_mpEmpty)
                     2 -> context.getString(R.string.dlg_err_mpInvalidChars) + ' ' + Verifier.getMpAllowedChars(
                         context.getString(R.string.app_com_spaceChar)
@@ -138,6 +156,15 @@ class MpRequester(
                     else -> ""
                 }
                 binding.tvErrMsg.text = errMsg
+
+                if (mode != Mode.OPEN && errCode == 0) {
+                    val confirmPass = binding.etConfirm.text.toString()
+                    val matched = x.toString() == confirmPass
+                    binding.btPositive.isEnabled = matched
+                    binding.tvErrMsg.text = context.getString(R.string.dlg_ct_passwordsDoNotMatch)
+                    binding.clErr.visibility =
+                        if (matched || confirmPass.isEmpty()) View.GONE else View.VISIBLE
+                }
             }
 
             binding.btPositive.setOnClickListener {
@@ -169,20 +196,60 @@ class MpRequester(
             binding.btNegative.setOnClickListener {
                 this.dismiss()
             }
+
+
+            if (mode == Mode.OPEN) return@apply
+
+            val doNotMatchMsgWithDelay = Runnable { binding.clErr.visibility = View.VISIBLE }
+
+            binding.etConfirm.doBeforeTextChanged { _, _, _, _ ->
+                if (btConfirmClicked) {
+                    btConfirmClicked = false
+                    return@doBeforeTextChanged
+                }
+                binding.clErr.removeCallbacks(doNotMatchMsgWithDelay)
+                if (errCode == 0) binding.clErr.visibility = View.GONE
+            }
+
+            binding.etConfirm.doAfterTextChanged { x ->
+                confirmIsVisible =
+                    widgetBehavior(x, binding.etConfirm, binding.btShowConfirm, confirmIsVisible)
+                binding.btNeutral.isEnabled =
+                    x.toString().isEmpty() && binding.etPassword.text.toString().isEmpty()
+
+                if (errCode == 0 && x.toString().isNotEmpty()) {
+                    val matched = x.toString() == binding.etPassword.text.toString()
+                    binding.btPositive.isEnabled = matched
+                    binding.tvErrMsg.text = context.getString(R.string.dlg_ct_passwordsDoNotMatch)
+                    if (!matched) binding.clErr.postDelayed(
+                        doNotMatchMsgWithDelay,
+                        750
+                    )
+                }
+            }
         }
     }
 
     fun isNeedToRemember() = rememberMasterPass
 
-    private fun widgetBehavior(x: Editable?, etPassword: EditText, btShow: MaterialButton) {
+    private fun widgetBehavior(
+        x: Editable?,
+        etPassword: EditText,
+        btShow: MaterialButton,
+        isVisible: Boolean
+    ): Boolean {
+        var current = isVisible
+
         val isNotEmpty = x.toString().isNotEmpty()
-        if (!isNotEmpty) passwordIsVisible = showHidePassword(etPassword, btShow, true)
+        if (!isNotEmpty) current = showHidePassword(etPassword, btShow, true)
         etPassword.typeface = ResourcesCompat.getFont(
             context,
-            if (isNotEmpty) if (passwordIsVisible) R.font.overpassmono_semibold else R.font.passmono_asterisk
+            if (isNotEmpty) if (current) R.font.overpassmono_semibold else R.font.passmono_asterisk
             else R.font.manrope
         )
         btShow.visibility = if (isNotEmpty) View.VISIBLE else View.INVISIBLE
+
+        return current
     }
 
     private fun showHidePassword(
@@ -203,7 +270,7 @@ class MpRequester(
 
         btShow.icon = ContextCompat.getDrawable(
             context,
-            if (current) R.drawable.ic_password_hide else R.drawable.ic_password_show
+            if (current) R.drawable.ic_lock else R.drawable.ic_password_show
         )
 
         return current
