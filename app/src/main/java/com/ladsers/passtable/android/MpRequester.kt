@@ -34,9 +34,7 @@ class MpRequester(
     private val biometricAuth: BiometricAuth,
     private val completeCreation: (password: String) -> Unit,
     private val completeOpening: (password: String) -> Unit,
-    private val completeSaving: (newPath: String) -> Boolean,
-    private val completeSavingWithNewPassword: (newPath: String, newPass: String) -> Boolean,
-    private val afterSaving: (newPath: Uri) -> Unit
+    private val completeSavingAs: (newPath: Uri, newPass: String?) -> Unit
 ) {
     enum class Mode { OPEN, NEW, SAVEAS }
 
@@ -74,8 +72,9 @@ class MpRequester(
 
         binding.cbRememberPass.isChecked =
             ParamStorage.getBool(context, Param.CHECKBOX_REMEMBER_PASSWORD_BY_DEFAULT)
+        val biometricAuthActive = biometricAuthAvailable && rememberingAvailable
         binding.cbRememberPass.visibility =
-            if (biometricAuthAvailable && rememberingAvailable) View.VISIBLE else View.GONE
+            if (mode != Mode.SAVEAS && biometricAuthActive) View.VISIBLE else View.GONE
 
         binding.btPositive.text =
             context.getString(if (mode == Mode.OPEN) R.string.app_bt_enter else R.string.app_bt_save)
@@ -143,6 +142,8 @@ class MpRequester(
                     widgetBehavior(x, binding.etPassword, binding.btShowPass, passwordIsVisible)
                 binding.btNeutral.isEnabled =
                     x.toString().isEmpty() && binding.etConfirm.text.toString().isEmpty()
+                binding.cbRememberPass.visibility =
+                    if (!binding.btNeutral.isEnabled && biometricAuthActive) View.VISIBLE else View.GONE
 
                 errCode = Verifier.verifyMp(x.toString())
                 binding.btPositive.isEnabled = errCode == 0
@@ -175,11 +176,7 @@ class MpRequester(
                 when (mode) {
                     Mode.OPEN -> completeOpening(pass)
                     Mode.NEW -> completeCreation(pass)
-                    Mode.SAVEAS -> if (completeSavingWithNewPassword(
-                            uri!!.toString(),
-                            pass
-                        )
-                    ) afterSaving(uri)
+                    Mode.SAVEAS -> completeSavingAs(uri!!, pass)
                 }
                 closedViaButton = true
                 this.dismiss()
@@ -187,7 +184,7 @@ class MpRequester(
 
             if (mode == Mode.SAVEAS) {
                 binding.btNeutral.setOnClickListener {
-                    if (completeSaving(uri!!.toString())) afterSaving(uri)
+                    completeSavingAs(uri!!, null)
                     closedViaButton = true
                     this.dismiss()
                 }
@@ -216,6 +213,8 @@ class MpRequester(
                     widgetBehavior(x, binding.etConfirm, binding.btShowConfirm, confirmIsVisible)
                 binding.btNeutral.isEnabled =
                     x.toString().isEmpty() && binding.etPassword.text.toString().isEmpty()
+                binding.cbRememberPass.visibility =
+                    if (!binding.btNeutral.isEnabled && biometricAuthActive) View.VISIBLE else View.GONE
 
                 if (errCode == 0 && x.toString().isNotEmpty()) {
                     val matched = x.toString() == binding.etPassword.text.toString()

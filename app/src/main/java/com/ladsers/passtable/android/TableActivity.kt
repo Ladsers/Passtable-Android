@@ -75,9 +75,7 @@ class TableActivity : AppCompatActivity() {
             biometricAuth,
             { password -> creationFileProcess(password) },
             { password -> openProcess(password) },
-            { newPath -> saving(newPath) },
-            { newPath, newPass -> saving(newPath, newPass) },
-            { newPath -> completeSavingToOtherFile(newPath) }
+            { newPath, newPass -> saveToOtherFileProcess(newPath, newPass) }
         )
         fileCreator = FileCreator(
             this,
@@ -655,21 +653,22 @@ class TableActivity : AppCompatActivity() {
 
         val file = fileCreator.createFile(tree)
 
-        if (saveAsMode) mpRequester.start(MpRequester.Mode.SAVEAS, file) else {
-            if (saving(file.toString())) {
-                disableLockFileSystem = false
-                mainUri = file
-                RecentFiles.add(this, mainUri)
-                this.binding.toolbar.root.title = getFileName(mainUri)
-            }
-        }
+        if (saveAsMode) mpRequester.start(
+            MpRequester.Mode.SAVEAS,
+            file
+        ) else saveToOtherFileProcess(file, null)
     }
 
-    private fun completeSavingToOtherFile(newPath: Uri){
-        disableLockFileSystem = false
+    private fun saveToOtherFileProcess(newPath: Uri, newPassword: String?) {
+        if (!saving(newPath.toString(), newPassword)) return
         mainUri = newPath
         RecentFiles.add(this, mainUri)
         this.binding.toolbar.root.title = getFileName(mainUri)
+        if (newPassword != null && mpRequester.isNeedToRemember()) {
+            BiometricAuth(this, this, { disableLockFileSystem = false }, { }, { }).activateAuth(
+                newPassword
+            )
+        } else disableLockFileSystem = false
     }
 
     private fun fixSaveErrEncryption(errCode: Int) {
