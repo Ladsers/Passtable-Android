@@ -11,6 +11,7 @@ import android.provider.DocumentsContract
 import android.text.Editable
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.view.KeyEvent
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -180,6 +181,27 @@ class MpRequester(
                 }
                 closedViaButton = true
                 this.dismiss()
+            }
+
+            if (mode == Mode.OPEN) {
+                val alertDialog = this
+                binding.etPassword.setOnKeyListener(object : View.OnKeyListener {
+                    override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
+                        if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                            if (!binding.btPositive.isEnabled) return true
+
+                            if (biometricAuthAvailable && rememberingAvailable) rememberMasterPass =
+                                binding.cbRememberPass.isChecked
+
+                            val pass = binding.etPassword.text.toString()
+                            completeOpening(pass)
+                            closedViaButton = true
+                            alertDialog.dismiss()
+                            return true
+                        }
+                        return false
+                    }
+                })
             }
 
             if (mode == Mode.SAVEAS) {

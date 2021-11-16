@@ -8,11 +8,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.provider.DocumentsContract
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
-import android.view.WindowManager
-import android.widget.EditText
+import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import com.ladsers.passtable.android.databinding.DialogEnterdataBinding
@@ -103,6 +99,21 @@ class FileCreator(
                 selectTree()
                 this.dismiss()
             }
+
+            val alertDialog = this
+            binding.etFileName.setOnKeyListener(object : View.OnKeyListener {
+                override fun onKey(v: View?, keyCode: Int, event: KeyEvent): Boolean {
+                    if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                        if (!binding.btPositive.isEnabled) return true
+                        fileName =
+                            binding.etFileName.text.toString() + context.getString(R.string.app_com_fileExtension)
+                        selectTree()
+                        alertDialog.dismiss()
+                        return true
+                    }
+                    return false
+                }
+            })
 
             binding.btNegative.setOnClickListener {
                 this.dismiss()
