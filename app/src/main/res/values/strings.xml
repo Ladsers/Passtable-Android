@@ -6,15 +6,16 @@
         <!-- end! -->
 
         <!-- com (common) -->
-        <string name="app_com_note">note</string>
-        <string name="app_com_login">login</string>
-        <string name="app_com_password">password</string>
-        <string name="app_com_tag">tag</string>
+        <string name="app_com_note">Note</string>
+        <string name="app_com_login">Login</string>
+        <string name="app_com_password">Password</string>
+        <string name="app_com_tag">Tag</string>
         <string name="app_com_passwordSecret">********</string>
         <string name="app_com_itemHasNoNote">&#60; no note &#62;</string>
         <string name="app_com_fileExtension">.passtable</string>
         <string name="app_com_fileLabel">Passtable File</string>
         <string name="app_com_spaceChar">space</string>
+        <string name="app_com_confirm">Confirm</string>
         <!-- end! -->
 
         <!-- bt (button) -->
@@ -30,8 +31,6 @@
         <string name="app_bt_editItem">Edit item</string>
         <string name="app_bt_removeItem">Remove item</string>
         <string name="app_bt_showPassword">Show password</string>
-        <string name="app_bt_editSave">Accept &amp; save</string>
-        <string name="app_bt_addSave">Add &amp; save</string>
         <string name="app_bt_addItem">Add item</string>
         <string name="app_bt_saveAs">Save as</string>
         <string name="app_bt_settings">Settings</string>
@@ -69,6 +68,7 @@
         <string name="ui_ct_lockAllowWhenEditing">Allow locking when editing or creating entries</string>
         <string name="ui_ct_lockDoNotLock">Do not lock</string>
         <string name="ui_ct_timePeriodForLocking">Time period for locking (seconds):</string>
+        <string name="ui_ct_leaveBlankToSkip">Leave blank to skip verification</string>
         <!-- end! -->
 
         <!-- msg (message) -->
@@ -108,7 +108,6 @@
         <string name="dlg_ct_createNewFile">Create a new file</string>
         <string name="dlg_ct_saveAs">Save as</string>
         <string name="dlg_ct_openTheFile">Open the file</string>
-        <string name="dlg_ct_confirm">Confirm</string>
         <string name="dlg_ct_passwordsDoNotMatch">Passwords don\'t match</string>
         <!-- end! -->
 

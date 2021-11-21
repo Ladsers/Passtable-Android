@@ -10,186 +10,460 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar" />
 
-    <EditText
-        android:id="@+id/etNote"
+    <ScrollView
+        android:id="@+id/svLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@+id/clErr"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
+            <EditText
+                android:id="@+id/etNote"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/background_edittext"
+                android:ems="10"
+                android:hint="@string/app_com_note"
+                android:inputType="textPersonName"
+                android:minHeight="50dp"
+                android:padding="10dp"
+                android:scrollHorizontally="false"
+                android:textColorHint="?textSecondary"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toStartOf="@+id/btUndoNote"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/clTag" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btUndoNote"
+                style="@style/IconButton"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="?whiteOrBlack"
+                android:enabled="false"
+                android:paddingLeft="0dp"
+                android:paddingTop="0dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="0dp"
+                android:visibility="gone"
+                app:icon="@drawable/ic_undo"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconTint="@color/selector_icon_tint"
+                app:layout_constraintBottom_toBottomOf="@+id/etNote"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/etNote"
+                app:strokeColor="@color/selector_icon_tint"
+                app:strokeWidth="2dp"
+                tools:visibility="visible" />
+
+            <EditText
+                android:id="@+id/etLogin"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/background_edittext"
+                android:ems="10"
+                android:hint="@string/app_com_login"
+                android:inputType="textPersonName"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textColorHint="?textSecondary"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toStartOf="@+id/btUndoLogin"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/etNote" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btUndoLogin"
+                style="@style/IconButton"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="?whiteOrBlack"
+                android:enabled="false"
+                android:paddingLeft="0dp"
+                android:paddingTop="0dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="0dp"
+                android:visibility="gone"
+                app:icon="@drawable/ic_undo"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconTint="@color/selector_icon_tint"
+                app:layout_constraintBottom_toBottomOf="@+id/etLogin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/etLogin"
+                app:strokeColor="@color/selector_icon_tint"
+                app:strokeWidth="2dp"
+                tools:visibility="visible" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clPassword"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/background_edittext"
+                app:layout_constraintEnd_toStartOf="@+id/btUndoPassword"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/etLogin">
+
+                <EditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@null"
+                    android:ems="10"
+                    android:hint="@string/app_com_password"
+                    android:importantForAutofill="no"
+                    android:inputType="textPassword"
+                    android:maxLength="32"
+                    android:textColorHint="?textSecondary"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btShowPass"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btShowPass"
+                    style="@style/IconButton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:backgroundTint="?editBackground"
+                    android:paddingLeft="0dp"
+                    android:paddingTop="0dp"
+                    android:paddingRight="0dp"
+                    android:paddingBottom="0dp"
+                    android:visibility="invisible"
+                    app:icon="@drawable/ic_password_show"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:visibility="visible" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btUndoPassword"
+                style="@style/IconButton"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="?whiteOrBlack"
+                android:enabled="false"
+                android:paddingLeft="0dp"
+                android:paddingTop="0dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="0dp"
+                android:visibility="gone"
+                app:icon="@drawable/ic_undo"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconTint="@color/selector_icon_tint"
+                app:layout_constraintBottom_toBottomOf="@+id/clPassword"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/clPassword"
+                app:strokeColor="@color/selector_icon_tint"
+                app:strokeWidth="2dp"
+                tools:visibility="visible" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clConfirm"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/background_edittext"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@+id/btUndoPassword"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/clPassword"
+                tools:visibility="visible">
+
+                <EditText
+                    android:id="@+id/etConfirm"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@null"
+                    android:ems="10"
+                    android:hint="@string/app_com_confirm"
+                    android:importantForAutofill="no"
+                    android:inputType="textPassword"
+                    android:maxLength="32"
+                    android:textColorHint="?textSecondary"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btShowConfirm"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btShowConfirm"
+                    style="@style/IconButton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:backgroundTint="?editBackground"
+                    android:paddingLeft="0dp"
+                    android:paddingTop="0dp"
+                    android:paddingRight="0dp"
+                    android:paddingBottom="0dp"
+                    android:visibility="invisible"
+                    app:icon="@drawable/ic_password_show"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:visibility="visible" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/tvConfirmMsg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="2dp"
+                android:text="@string/ui_ct_leaveBlankToSkip"
+                android:textSize="14sp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/clConfirm"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/clConfirm"
+                app:layout_constraintTop_toBottomOf="@+id/clConfirm"
+                tools:visibility="visible" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clTag"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/background_edittext"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/app_com_tag"
+                    android:textSize="11sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/ivTag"
+                    app:layout_constraintStart_toEndOf="@+id/ivTag"
+                    app:layout_constraintTop_toTopOf="@+id/ivTag"
+                    app:layout_constraintVertical_bias="0.56" />
+
+                <ImageView
+                    android:id="@+id/ivTag"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="2dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_tag" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivTag">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btTagNone"
+                        style="@style/IconButton"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="2"
+                        android:backgroundTint="?editBackground"
+                        android:focusable="false"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"
+                        app:icon="@drawable/ic_tag_circle_none"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btTagRed"
+                        style="@style/IconButton"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="?editBackground"
+                        android:focusable="false"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"
+                        app:icon="@drawable/ic_tag_circle"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp"
+                        app:iconTint="@color/tagRed" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btTagGreen"
+                        style="@style/IconButton"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="?editBackground"
+                        android:focusable="false"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"
+                        app:icon="@drawable/ic_tag_circle"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp"
+                        app:iconTint="@color/tagGreen" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btTagBlue"
+                        style="@style/IconButton"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="?editBackground"
+                        android:focusable="false"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"
+                        app:icon="@drawable/ic_tag_circle"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp"
+                        app:iconTint="@color/tagBlue" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btTagYellow"
+                        style="@style/IconButton"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="?editBackground"
+                        android:focusable="false"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"
+                        app:icon="@drawable/ic_tag_circle"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp"
+                        app:iconTint="@color/tagYellow" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btTagPurple"
+                        style="@style/IconButton"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="?editBackground"
+                        android:focusable="false"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"
+                        app:icon="@drawable/ic_tag_circle"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp"
+                        app:iconTint="@color/tagPurple" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clErr"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:gravity="start|top"
-        android:scrollHorizontally="false"
-        app:layout_constraintEnd_toStartOf="@+id/btUndoNote"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-    <EditText
-        android:id="@+id/etLogin"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
-        app:layout_constraintEnd_toStartOf="@+id/btUndoLogin"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etNote" />
-
-    <EditText
-        android:id="@+id/etPassword"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toStartOf="@+id/btUndoPassword"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etLogin" />
-
-    <Button
-        android:id="@+id/btUndoNote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="Undo"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-    <Button
-        android:id="@+id/btUndoLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="8dp"
-        android:text="Undo"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btUndoNote" />
-
-    <Button
-        android:id="@+id/btUndoPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="8dp"
-        android:text="Undo"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btUndoLogin" />
-
-    <CheckBox
-        android:id="@+id/cbShowPassword"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:focusable="false"
-        android:text="@string/app_bt_showPassword"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/background_info_error"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/btSave"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPassword" />
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/ivErrIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_error"
+            app:tint="?infoErrorForeground" />
+
+        <TextView
+            android:id="@+id/tvErrMsg"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="12dp"
+            android:text="Error message"
+            android:textColor="?infoErrorForeground"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ivErrIcon"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
         android:id="@+id/btSave"
+        style="@style/MainButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:focusable="false"
-        android:text="@string/app_bt_editSave"
+        android:layout_marginBottom="24dp"
+        android:elevation="2dp"
+        android:text="@string/app_bt_save"
+        app:icon="@drawable/ic_save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/tvErrMsg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/ui_ct_editItemErr"
-        android:textColor="@android:color/holo_red_light"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/btSave"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:background="#FAFAFA"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cbShowPassword">
-
-        <ImageButton
-            android:id="@+id/btTagNone"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_weight="2"
-            android:background="@null"
-            android:focusable="false"
-            app:srcCompat="@drawable/ic_tag_circle_none" />
-
-        <ImageButton
-            android:id="@+id/btTagRed"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:focusable="false"
-            android:tint="@color/tagRed"
-            app:srcCompat="@drawable/ic_tag_circle" />
-
-        <ImageButton
-            android:id="@+id/btTagGreen"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:focusable="false"
-            android:tint="@color/tagGreen"
-            app:srcCompat="@drawable/ic_tag_circle" />
-
-        <ImageButton
-            android:id="@+id/btTagBlue"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:focusable="false"
-            android:tint="@color/tagBlue"
-            app:srcCompat="@drawable/ic_tag_circle" />
-
-        <ImageButton
-            android:id="@+id/btTagYellow"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:focusable="false"
-            android:tint="@color/tagYellow"
-            app:srcCompat="@drawable/ic_tag_circle" />
-
-        <ImageButton
-            android:id="@+id/btTagPurple"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:focusable="false"
-            android:tint="@color/tagPurple"
-            app:srcCompat="@drawable/ic_tag_circle" />
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -99,7 +99,7 @@ class MpRequester(
 
         binding.btShowPass.setOnClickListener {
             passwordIsVisible =
-                showHidePassword(binding.etPassword, binding.btShowPass, passwordIsVisible)
+                showHidePassword(context, binding.etPassword, binding.btShowPass, passwordIsVisible)
         }
 
         if (mode != Mode.OPEN) {
@@ -107,7 +107,7 @@ class MpRequester(
             binding.btShowConfirm.setOnClickListener {
                 btConfirmClicked = true
                 confirmIsVisible =
-                    showHidePassword(binding.etConfirm, binding.btShowConfirm, confirmIsVisible)
+                    showHidePassword(context, binding.etConfirm, binding.btShowConfirm, confirmIsVisible)
             }
         }
 
@@ -140,7 +140,7 @@ class MpRequester(
 
             binding.etPassword.doAfterTextChanged { x ->
                 passwordIsVisible =
-                    widgetBehavior(x, binding.etPassword, binding.btShowPass, passwordIsVisible)
+                    widgetBehavior(context, x, binding.etPassword, binding.btShowPass, passwordIsVisible)
                 binding.btNeutral.isEnabled =
                     x.toString().isEmpty() && binding.etConfirm.text.toString().isEmpty()
                 binding.cbRememberPass.visibility =
@@ -232,7 +232,7 @@ class MpRequester(
 
             binding.etConfirm.doAfterTextChanged { x ->
                 confirmIsVisible =
-                    widgetBehavior(x, binding.etConfirm, binding.btShowConfirm, confirmIsVisible)
+                    widgetBehavior(context, x, binding.etConfirm, binding.btShowConfirm, confirmIsVisible)
                 binding.btNeutral.isEnabled =
                     x.toString().isEmpty() && binding.etPassword.text.toString().isEmpty()
                 binding.cbRememberPass.visibility =
@@ -253,47 +253,51 @@ class MpRequester(
 
     fun isNeedToRemember() = rememberMasterPass
 
-    private fun widgetBehavior(
-        x: Editable?,
-        etPassword: EditText,
-        btShow: MaterialButton,
-        isVisible: Boolean
-    ): Boolean {
-        var current = isVisible
+    companion object {
+        fun widgetBehavior(
+            context: Context,
+            x: Editable?,
+            etPassword: EditText,
+            btShow: MaterialButton,
+            isVisible: Boolean
+        ): Boolean {
+            var current = isVisible
 
-        val isNotEmpty = x.toString().isNotEmpty()
-        if (!isNotEmpty) current = showHidePassword(etPassword, btShow, true)
-        etPassword.typeface = ResourcesCompat.getFont(
-            context,
-            if (isNotEmpty) if (current) R.font.overpassmono_semibold else R.font.passmono_asterisk
-            else R.font.manrope
-        )
-        btShow.visibility = if (isNotEmpty) View.VISIBLE else View.INVISIBLE
+            val isNotEmpty = x.toString().isNotEmpty()
+            if (!isNotEmpty) current = showHidePassword(context, etPassword, btShow, true)
+            etPassword.typeface = ResourcesCompat.getFont(
+                context,
+                if (isNotEmpty) if (current) R.font.overpassmono_semibold else R.font.passmono_asterisk
+                else R.font.manrope
+            )
+            btShow.visibility = if (isNotEmpty) View.VISIBLE else View.INVISIBLE
 
-        return current
-    }
+            return current
+        }
 
-    private fun showHidePassword(
-        etPassword: EditText,
-        btShow: MaterialButton,
-        isVisible: Boolean
-    ): Boolean {
-        val current = !isVisible
+        fun showHidePassword(
+            context: Context,
+            etPassword: EditText,
+            btShow: MaterialButton,
+            isVisible: Boolean
+        ): Boolean {
+            val current = !isVisible
 
-        etPassword.transformationMethod =
-            if (current) HideReturnsTransformationMethod.getInstance() else PasswordTransformationMethod.getInstance()
-        etPassword.setSelection(etPassword.text.length)
+            etPassword.transformationMethod =
+                if (current) HideReturnsTransformationMethod.getInstance() else PasswordTransformationMethod.getInstance()
+            etPassword.setSelection(etPassword.text.length)
 
-        etPassword.typeface = ResourcesCompat.getFont(
-            context,
-            if (current) R.font.overpassmono_semibold else R.font.passmono_asterisk
-        )
+            etPassword.typeface = ResourcesCompat.getFont(
+                context,
+                if (current) R.font.overpassmono_semibold else R.font.passmono_asterisk
+            )
 
-        btShow.icon = ContextCompat.getDrawable(
-            context,
-            if (current) R.drawable.ic_lock else R.drawable.ic_password_show
-        )
+            btShow.icon = ContextCompat.getDrawable(
+                context,
+                if (current) R.drawable.ic_lock else R.drawable.ic_password_show
+            )
 
-        return current
+            return current
+        }
     }
 }

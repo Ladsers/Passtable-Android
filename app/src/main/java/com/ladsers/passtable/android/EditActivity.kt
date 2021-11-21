@@ -24,6 +24,9 @@ class EditActivity : AppCompatActivity() {
     private var isBackgrounded = false
     private var backgroundSecs = 0L
 
+    private var passwordIsVisible = false
+    private var confirmIsVisible = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditBinding.inflate(layoutInflater)
@@ -39,12 +42,11 @@ class EditActivity : AppCompatActivity() {
 
         if (!editMode) {
             binding.toolbar.root.title = getString(R.string.ui_ct_addItem)
-            binding.btUndoNote.visibility = View.GONE
-            binding.btUndoLogin.visibility = View.GONE
-            binding.btUndoPassword.visibility = View.GONE
-            binding.btSave.text = getString(R.string.app_bt_addSave)
         } else {
             binding.toolbar.root.title = getString(R.string.ui_ct_editItem)
+            binding.btUndoNote.visibility = View.VISIBLE
+            binding.btUndoLogin.visibility = View.VISIBLE
+            binding.btUndoPassword.visibility = View.VISIBLE
         }
 
         if (!blockClosing) {
@@ -71,11 +73,33 @@ class EditActivity : AppCompatActivity() {
         editTextBehavior(binding.etLogin, binding.btUndoLogin, originalLogin)
         editTextBehavior(binding.etPassword, binding.btUndoPassword, originalPassword)
 
-        binding.cbShowPassword.setOnCheckedChangeListener { _, isChecked ->
-            binding.etPassword.transformationMethod = if (isChecked)
-                HideReturnsTransformationMethod.getInstance()
-            else PasswordTransformationMethod.getInstance()
-            binding.etPassword.setSelection(binding.etPassword.text.length)
+        binding.btShowPass.setOnClickListener {
+            passwordIsVisible =
+                MpRequester.showHidePassword(this, binding.etPassword, binding.btShowPass, passwordIsVisible)
+        }
+
+        binding.btShowConfirm.setOnClickListener {
+            confirmIsVisible =
+                MpRequester.showHidePassword(this, binding.etConfirm, binding.btShowConfirm, confirmIsVisible)
+        }
+
+        binding.etPassword.doAfterTextChanged { x ->
+            passwordIsVisible =
+                MpRequester.widgetBehavior(this, x, binding.etPassword, binding.btShowPass, passwordIsVisible)
+            if ((editMode && x.toString() != originalPassword) ||
+                (!editMode && x.toString().isNotEmpty())
+            ) {
+                binding.clConfirm.visibility = View.VISIBLE
+                binding.tvConfirmMsg.visibility = View.VISIBLE
+            } else {
+                binding.etConfirm.setText("")
+                binding.clConfirm.visibility = View.GONE
+                binding.tvConfirmMsg.visibility = View.GONE
+            }
+        }
+        binding.etConfirm.doAfterTextChanged { x ->
+            confirmIsVisible =
+                MpRequester.widgetBehavior(this, x, binding.etConfirm, binding.btShowConfirm, confirmIsVisible)
         }
 
         binding.btSave.setOnClickListener { returnNewData() }
@@ -84,22 +108,17 @@ class EditActivity : AppCompatActivity() {
     }
 
     private fun editTextBehavior(editText: EditText, button: Button, originalVal: String) {
-        editText.setText(originalVal)
+        editText.post { editText.setText(originalVal) }
 
         editText.doAfterTextChanged { x ->
-            button.visibility =
-                when {
-                    editMode && x.toString() != originalVal -> View.VISIBLE
-                    editMode -> View.INVISIBLE
-                    else -> View.GONE
-                }
+            button.isEnabled = editMode && x.toString() != originalVal
             canBeSavedCheck()
         }
 
         button.setOnClickListener {
             editText.setText(originalVal)
             editText.setSelection(editText.text.length)
-            button.visibility = View.INVISIBLE
+            button.isEnabled = false
         }
     }
 

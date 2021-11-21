@@ -527,7 +527,7 @@ class TableActivity : AppCompatActivity() {
     private fun searchByTag(tagCode: Int, btTag: ImageButton) {
         tagFilter[tagCode] = !tagFilter[tagCode]
         if (tagFilter[tagCode]) {
-            btTag.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_tag_on))
+            btTag.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_tag))
         } else {
             btTag.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_tag_off))
         }
