@@ -2,8 +2,8 @@ package com.ladsers.passtable.android
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.method.HideReturnsTransformationMethod
-import android.text.method.PasswordTransformationMethod
+import android.util.TypedValue
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
@@ -11,6 +11,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
+import androidx.core.widget.doBeforeTextChanged
 import com.ladsers.passtable.android.databinding.ActivityEditBinding
 import java.util.*
 
@@ -27,10 +28,18 @@ class EditActivity : AppCompatActivity() {
     private var passwordIsVisible = false
     private var confirmIsVisible = false
 
+    private var btConfirmClicked = false
+    private val doNotMatchMsgWithDelay = Runnable { showError(2) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.svLayout.setOnScrollChangeListener { _, _, y, _, oldY ->
+            if (y > oldY || y < oldY) binding.toolbar.root.elevation = 7f
+            if (y == 0) binding.toolbar.root.elevation = 0f
+        }
 
         val originalTag = intent.getStringExtra("dataTag") ?: "0"
         val originalNote = intent.getStringExtra("dataNote") ?: ""
@@ -53,7 +62,7 @@ class EditActivity : AppCompatActivity() {
             binding.toolbar.root.navigationIcon =
                 ContextCompat.getDrawable(this, R.drawable.ic_back_arrow)
             setSupportActionBar(binding.toolbar.root)
-            binding.toolbar.root.setNavigationOnClickListener { finish() }
+            binding.toolbar.root.setNavigationOnClickListener { unsavedChangesCheck() }
         }
 
         binding.etNote.inputType = EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE
@@ -79,10 +88,40 @@ class EditActivity : AppCompatActivity() {
         }
 
         binding.btShowConfirm.setOnClickListener {
+            btConfirmClicked = true
             confirmIsVisible =
                 MpRequester.showHidePassword(this, binding.etConfirm, binding.btShowConfirm, confirmIsVisible)
         }
 
+        passwordsMatchCheck(originalPassword)
+
+        binding.btSave.setOnClickListener { returnNewData() }
+
+        canBeSavedCheck()
+    }
+
+    private fun editTextBehavior(editText: EditText, button: Button, originalVal: String) {
+        editText.post { editText.setText(originalVal) }
+
+        editText.doAfterTextChanged { x ->
+            binding.clErr.removeCallbacks(doNotMatchMsgWithDelay)
+            button.isEnabled = editMode && x.toString() != originalVal
+            canBeSavedCheck()
+        }
+
+        button.setOnClickListener {
+            it.performHapticFeedback(
+                HapticFeedbackConstants.VIRTUAL_KEY,
+                HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
+            )
+
+            editText.setText(originalVal)
+            editText.setSelection(editText.text.length)
+            button.isEnabled = false
+        }
+    }
+
+    private fun passwordsMatchCheck(originalPassword: String){
         binding.etPassword.doAfterTextChanged { x ->
             passwordIsVisible =
                 MpRequester.widgetBehavior(this, x, binding.etPassword, binding.btShowPass, passwordIsVisible)
@@ -97,41 +136,80 @@ class EditActivity : AppCompatActivity() {
                 binding.tvConfirmMsg.visibility = View.GONE
             }
         }
+
+        binding.etConfirm.doBeforeTextChanged { _, _, _, _ ->
+            if (btConfirmClicked) {
+                btConfirmClicked = false
+                return@doBeforeTextChanged
+            }
+            binding.clErr.removeCallbacks(doNotMatchMsgWithDelay)
+            if (canBeSavedCheck(false) != 1) showError(0)
+        }
+
         binding.etConfirm.doAfterTextChanged { x ->
             confirmIsVisible =
                 MpRequester.widgetBehavior(this, x, binding.etConfirm, binding.btShowConfirm, confirmIsVisible)
-        }
 
-        binding.btSave.setOnClickListener { returnNewData() }
-
-        canBeSavedCheck()
-    }
-
-    private fun editTextBehavior(editText: EditText, button: Button, originalVal: String) {
-        editText.post { editText.setText(originalVal) }
-
-        editText.doAfterTextChanged { x ->
-            button.isEnabled = editMode && x.toString() != originalVal
-            canBeSavedCheck()
-        }
-
-        button.setOnClickListener {
-            editText.setText(originalVal)
-            editText.setSelection(editText.text.length)
-            button.isEnabled = false
+            if (canBeSavedCheck(false) != 1 &&
+                x.toString().isNotEmpty() &&
+                binding.etPassword.text.toString() != x.toString()
+            ) {
+                binding.clErr.postDelayed(
+                    doNotMatchMsgWithDelay,
+                    750
+                )
+            }
         }
     }
 
-    private fun canBeSavedCheck() {
-        if (binding.etNote.text.isEmpty() &&
-            (binding.etLogin.text.isEmpty() || binding.etPassword.text.isEmpty())
+    private fun canBeSavedCheck(show: Boolean = true): Int {
+        return if (binding.etNote.text.isBlank() &&
+            (binding.etLogin.text.isBlank() || binding.etPassword.text.isEmpty())
         ) {
-            binding.btSave.isEnabled = false
-            binding.tvErrMsg.visibility = View.VISIBLE
+            disableBtSave()
+            if (show) showError(1)
+            1
         } else {
-            binding.btSave.isEnabled = true
-            binding.tvErrMsg.visibility = View.INVISIBLE
+            if (binding.etConfirm.text.isNotEmpty() &&
+                binding.etPassword.text.toString() != binding.etConfirm.text.toString()
+            ) {
+                disableBtSave()
+                if (show) showError(2)
+                2
+            } else {
+                enableBtSave()
+                if (show) showError(0)
+                0
+            }
         }
+    }
+
+    private fun showError(code: Int) {
+        when (code) {
+            0 -> binding.clErr.visibility = View.GONE
+            1 -> {
+                binding.tvErrMsg.text = getString(R.string.ui_ct_editItemErr)
+                binding.clErr.visibility = View.VISIBLE
+            }
+            2 -> {
+                binding.tvErrMsg.text = getString(R.string.dlg_ct_passwordsDoNotMatch)
+                binding.clErr.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun enableBtSave() {
+        binding.btSave.isEnabled = true
+        binding.btSave.elevation = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            2.0F,
+            resources.displayMetrics
+        )
+    }
+
+    private fun disableBtSave() {
+        binding.btSave.isEnabled = false
+        binding.btSave.elevation = 0.0F
     }
 
     private fun returnNewData() {
@@ -188,8 +266,21 @@ class EditActivity : AppCompatActivity() {
         }
     }
 
+    private fun unsavedChangesCheck(){
+        if (binding.btUndoNote.isEnabled || binding.btUndoLogin.isEnabled || binding.btUndoPassword.isEnabled) {
+            MsgDialog(this, window).quickDialog(
+                getString(R.string.dlg_title_discardChanges),
+                getString(R.string.dlg_msg_changesWillBeDiscarded),
+                { finish() },
+                posIcon = R.drawable.ic_undo,
+                posText = getString(R.string.app_bt_discard)
+            )
+        }
+        else finish()
+    }
+
     override fun onBackPressed() {
-        if (!blockClosing) super.onBackPressed()
+        if (!blockClosing) unsavedChangesCheck()
     }
 
     override fun onPause() {

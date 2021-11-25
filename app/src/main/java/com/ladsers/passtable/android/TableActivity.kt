@@ -370,38 +370,33 @@ class TableActivity : AppCompatActivity() {
             .StartActivityForResult()
     ) { result ->
         disableLockFileSystem = false
-        if (result.resultCode == Activity.RESULT_OK) {
-            if (needToLock(result.data)){
-                Toast.makeText(
-                    this, getString(R.string.ui_msg_canceled), Toast.LENGTH_SHORT
-                ).show()
-                lockFile()
-                return@registerForActivityResult
-            }
+        if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
 
-            val data = parseDataFromEditActivity(result.data) ?: return@registerForActivityResult
-
-            val tableId = if (mtList[editId].id == -1) editId else mtList[editId].id
-            table.setData(tableId, data[0], data[1], data[2], data[3])
-            saving()
-
-            if (!tagFilter.any { it } || tagFilter[data[0].toInt()]) {
-                mtList[editId].tag = data[0]
-                mtList[editId].note = data[1]
-                mtList[editId].login = data[2]
-                mtList[editId].password = if (data[3].isNotEmpty()) "/yes" else "/no"
-
-                adapter.notifyItemChanged(editId)
-            } else {
-                mtList.removeAt(editId)
-                adapter.notifyItemRemoved(editId)
-                adapter.notifyItemRangeChanged(editId, adapter.itemCount)
-            }
-
-        } else {
+        if (needToLock(result.data)) {
             Toast.makeText(
                 this, getString(R.string.ui_msg_canceled), Toast.LENGTH_SHORT
             ).show()
+            lockFile()
+            return@registerForActivityResult
+        }
+
+        val data = parseDataFromEditActivity(result.data) ?: return@registerForActivityResult
+
+        val tableId = if (mtList[editId].id == -1) editId else mtList[editId].id
+        table.setData(tableId, data[0], data[1], data[2], data[3])
+        saving()
+
+        if (!tagFilter.any { it } || tagFilter[data[0].toInt()]) {
+            mtList[editId].tag = data[0]
+            mtList[editId].note = data[1]
+            mtList[editId].login = data[2]
+            mtList[editId].password = if (data[3].isNotEmpty()) "/yes" else "/no"
+
+            adapter.notifyItemChanged(editId)
+        } else {
+            mtList.removeAt(editId)
+            adapter.notifyItemRemoved(editId)
+            adapter.notifyItemRangeChanged(editId, adapter.itemCount)
         }
     }
 

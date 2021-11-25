@@ -43,6 +43,7 @@
         <string name="app_bt_selectFolder">Select folder</string>
         <string name="app_bt_enter">Enter</string>
         <string name="app_bt_saveWithCurrent">Save with current password</string>
+        <string name="app_bt_discard">Discard</string>
         <!-- end! -->
 
     <!-- END -->
@@ -51,7 +52,7 @@
 
         <!-- ct (content) -->
         <string name="ui_ct_home">Home</string>
-        <string name="ui_ct_editItemErr">"ErrMsg: Note OR Login and Password"</string>
+        <string name="ui_ct_editItemErr">Item must contain note or login with password</string>
         <string name="ui_ct_editItem">Edit item</string>
         <string name="ui_ct_addItem">Add item</string>
         <string name="ui_ct_settings">Settings</string>
@@ -98,6 +99,7 @@
         <string name="dlg_title_warning">Warning!</string>
         <string name="dlg_title_loginByFingerprint">Login by fingerprint</string>
         <string name="dlg_title_activateLoginByFingerprint">Activate login by fingerprint</string>
+        <string name="dlg_title_discardChanges">Discard changes?</string>
         <!-- end! -->
 
         <!-- ct (content) -->
@@ -144,6 +146,7 @@
         <string name="dlg_msg_recentFilesWillBeCleared">The list of recent files will be cleared</string>
         <string name="dlg_msg_recentFilesAndPasswordsWillBeCleared">The list of recent files will be cleared and all passwords will be forgotten</string>
         <string name="dlg_msg_passwordsWillBeForgotten">All passwords will be forgotten</string>
+        <string name="dlg_msg_changesWillBeDiscarded">All changes will be discarded</string>
         <!-- end! -->
 
     <!-- END -->
