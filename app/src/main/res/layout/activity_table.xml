@@ -39,11 +39,10 @@
             android:layout_weight="1"
             android:background="@null"
             android:focusable="false"
-            app:tint="@color/tagRed"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_tag_off"
+            app:srcCompat="@drawable/ic_tag_red"
             tools:visibility="gone" />
 
         <ImageButton
@@ -54,11 +53,10 @@
             android:layout_weight="1"
             android:background="@null"
             android:focusable="false"
-            app:tint="@color/tagGreen"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btTagRed"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_tag_off"
+            app:srcCompat="@drawable/ic_tag_green"
             tools:visibility="gone" />
 
         <ImageButton
@@ -69,11 +67,11 @@
             android:layout_weight="1"
             android:background="@null"
             android:focusable="false"
-            app:tint="@color/tagBlue"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btTagGreen"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_tag_off"
+            app:srcCompat="@drawable/ic_tag_blue"
             tools:visibility="gone" />
 
         <ImageButton
@@ -84,11 +82,11 @@
             android:layout_weight="1"
             android:background="@null"
             android:focusable="false"
-            app:tint="@color/tagYellow"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btTagBlue"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_tag_off"
+            app:srcCompat="@drawable/ic_tag_yellow"
             tools:visibility="gone" />
 
         <ImageButton
@@ -99,11 +97,11 @@
             android:layout_weight="1"
             android:background="@null"
             android:focusable="false"
-            app:tint="@color/tagPurple"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btTagYellow"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_tag_off"
+            app:srcCompat="@drawable/ic_tag_purple"
             tools:visibility="gone" />
 
         <ImageButton

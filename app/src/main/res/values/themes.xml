@@ -25,6 +25,13 @@
         <item name="actionDisabled">@color/actionDisabledLight</item>
         <item name="infoErrorForeground">@color/infoRedPrimaryLight</item>
         <item name="infoErrorBackground">@color/infoRedSecondaryLight</item>
+
+        <item name="tagNone">@color/tagNoneLight</item>
+        <item name="tagRed">@color/tagRedLight</item>
+        <item name="tagGreen">@color/tagGreenLight</item>
+        <item name="tagBlue">@color/tagBlueLight</item>
+        <item name="tagYellow">@color/tagYellowLight</item>
+        <item name="tagPurple">@color/tagPurpleLight</item>
     </style>
 
     <style name="PopupMenuCustomPos" parent="@style/Widget.AppCompat.PopupMenu">
@@ -85,10 +92,9 @@
         <item name="shapeAppearanceOverlay">@style/ButtonSharpCorners</item>
     </style>
 
-    <style name="IconButton" parent="Widget.MaterialComponents.Button">
+    <style name="IconButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog.Flush">
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
-        <item name="android:backgroundTint">?toolbarBackground</item>
         <item name="rippleColor">?colorControlHighlight</item>
         <item name="iconTint">?iconTint</item>
         <item name="android:textColor">?iconTint</item>

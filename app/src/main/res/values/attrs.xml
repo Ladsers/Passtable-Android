@@ -11,4 +11,12 @@
     <attr name="actionDisabled" format="color" />
     <attr name="infoErrorBackground" format="color" />
     <attr name="infoErrorForeground" format="color" />
+
+    <attr name="tagNone" format="color" />
+    <attr name="tagRed" format="color" />
+    <attr name="tagGreen" format="color" />
+    <attr name="tagBlue" format="color" />
+    <attr name="tagYellow" format="color" />
+    <attr name="tagPurple" format="color" />
+
 </resources>

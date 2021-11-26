@@ -27,6 +27,168 @@
             android:focusable="true"
             android:focusableInTouchMode="true">
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clTag"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/background_tagpanel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tvTag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="@string/app_com_tag"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/clTagButtons"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvTag">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btTagNone"
+                        style="@style/IconButton"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:focusable="false"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"
+                        app:icon="@drawable/ic_tag_none"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp"
+                        app:iconTint="@null"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btTagRed"
+                        style="@style/IconButton"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:focusable="false"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"
+                        app:icon="@drawable/ic_tag_red"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp"
+                        app:iconTint="@null"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.2"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btTagGreen"
+                        style="@style/IconButton"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:focusable="false"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"
+                        app:icon="@drawable/ic_tag_green"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp"
+                        app:iconTint="@null"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.4"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btTagBlue"
+                        style="@style/IconButton"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:focusable="false"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"
+                        app:icon="@drawable/ic_tag_blue"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp"
+                        app:iconTint="@null"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.6"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btTagYellow"
+                        style="@style/IconButton"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:focusable="false"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"
+                        app:icon="@drawable/ic_tag_yellow"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp"
+                        app:iconTint="@null"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.8"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btTagPurple"
+                        style="@style/IconButton"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:focusable="false"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"
+                        app:icon="@drawable/ic_tag_purple"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp"
+                        app:iconTint="@null"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <EditText
                 android:id="@+id/etNote"
                 android:layout_width="0dp"
@@ -260,156 +422,6 @@
                 app:layout_constraintStart_toStartOf="@+id/clConfirm"
                 app:layout_constraintTop_toBottomOf="@+id/clConfirm"
                 tools:visibility="visible" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/clTag"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/background_edittext"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:text="@string/app_com_tag"
-                    android:textSize="11sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/ivTag"
-                    app:layout_constraintStart_toEndOf="@+id/ivTag"
-                    app:layout_constraintTop_toTopOf="@+id/ivTag"
-                    app:layout_constraintVertical_bias="0.56" />
-
-                <ImageView
-                    android:id="@+id/ivTag"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="2dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_tag" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:orientation="horizontal"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/ivTag">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btTagNone"
-                        style="@style/IconButton"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_weight="2"
-                        android:backgroundTint="?editBackground"
-                        android:focusable="false"
-                        android:paddingLeft="0dp"
-                        android:paddingTop="0dp"
-                        android:paddingRight="0dp"
-                        android:paddingBottom="0dp"
-                        app:icon="@drawable/ic_tag_circle_none"
-                        app:iconGravity="textStart"
-                        app:iconPadding="0dp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btTagRed"
-                        style="@style/IconButton"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="?editBackground"
-                        android:focusable="false"
-                        android:paddingLeft="0dp"
-                        android:paddingTop="0dp"
-                        android:paddingRight="0dp"
-                        android:paddingBottom="0dp"
-                        app:icon="@drawable/ic_tag_circle"
-                        app:iconGravity="textStart"
-                        app:iconPadding="0dp"
-                        app:iconTint="@color/tagRed" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btTagGreen"
-                        style="@style/IconButton"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="?editBackground"
-                        android:focusable="false"
-                        android:paddingLeft="0dp"
-                        android:paddingTop="0dp"
-                        android:paddingRight="0dp"
-                        android:paddingBottom="0dp"
-                        app:icon="@drawable/ic_tag_circle"
-                        app:iconGravity="textStart"
-                        app:iconPadding="0dp"
-                        app:iconTint="@color/tagGreen" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btTagBlue"
-                        style="@style/IconButton"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="?editBackground"
-                        android:focusable="false"
-                        android:paddingLeft="0dp"
-                        android:paddingTop="0dp"
-                        android:paddingRight="0dp"
-                        android:paddingBottom="0dp"
-                        app:icon="@drawable/ic_tag_circle"
-                        app:iconGravity="textStart"
-                        app:iconPadding="0dp"
-                        app:iconTint="@color/tagBlue" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btTagYellow"
-                        style="@style/IconButton"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="?editBackground"
-                        android:focusable="false"
-                        android:paddingLeft="0dp"
-                        android:paddingTop="0dp"
-                        android:paddingRight="0dp"
-                        android:paddingBottom="0dp"
-                        app:icon="@drawable/ic_tag_circle"
-                        app:iconGravity="textStart"
-                        app:iconPadding="0dp"
-                        app:iconTint="@color/tagYellow" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btTagPurple"
-                        style="@style/IconButton"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="?editBackground"
-                        android:focusable="false"
-                        android:paddingLeft="0dp"
-                        android:paddingTop="0dp"
-                        android:paddingRight="0dp"
-                        android:paddingBottom="0dp"
-                        app:icon="@drawable/ic_tag_circle"
-                        app:iconGravity="textStart"
-                        app:iconPadding="0dp"
-                        app:iconTint="@color/tagPurple" />
-                </LinearLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/clErr"

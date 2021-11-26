@@ -21,5 +21,12 @@
         <item name="actionDisabled">@color/actionDisabledDark</item>
         <item name="infoErrorForeground">@color/infoRedPrimaryDark</item>
         <item name="infoErrorBackground">@color/infoRedSecondaryDark</item>
+
+        <item name="tagNone">@color/tagNoneDark</item>
+        <item name="tagRed">@color/tagRedDark</item>
+        <item name="tagGreen">@color/tagGreenDark</item>
+        <item name="tagBlue">@color/tagBlueDark</item>
+        <item name="tagYellow">@color/tagYellowDark</item>
+        <item name="tagPurple">@color/tagPurpleDark</item>
     </style>
 </resources>

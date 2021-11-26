@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.color.MaterialColors
 import com.ladsers.passtable.android.databinding.ItemCollectionBinding
 
 class TableAdapter(
@@ -27,8 +28,8 @@ class TableAdapter(
         with(holder) {
             with(dataList[position]) {
                 binding.ivTag.setColorFilter(
-                    ContextCompat.getColor(
-                        binding.root.context,
+                    MaterialColors.getColor(
+                        binding.ivTag,
                         colorSelectionByTagCode(tag)
                     )
                 )

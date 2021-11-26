@@ -22,6 +22,7 @@ import androidx.core.net.toUri
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.color.MaterialColors
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
 import com.ladsers.passtable.android.databinding.DialogItemBinding
 import java.io.BufferedReader
@@ -235,7 +236,8 @@ class TableActivity : AppCompatActivity() {
 
         val tableId = if (mtList[id].id == -1) id else mtList[id].id
         binding.vTag.setBackgroundColor(
-            getColor(
+            MaterialColors.getColor(
+                binding.vTag,
                 colorSelectionByTagCode(
                     table.getData(
                         tableId,

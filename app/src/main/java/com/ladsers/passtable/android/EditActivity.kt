@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doBeforeTextChanged
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.color.MaterialColors
 import com.ladsers.passtable.android.databinding.ActivityEditBinding
 import java.util.*
 
@@ -225,7 +227,7 @@ class EditActivity : AppCompatActivity() {
 
     private fun selectTag(clickedTag: View) {
         resetAllTags()
-        setTagScale(clickedTag, 1.3F)
+        updateTag(clickedTag as MaterialButton, true)
         selectedTag = when (clickedTag) {
             binding.btTagRed -> "1"
             binding.btTagGreen -> "2"
@@ -238,32 +240,34 @@ class EditActivity : AppCompatActivity() {
 
     private fun preselectTag(){
         resetAllTags()
-        setTagScale(when (selectedTag){
-            "1" -> binding.btTagRed
-            "2" -> binding.btTagGreen
-            "3" -> binding.btTagBlue
-            "4" -> binding.btTagYellow
-            "5" -> binding.btTagPurple
-             else -> binding.btTagNone
-        }, 1.3F)
+        updateTag(
+            when (selectedTag) {
+                "1" -> binding.btTagRed
+                "2" -> binding.btTagGreen
+                "3" -> binding.btTagBlue
+                "4" -> binding.btTagYellow
+                "5" -> binding.btTagPurple
+                else -> binding.btTagNone
+            }, true
+        )
     }
 
     private fun resetAllTags(){
-        val initScale = 0.75F
-
-        setTagScale(binding.btTagNone, initScale)
-        setTagScale(binding.btTagRed, initScale)
-        setTagScale(binding.btTagGreen, initScale)
-        setTagScale(binding.btTagBlue, initScale)
-        setTagScale(binding.btTagYellow, initScale)
-        setTagScale(binding.btTagPurple, initScale)
+        updateTag(binding.btTagNone, false)
+        updateTag(binding.btTagRed, false)
+        updateTag(binding.btTagGreen, false)
+        updateTag(binding.btTagBlue, false)
+        updateTag(binding.btTagYellow, false)
+        updateTag(binding.btTagPurple, false)
     }
 
-    private fun setTagScale(imageButton: View, scale: Float) {
-        with(imageButton) {
-            scaleX = scale
-            scaleY = scale
-        }
+    private fun updateTag(button: MaterialButton, selected: Boolean) {
+        button.setBackgroundColor(
+            MaterialColors.getColor(
+                button,
+                if (selected) R.attr.editBackground else R.attr.whiteOrBlack
+            )
+        )
     }
 
     private fun unsavedChangesCheck(){

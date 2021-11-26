@@ -17,15 +17,22 @@
     <color name="textPrimaryDark">#FFFFFF</color>
     <color name="textSecondaryDark">#757575</color>
 
-    <color name="tagNone">#00000000</color>
-    <color name="tagRed">#FF8F8F</color>
-    <color name="tagGreen">#CEFF8F</color>
-    <color name="tagBlue">#8FDEFF</color>
-    <color name="tagYellow">#FFD28F</color>
-    <color name="tagPurple">#E28FFF</color>
+    <color name="tagNoneLight">#00000000</color>
+    <color name="tagRedLight">#FAAFA9</color>
+    <color name="tagGreenLight">#E2F6D3</color>
+    <color name="tagBlueLight">#D3E4EC</color>
+    <color name="tagYellowLight">#FFF8B9</color>
+    <color name="tagPurpleLight">#D3BEDB</color>
 
-    <color name="tagNoneStrokeLight">#DCDCDC</color>
+    <color name="tagNoneDark">#00000000</color>
+    <color name="tagRedDark">#76172D</color>
+    <color name="tagGreenDark">#264d3B</color>
+    <color name="tagBlueDark">#256476</color>
+    <color name="tagYellowDark">#7C4A03</color>
+    <color name="tagPurpleDark">#482E5B</color>
+
     <color name="tagNoneStrokeDark">#404040</color>
+    <color name="tagNoneStrokeLight">#DCDCDC</color>
 
     <color name="editBackgroundLight">#F3F3F3</color>
     <color name="editBackgroundDark">#383838</color>
