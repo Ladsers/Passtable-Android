@@ -24,6 +24,11 @@ class EditActivity : AppCompatActivity() {
     private lateinit var selectedTag: String
     private var blockClosing = false
 
+    private lateinit var originalTag: String
+    private lateinit var originalNote: String
+    private lateinit var originalLogin: String
+    private lateinit var originalPassword: String
+
     private var isBackgrounded = false
     private var backgroundSecs = 0L
 
@@ -43,10 +48,10 @@ class EditActivity : AppCompatActivity() {
             if (y == 0) binding.toolbar.root.elevation = 0f
         }
 
-        val originalTag = intent.getStringExtra("dataTag") ?: "0"
-        val originalNote = intent.getStringExtra("dataNote") ?: ""
-        val originalLogin = intent.getStringExtra("dataLogin") ?: ""
-        val originalPassword = intent.getStringExtra("dataPassword") ?: ""
+        originalTag = intent.getStringExtra("dataTag") ?: "0"
+        originalNote = intent.getStringExtra("dataNote") ?: ""
+        originalLogin = intent.getStringExtra("dataLogin") ?: ""
+        originalPassword = intent.getStringExtra("dataPassword") ?: ""
 
         editMode = intent.getBooleanExtra("modeEdit", false)
         blockClosing = intent.getBooleanExtra("blockClosing", false)
@@ -95,7 +100,7 @@ class EditActivity : AppCompatActivity() {
                 MpRequester.showHidePassword(this, binding.etConfirm, binding.btShowConfirm, confirmIsVisible)
         }
 
-        passwordsMatchCheck(originalPassword)
+        passwordsMatchCheck()
 
         binding.btSave.setOnClickListener { returnNewData() }
 
@@ -123,17 +128,19 @@ class EditActivity : AppCompatActivity() {
         }
     }
 
-    private fun passwordsMatchCheck(originalPassword: String){
+    private fun passwordsMatchCheck(){
         binding.etPassword.doAfterTextChanged { x ->
             passwordIsVisible =
                 MpRequester.widgetBehavior(this, x, binding.etPassword, binding.btShowPass, passwordIsVisible)
             if ((editMode && x.toString() != originalPassword) ||
                 (!editMode && x.toString().isNotEmpty())
             ) {
+                binding.etConfirm.isEnabled = true
                 binding.clConfirm.visibility = View.VISIBLE
                 binding.tvConfirmMsg.visibility = View.VISIBLE
             } else {
                 binding.etConfirm.setText("")
+                binding.etConfirm.isEnabled = false
                 binding.clConfirm.visibility = View.GONE
                 binding.tvConfirmMsg.visibility = View.GONE
             }
@@ -271,13 +278,17 @@ class EditActivity : AppCompatActivity() {
     }
 
     private fun unsavedChangesCheck(){
-        if (binding.btUndoNote.isEnabled || binding.btUndoLogin.isEnabled || binding.btUndoPassword.isEnabled) {
+        if (selectedTag != originalTag ||
+            binding.etNote.text.toString() != originalNote ||
+            binding.etLogin.text.toString() != originalLogin ||
+            binding.etPassword.text.toString() != originalPassword
+        ) {
             MsgDialog(this, window).quickDialog(
-                getString(R.string.dlg_title_discardChanges),
-                getString(R.string.dlg_msg_changesWillBeDiscarded),
+                getString(R.string.dlg_title_closeWithoutSaving),
+                getString(R.string.dlg_msg_unsavedDataWillBeLost),
                 { finish() },
-                posIcon = R.drawable.ic_undo,
-                posText = getString(R.string.app_bt_discard)
+                posIcon = R.drawable.ic_exit,
+                posText = getString(R.string.app_bt_close)
             )
         }
         else finish()
