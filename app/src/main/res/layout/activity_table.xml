@@ -22,8 +22,9 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clPanel"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="50dp"
         android:background="?panelTableBackground"
         android:clickable="true"
         android:elevation="10dp"
@@ -31,108 +32,115 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <ImageButton
-            android:id="@+id/btTagRed"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginStart="16dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:focusable="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_tag_red"
-            tools:visibility="gone" />
-
-        <ImageButton
-            android:id="@+id/btTagGreen"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginStart="24dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:focusable="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btTagRed"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_tag_green"
-            tools:visibility="gone" />
-
-        <ImageButton
-            android:id="@+id/btTagBlue"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginStart="24dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:focusable="false"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btTagGreen"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_tag_blue"
-            tools:visibility="gone" />
-
-        <ImageButton
-            android:id="@+id/btTagYellow"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginStart="24dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:focusable="false"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btTagBlue"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_tag_yellow"
-            tools:visibility="gone" />
-
-        <ImageButton
-            android:id="@+id/btTagPurple"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginStart="24dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:focusable="false"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btTagYellow"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_tag_purple"
-            tools:visibility="gone" />
-
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btSearch"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:focusable="false"
+            style="@style/IconButton"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginEnd="8dp"
+            app:icon="@drawable/ic_search"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_search" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/etSearch"
+            style="@style/EditData"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
+            android:background="@null"
             android:ems="10"
             android:hint="@string/ui_ct_searchHint"
             android:imeOptions="actionSearch"
             android:inputType="textPersonName"
+            android:paddingEnd="0dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btSearch"
-            app:layout_constraintStart_toEndOf="@+id/btTagRed"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clTagButtons"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="70dp"
+            android:maxWidth="350dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btSearch"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btTagRed"
+                style="@style/IconButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:icon="@drawable/ic_tag_red"
+                app:iconTint="@null"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btTagGreen"
+                style="@style/IconButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:icon="@drawable/ic_tag_green"
+                app:iconTint="@null"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.25"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btTagBlue"
+                style="@style/IconButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:icon="@drawable/ic_tag_blue"
+                app:iconTint="@null"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btTagYellow"
+                style="@style/IconButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:icon="@drawable/ic_tag_yellow"
+                app:iconTint="@null"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.75"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btTagPurple"
+                style="@style/IconButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:icon="@drawable/ic_tag_purple"
+                app:iconTint="@null"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

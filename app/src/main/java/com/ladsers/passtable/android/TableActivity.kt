@@ -12,7 +12,6 @@ import android.provider.DocumentsContract
 import android.text.InputType
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -22,6 +21,7 @@ import androidx.core.net.toUri
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
 import com.ladsers.passtable.android.databinding.DialogItemBinding
@@ -44,7 +44,7 @@ class TableActivity : AppCompatActivity() {
     private lateinit var fileCreator: FileCreator
 
     private var editId = -1
-    private val tagFilter = MutableList(6) {false}
+    private val tagFilter = MutableList(6) { false }
     private var searchMode = false
     private var saveAsMode = false
     private var afterRemoval = false
@@ -129,7 +129,7 @@ class TableActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId){
+        return when (item.itemId) {
             R.id.btAdd -> {
                 addItem()
                 true
@@ -144,7 +144,7 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
-    private fun creationFileProcess(masterPass: String){
+    private fun creationFileProcess(masterPass: String) {
         RecentFiles.add(this, mainUri)
         table = DataTableAndroid(mainUri.toString(), masterPass, cryptData, contentResolver)
         if (!saving(firstSave = true)) return
@@ -267,8 +267,7 @@ class TableActivity : AppCompatActivity() {
             binding.tbPassword.text =
                 if (ParamStorage.getBool(this, Param.SHOW_PASSWORD_IN_CARD)) p
                 else getString(R.string.app_com_passwordSecret)
-        }
-        else {
+        } else {
             binding.tbPassword.visibility = View.INVISIBLE
             binding.btCopyPassword.visibility = View.INVISIBLE
             binding.btShowPassword.visibility = View.INVISIBLE
@@ -279,7 +278,8 @@ class TableActivity : AppCompatActivity() {
         binding.btCopyPassword.setOnClickListener { toClipboard(id, "p") }
         binding.btShowPassword.setOnClickListener {
             binding.tbPassword.text = if (binding.tbPassword.text ==
-                getString(R.string.app_com_passwordSecret)) p else getString(R.string.app_com_passwordSecret)
+                getString(R.string.app_com_passwordSecret)
+            ) p else getString(R.string.app_com_passwordSecret)
         }
 
         overlayCard = true
@@ -331,8 +331,7 @@ class TableActivity : AppCompatActivity() {
                 getString(R.string.dlg_title_notSaved)
             )
             null
-        }
-        else {
+        } else {
             val newTag = data.getStringExtra("newDataTag")
             val newNote = data.getStringExtra("newDataNote")
             val newLogin = data.getStringExtra("newDataLogin")
@@ -402,9 +401,9 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
-    private fun addItem(){
+    private fun addItem() {
         val intent = Intent(this, EditActivity::class.java)
-        if (tagFilter.count { it } == 1){
+        if (tagFilter.count { it } == 1) {
             intent.putExtra("dataTag", tagFilter.indexOf(true).toString())
         }
         if (searchMode) openSearchPanel()
@@ -418,7 +417,7 @@ class TableActivity : AppCompatActivity() {
     ) { result ->
         disableLockFileSystem = false
         if (result.resultCode == Activity.RESULT_OK) {
-            if (needToLock(result.data)){
+            if (needToLock(result.data)) {
                 Toast.makeText(
                     this, getString(R.string.ui_msg_canceled), Toast.LENGTH_SHORT
                 ).show()
@@ -453,7 +452,7 @@ class TableActivity : AppCompatActivity() {
         newPath: String? = null,
         newPassword: String? = null,
         firstSave: Boolean = false
-    ) : Boolean {
+    ): Boolean {
         val resCode = when (true) {
             newPath != null && newPassword == null -> table.save(newPath)
             newPath != null && newPassword != null -> table.save(newPath, newPassword)
@@ -476,7 +475,7 @@ class TableActivity : AppCompatActivity() {
         return false
     }
 
-    private fun removeItem(id: Int, alertDialog: AlertDialog){
+    private fun removeItem(id: Int, alertDialog: AlertDialog) {
         val builder = AlertDialog.Builder(this)
         builder.setMessage(getString(R.string.dlg_msg_permanentRemoval))
         builder.setTitle(getString(R.string.dlg_title_areYouSure))
@@ -488,7 +487,7 @@ class TableActivity : AppCompatActivity() {
 
             if (mtList[id].id != -1) { // id correction for search result
                 val tl = mtList.toList()
-                for (i in id+1..tl.lastIndex){
+                for (i in id + 1..tl.lastIndex) {
                     mtList[i] =
                         DataItem(tl[i].tag, tl[i].note, tl[i].login, tl[i].password, tl[i].id - 1)
                 }
@@ -509,24 +508,49 @@ class TableActivity : AppCompatActivity() {
         builder.show()
     }
 
-    private fun turnOnPanel(){
-        binding.btTagRed.setOnClickListener { v -> searchByTag(1, v as ImageButton) }
-        binding.btTagGreen.setOnClickListener { v -> searchByTag(2, v as ImageButton) }
-        binding.btTagBlue.setOnClickListener { v -> searchByTag(3, v as ImageButton) }
-        binding.btTagYellow.setOnClickListener { v -> searchByTag(4, v as ImageButton) }
-        binding.btTagPurple.setOnClickListener { v -> searchByTag(5, v as ImageButton) }
+    private fun turnOnPanel() {
+        binding.btTagRed.setOnClickListener { v -> searchByTag(1, v as MaterialButton) }
+        binding.btTagGreen.setOnClickListener { v -> searchByTag(2, v as MaterialButton) }
+        binding.btTagBlue.setOnClickListener { v -> searchByTag(3, v as MaterialButton) }
+        binding.btTagYellow.setOnClickListener { v -> searchByTag(4, v as MaterialButton) }
+        binding.btTagPurple.setOnClickListener { v -> searchByTag(5, v as MaterialButton) }
 
-        binding.etSearch.doAfterTextChanged { text -> searchByData(text.toString())}
+        var query = ""
+        val searchWithDelay = Runnable { searchByData(query) }
+        binding.etSearch.doAfterTextChanged { text ->
+            binding.etSearch.removeCallbacks(searchWithDelay)
+            query = text.toString()
+            if (query.isNotEmpty()) binding.etSearch.postDelayed(searchWithDelay, 300)
+            else searchByData(query)
+        }
 
         binding.btSearch.setOnClickListener { openSearchPanel() }
     }
 
-    private fun searchByTag(tagCode: Int, btTag: ImageButton) {
+    private fun searchByTag(tagCode: Int, btTag: MaterialButton) {
         tagFilter[tagCode] = !tagFilter[tagCode]
-        if (tagFilter[tagCode]) {
-            btTag.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_tag))
-        } else {
-            btTag.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_tag_off))
+        val tf = tagFilter[tagCode]
+        when (btTag) {
+            binding.btTagRed -> btTag.icon = ContextCompat.getDrawable(
+                this,
+                if (tf) R.drawable.ic_tag_red_checked else R.drawable.ic_tag_red
+            )
+            binding.btTagGreen -> btTag.icon = ContextCompat.getDrawable(
+                this,
+                if (tf) R.drawable.ic_tag_green_checked else R.drawable.ic_tag_green
+            )
+            binding.btTagBlue -> btTag.icon = ContextCompat.getDrawable(
+                this,
+                if (tf) R.drawable.ic_tag_blue_checked else R.drawable.ic_tag_blue
+            )
+            binding.btTagYellow -> btTag.icon = ContextCompat.getDrawable(
+                this,
+                if (tf) R.drawable.ic_tag_yellow_checked else R.drawable.ic_tag_yellow
+            )
+            binding.btTagPurple -> btTag.icon = ContextCompat.getDrawable(
+                this,
+                if (tf) R.drawable.ic_tag_purple_checked else R.drawable.ic_tag_purple
+            )
         }
 
         mtList.clear()
@@ -540,64 +564,49 @@ class TableActivity : AppCompatActivity() {
                     tagFilter[5]
                 )
             )
-            binding.btSearch.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this,
-                    R.drawable.ic_tag_cancel
-                )
-            )
+            binding.btSearch.icon = ContextCompat.getDrawable(this, R.drawable.ic_search_off)
         } else {
             mtList.addAll(table.getData())
-            binding.btSearch.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this,
-                    R.drawable.ic_search
-                )
-            )
+            binding.btSearch.icon = ContextCompat.getDrawable(this, R.drawable.ic_search)
         }
 
         adapter.notifyDataSetChanged()
     }
 
-    private fun openSearchPanel(){
+    private fun openSearchPanel() {
         if (!tagFilter.any { it }) {
             val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             searchMode = !searchMode
 
-            with(binding) {
-                btTagRed.visibility = if (searchMode) View.GONE else View.VISIBLE
-                btTagGreen.visibility = if (searchMode) View.GONE else View.VISIBLE
-                btTagBlue.visibility = if (searchMode) View.GONE else View.VISIBLE
-                btTagYellow.visibility = if (searchMode) View.GONE else View.VISIBLE
-                btTagPurple.visibility = if (searchMode) View.GONE else View.VISIBLE
-                etSearch.visibility = if (searchMode) View.VISIBLE else View.GONE
+            binding.clTagButtons.visibility = if (searchMode) View.GONE else View.VISIBLE
+            binding.etSearch.visibility = if (searchMode) View.VISIBLE else View.GONE
 
-                if (searchMode) {
-                    etSearch.requestFocus()
-                    etSearch.inputType = InputType.TYPE_CLASS_TEXT
-                    imm.showSoftInput(etSearch, InputMethodManager.SHOW_IMPLICIT)
-                    btSearch.setImageDrawable(
-                        ContextCompat.getDrawable(
-                            this@TableActivity,
-                            R.drawable.ic_close
-                        )
+            if (searchMode) {
+                binding.clPanel.setBackgroundColor(
+                    MaterialColors.getColor(
+                        binding.clPanel,
+                        R.attr.editBackground
                     )
-                } else {
-                    etSearch.clearFocus()
-                    imm.hideSoftInputFromWindow(etSearch.windowToken, 0)
-                    etSearch.inputType = InputType.TYPE_NULL
-                    etSearch.text.clear()
-                    btSearch.setImageDrawable(
-                        ContextCompat.getDrawable(
-                            this@TableActivity,
-                            R.drawable.ic_search
-                        )
+                )
+                binding.etSearch.requestFocus()
+                binding.etSearch.inputType = InputType.TYPE_CLASS_TEXT
+                imm.showSoftInput(binding.etSearch, InputMethodManager.SHOW_IMPLICIT)
+                binding.btSearch.icon =
+                    ContextCompat.getDrawable(this, R.drawable.ic_search_off)
+            } else {
+                binding.clPanel.setBackgroundColor(
+                    MaterialColors.getColor(
+                        binding.clPanel,
+                        R.attr.panelTableBackground
                     )
-                }
+                )
+                binding.etSearch.clearFocus()
+                imm.hideSoftInputFromWindow(binding.etSearch.windowToken, 0)
+                binding.etSearch.inputType = InputType.TYPE_NULL
+                binding.etSearch.text.clear()
+                binding.btSearch.icon = ContextCompat.getDrawable(this, R.drawable.ic_search)
             }
-
-        }
-        else {
+        } else {
             // closing tags
             for (i in 1..5) tagFilter[i] = false
             mtList.clear()
@@ -606,25 +615,24 @@ class TableActivity : AppCompatActivity() {
 
             with(binding) {
                 val context = this@TableActivity
-                btSearch.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_search))
+                btSearch.icon = ContextCompat.getDrawable(context, R.drawable.ic_search)
 
-                val dr = R.drawable.ic_tag_off
-                btTagRed.setImageDrawable(ContextCompat.getDrawable(context, dr))
-                btTagGreen.setImageDrawable(ContextCompat.getDrawable(context, dr))
-                btTagBlue.setImageDrawable(ContextCompat.getDrawable(context, dr))
-                btTagYellow.setImageDrawable(ContextCompat.getDrawable(context, dr))
-                btTagPurple.setImageDrawable(ContextCompat.getDrawable(context, dr))
+                btTagRed.icon = ContextCompat.getDrawable(context, R.drawable.ic_tag_red)
+                btTagGreen.icon = ContextCompat.getDrawable(context, R.drawable.ic_tag_green)
+                btTagBlue.icon = ContextCompat.getDrawable(context, R.drawable.ic_tag_blue)
+                btTagYellow.icon = ContextCompat.getDrawable(context, R.drawable.ic_tag_yellow)
+                btTagPurple.icon = ContextCompat.getDrawable(context, R.drawable.ic_tag_purple)
             }
         }
     }
 
-    private fun searchByData(query: String){
+    private fun searchByData(query: String) {
         mtList.clear()
         mtList.addAll(if (query.isNotEmpty()) table.searchByData(query) else table.getData())
         adapter.notifyDataSetChanged()
     }
 
-    private fun openFileExplorer(){
+    private fun openFileExplorer() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val docsDir =
@@ -703,12 +711,13 @@ class TableActivity : AppCompatActivity() {
         builder.setCancelable(false)
         builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ ->
             saveAsMode = false
-            fileCreator.askName(getFileName(mainUri), false)}
+            fileCreator.askName(getFileName(mainUri), false)
+        }
         builder.show()
     }
 
-   override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        when (keyCode){
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        when (keyCode) {
             KeyEvent.KEYCODE_F -> {
                 if (event?.isCtrlPressed ?: return super.onKeyDown(keyCode, event)) {
                     if (tagFilter.any { it }) openSearchPanel()
