@@ -106,6 +106,14 @@
         <item name="shapeAppearanceOverlay">@style/ButtonRoundCorners</item>
     </style>
 
+    <style name="EditData" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/background_edittext</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:textColorHint">?textSecondary</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:ems">10</item>
+    </style>
+
     <style name="ButtonRoundCorners" parent="Widget.MaterialComponents.Button">
         <item name="cornerSize">100%</item>
     </style>
