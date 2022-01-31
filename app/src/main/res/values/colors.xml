@@ -43,6 +43,6 @@
     <color name="infoRedSecondaryDark">#3E2520</color>
 
     <!-- TODO -->
-    <color name="tablePanelLight">#FAFFFFFF</color>
-    <color name="tablePanelDark">#FA121212</color>
+    <color name="tablePanelLight">#FFFFFF</color>
+    <color name="tablePanelDark">#121212</color>
 </resources>

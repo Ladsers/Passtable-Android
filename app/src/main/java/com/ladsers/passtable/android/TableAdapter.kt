@@ -87,7 +87,7 @@ class TableAdapter(
     }
 
     private fun showPopupMenu(binding: ItemCollectionBinding, view: View, position: Int): Boolean {
-        val pop = PopupMenu(binding.root.context, view, Gravity.CENTER, 0, R.style.PopupMenuCustomPos)
+        val pop = PopupMenu(binding.root.context, view, Gravity.CENTER, 0, R.style.PopupMenuCustomPosTable)
         pop.inflate(R.menu.menu_item)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) pop.setForceShowIcon(true)
 

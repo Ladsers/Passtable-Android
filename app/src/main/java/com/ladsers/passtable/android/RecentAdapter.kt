@@ -96,7 +96,7 @@ class RecentAdapter(
     }
 
     private fun showPopupMenu(view: View, position: Int): Boolean {
-        val pop = PopupMenu(contextActivity, view, Gravity.CENTER, 0, R.style.PopupMenuCustomPos)
+        val pop = PopupMenu(contextActivity, view, Gravity.CENTER, 0, R.style.PopupMenuCustomPosRecent)
         pop.inflate(R.menu.menu_recentfiles)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) pop.setForceShowIcon(true)
 
