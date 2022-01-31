@@ -3,6 +3,7 @@ package com.ladsers.passtable.android
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.text.method.ScrollingMovementMethod
 import android.view.View
 import android.view.Window
 import android.widget.Toast
@@ -92,6 +93,7 @@ class MsgDialog(
         builder.setCancelable(isCancelable)
 
         binding.tvTitle.text = title
+        binding.tvMessage.movementMethod = ScrollingMovementMethod()
         binding.tvMessage.text = message
 
         binding.btPositive.text = textPositive
