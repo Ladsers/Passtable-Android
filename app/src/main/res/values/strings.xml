@@ -22,7 +22,7 @@
         <string name="app_bt_yes">yes</string>
         <string name="app_bt_no">no</string>
         <string name="app_bt_ok">OK</string>
-        <string name="app_bt_edit">edit</string>
+        <string name="app_bt_edit">Edit</string>
         <string name="app_bt_undo">undo</string>
         <string name="app_bt_cancel">cancel</string>
         <string name="app_bt_next">next</string>
@@ -30,7 +30,6 @@
         <string name="app_bt_open">Open</string>
         <string name="app_bt_editItem">Edit item</string>
         <string name="app_bt_removeItem">Remove item</string>
-        <string name="app_bt_showPassword">Show password</string>
         <string name="app_bt_addItem">Add item</string>
         <string name="app_bt_saveAs">Save as</string>
         <string name="app_bt_settings">Settings</string>
@@ -44,6 +43,14 @@
         <string name="app_bt_enter">Enter</string>
         <string name="app_bt_saveWithCurrent">Save with current password</string>
         <string name="app_bt_close">Close</string>
+        <string name="app_bt_showNote">Show note</string>
+        <string name="app_bt_showLogin">Show login</string>
+        <string name="app_bt_showPassword">Show password</string>
+        <string name="app_bt_copy">Copy</string>
+        <string name="app_bt_copyNote">Copy note</string>
+        <string name="app_bt_copyLogin">Copy login</string>
+        <string name="app_bt_copyPassword">Copy password</string>
+        <string name="app_bt_remove">Remove</string>
         <!-- end! -->
 
     <!-- END -->

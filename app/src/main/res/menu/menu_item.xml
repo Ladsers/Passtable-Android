@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <item
+        android:id="@+id/btShowNote"
+        android:icon="@drawable/ic_open_window"
+        android:title="@string/app_bt_showNote"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/btShowLogin"
+        android:icon="@drawable/ic_open_window"
+        android:title="@string/app_bt_showLogin"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/btShowPassword"
+        android:icon="@drawable/ic_open_window"
+        android:title="@string/app_bt_showPassword"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/btCopyNote"
+        android:icon="@drawable/ic_copy"
+        android:title="@string/app_bt_copyNote"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/btCopyLogin"
+        android:icon="@drawable/ic_copy"
+        android:title="@string/app_bt_copyLogin"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/btCopyPassword"
+        android:icon="@drawable/ic_copy"
+        android:title="@string/app_bt_copyPassword"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/btEdit"
+        android:icon="@drawable/ic_edit"
+        android:title="@string/app_bt_edit" />
+
+    <item
+        android:id="@+id/btRemove"
+        android:icon="@drawable/ic_delete"
+        android:iconTint="@color/actionNegative"
+        android:title="@string/app_bt_remove"
+        tools:targetApi="o" />
+</menu>

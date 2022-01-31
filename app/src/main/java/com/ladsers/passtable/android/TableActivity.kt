@@ -42,6 +42,7 @@ class TableActivity : AppCompatActivity() {
     private lateinit var biometricAuth: BiometricAuth
     private lateinit var mpRequester: MpRequester
     private lateinit var fileCreator: FileCreator
+    private lateinit var msgDialog: MsgDialog
 
     private var editId = -1
     private val tagFilter = MutableList(6) { false }
@@ -62,6 +63,7 @@ class TableActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityTableBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        msgDialog = MsgDialog(this, window)
         biometricAuth = BiometricAuth(
             this,
             this,
@@ -224,7 +226,7 @@ class TableActivity : AppCompatActivity() {
         })
 
         mtList = table.getData()
-        adapter = TableAdapter(mtList, { id -> if (!overlayCard) showCard(id) },
+        adapter = TableAdapter(mtList, { id, resCode -> popupAction(id, resCode) },
             { id -> showPassword(id) })
         binding.rvTable.adapter = adapter
     }
@@ -294,10 +296,62 @@ class TableActivity : AppCompatActivity() {
                 this.dismiss()
             }
             binding.btDelete.setOnClickListener {
-                if (!overlayRmWin) removeItem(id, this)
+                //if (!overlayRmWin) removeItem(id, this)
             }
 
             binding.btOk.setOnClickListener { this.dismiss() }
+        }
+    }
+
+    private fun popupAction(id: Int, resCode: Int){
+        val tableId = if (mtList[id].id == -1) id else mtList[id].id
+        when (resCode){
+            1 -> { // show note
+                msgDialog.quickDialog(
+                    getString(R.string.app_com_note),
+                    table.getData(tableId, "n"),
+                    { toClipboard(id, "n") },
+                    posText = getString(R.string.app_bt_copy),
+                    negText = getString(R.string.app_bt_close),
+                    posIcon = R.drawable.ic_copy
+                )
+            }
+            2 -> { // show login
+                msgDialog.quickDialog(
+                    getString(R.string.app_com_login),
+                    table.getData(tableId, "l"),
+                    { toClipboard(id, "l") },
+                    posText = getString(R.string.app_bt_copy),
+                    negText = getString(R.string.app_bt_close),
+                    posIcon = R.drawable.ic_copy
+                )
+            }
+            3 -> { // show password
+                msgDialog.quickDialog(
+                    getString(R.string.app_com_password),
+                    table.getData(tableId, "p"),
+                    { toClipboard(id, "p") },
+                    posText = getString(R.string.app_bt_copy),
+                    negText = getString(R.string.app_bt_close),
+                    posIcon = R.drawable.ic_copy
+                )
+            }
+            4 -> { // copy note
+                toClipboard(id, "n")
+            }
+            5 -> { // copy login
+                toClipboard(id, "l")
+            }
+            6 -> { // copy password
+                toClipboard(id, "p")
+            }
+            7 -> { // edit
+                editId = id
+                editItem()
+            }
+            8 -> { // remove
+                removeItem(id)
+            }
         }
     }
 
@@ -475,12 +529,11 @@ class TableActivity : AppCompatActivity() {
         return false
     }
 
-    private fun removeItem(id: Int, alertDialog: AlertDialog) {
+    private fun removeItem(id: Int) {
         val builder = AlertDialog.Builder(this)
         builder.setMessage(getString(R.string.dlg_msg_permanentRemoval))
         builder.setTitle(getString(R.string.dlg_title_areYouSure))
         builder.setPositiveButton(getString(R.string.app_bt_yes)) { _, _ ->
-            alertDialog.dismiss()
 
             val tableId = if (mtList[id].id == -1) id else mtList[id].id
             table.remove(tableId)
