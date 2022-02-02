@@ -351,7 +351,7 @@ class TableActivity : AppCompatActivity() {
                 editItem()
             }
             8 -> { // remove
-                removeItem(id)
+                removeItem(id, table.getData(tableId, "n"))
             }
         }
     }
@@ -532,12 +532,19 @@ class TableActivity : AppCompatActivity() {
         return false
     }
 
-    private fun removeItem(id: Int) {
-        val builder = AlertDialog.Builder(this)
-        builder.setMessage(getString(R.string.dlg_msg_permanentRemoval))
-        builder.setTitle(getString(R.string.dlg_title_areYouSure))
-        builder.setPositiveButton(getString(R.string.app_bt_yes)) { _, _ ->
+    private fun removeItem(id: Int, note: String) {
+        val maxChars = 12
+        val title = when (true) {
+            note.length > maxChars -> getString(R.string.dlg_title_removeItemWithNote, note.take(maxChars - 1) + "…")
+            note.isBlank() -> getString(R.string.dlg_title_removeItem)
+            else -> getString(R.string.dlg_title_removeItemWithNote, note)
+        }
 
+        msgDialog.create(title, getString(R.string.dlg_msg_permanentRemoval))
+        msgDialog.addPositiveBtn(
+            getString(R.string.app_bt_remove),
+            R.drawable.ic_delete
+        ) {
             val tableId = if (mtList[id].id == -1) id else mtList[id].id
             table.remove(tableId)
 
@@ -557,12 +564,11 @@ class TableActivity : AppCompatActivity() {
             afterRemoval = true
             saving()
         }
-        builder.setNegativeButton(getString(R.string.app_bt_no)) { _, _ -> }
-
-        overlayRmWin = true
-        builder.setOnDismissListener { overlayRmWin = false }
-
-        builder.show()
+        msgDialog.addNegativeBtn(
+            getString(R.string.app_bt_cancel),
+            R.drawable.ic_close
+        ) {}
+        msgDialog.show()
     }
 
     private fun turnOnPanel() {

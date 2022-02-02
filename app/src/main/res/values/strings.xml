@@ -110,6 +110,8 @@
         <string name="dlg_title_loginByFingerprint">Login by fingerprint</string>
         <string name="dlg_title_activateLoginByFingerprint">Activate login by fingerprint</string>
         <string name="dlg_title_closeWithoutSaving">Close without saving?</string>
+        <string name="dlg_title_removeItem">Remove item?</string>
+        <string name="dlg_title_removeItemWithNote">Remove \"%1$s\"?</string>
         <!-- end! -->
 
         <!-- ct (content) -->
@@ -150,7 +152,7 @@
         <!-- end! -->
 
         <!-- msg (message) -->
-        <string name="dlg_msg_permanentRemoval">The entry will be permanently deleted</string>
+        <string name="dlg_msg_permanentRemoval">This is permanent and cannot be undone</string>
         <string name="dlg_msg_disableRememberingRecentFiles">This action will cause the list of recent files to be cleared</string>
         <string name="dlg_msg_disableRememberingRecentFilesAndPasswords">This action will cause the list of recent files to be cleared and all passwords will be forgotten</string>
         <string name="dlg_msg_recentFilesWillBeCleared">The list of recent files will be cleared</string>
