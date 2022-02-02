@@ -77,6 +77,9 @@
         <string name="ui_ct_lockDoNotLock">Do not lock</string>
         <string name="ui_ct_timePeriodForLocking">Time period for locking (seconds):</string>
         <string name="ui_ct_leaveBlankToSkip">Leave blank to skip verification</string>
+        <string name="ui_ct_fileNoItems">File contains no items</string>
+        <string name="ui_ct_fileNoItemsHint">Click on \"+\" in the top right corner to add a new item</string>
+        <string name="ui_ct_nothingFound">Nothing found</string>
         <!-- end! -->
 
         <!-- msg (message) -->

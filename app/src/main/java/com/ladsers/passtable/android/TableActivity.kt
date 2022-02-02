@@ -229,6 +229,7 @@ class TableActivity : AppCompatActivity() {
         adapter = TableAdapter(mtList, { id, resCode -> popupAction(id, resCode) },
             { id -> showPassword(id) })
         binding.rvTable.adapter = adapter
+        notifyUser()
     }
 
     private fun showCard(id: Int) {
@@ -452,6 +453,7 @@ class TableActivity : AppCompatActivity() {
             mtList.removeAt(editId)
             adapter.notifyItemRemoved(editId)
             adapter.notifyItemRangeChanged(editId, adapter.itemCount)
+            notifyUser()
         }
     }
 
@@ -488,6 +490,7 @@ class TableActivity : AppCompatActivity() {
                 val hasPassword = if (data[3].isNotEmpty()) "/yes" else "/no"
                 val id = if (!tagFilter.any { it }) -1 else editId
                 mtList.add(DataItem(data[0], data[1], data[2], hasPassword, id))
+                notifyUser()
                 adapter.notifyItemInserted(mtList.lastIndex)
                 binding.rvTable.postDelayed({
                     binding.rvTable.smoothScrollToPosition(mtList.lastIndex)
@@ -549,6 +552,7 @@ class TableActivity : AppCompatActivity() {
             mtList.removeAt(id)
             adapter.notifyItemRemoved(id)
             adapter.notifyItemRangeChanged(id, adapter.itemCount)
+            notifyUser()
 
             afterRemoval = true
             saving()
@@ -623,6 +627,7 @@ class TableActivity : AppCompatActivity() {
             binding.btSearch.icon = ContextCompat.getDrawable(this, R.drawable.ic_search)
         }
 
+        notifyUser()
         adapter.notifyDataSetChanged()
     }
 
@@ -664,6 +669,7 @@ class TableActivity : AppCompatActivity() {
             for (i in 1..5) tagFilter[i] = false
             mtList.clear()
             mtList.addAll(table.getData())
+            notifyUser()
             adapter.notifyDataSetChanged()
 
             with(binding) {
@@ -682,6 +688,7 @@ class TableActivity : AppCompatActivity() {
     private fun searchByData(query: String) {
         mtList.clear()
         mtList.addAll(if (query.isNotEmpty()) table.searchByData(query) else table.getData())
+        notifyUser(query)
         adapter.notifyDataSetChanged()
     }
 
@@ -733,6 +740,7 @@ class TableActivity : AppCompatActivity() {
         disableLockFileSystem = true
         mtList.clear()
         mtList.addAll(table.getData())
+        notifyUser()
         adapter.notifyDataSetChanged()
         if (tagFilter.any { it } || searchMode) openSearchPanel()
 
@@ -748,6 +756,7 @@ class TableActivity : AppCompatActivity() {
             table.fill()
             mtList.clear()
             mtList.addAll(table.getData())
+            notifyUser()
             adapter.notifyDataSetChanged()
             disableLockFileSystem = false
         }
@@ -826,5 +835,20 @@ class TableActivity : AppCompatActivity() {
         intent.putExtra("newFile", false)
         finish()
         startActivity(intent)
+    }
+
+    private fun notifyUser(searchQuery: String = "") {
+        if (mtList.size == 0) {
+            if (tagFilter.any { it } || searchQuery.isNotEmpty()) {
+                binding.notificationEmptyCollection.clInfo.visibility = View.GONE
+                binding.notificationNothingFound.clInfo.visibility = View.VISIBLE
+            } else {
+                binding.notificationEmptyCollection.clInfo.visibility = View.VISIBLE
+                binding.notificationNothingFound.clInfo.visibility = View.GONE
+            }
+        } else {
+            binding.notificationEmptyCollection.clInfo.visibility = View.GONE
+            binding.notificationNothingFound.clInfo.visibility = View.GONE
+        }
     }
 }

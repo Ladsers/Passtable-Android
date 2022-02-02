@@ -10,6 +10,31 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar" />
 
+    <include
+        android:id="@+id/notificationEmptyCollection"
+        layout="@layout/notification_empty_collection"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/clPanel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.48"
+        tools:visibility="visible" />
+
+    <include
+        android:id="@+id/notificationNothingFound"
+        layout="@layout/notification_nothing_found"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/clPanel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.48" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvTable"
         android:layout_width="match_parent"
@@ -29,7 +54,7 @@
         android:background="?panelTableBackground"
         android:clickable="true"
         android:elevation="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/rvTable"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -144,4 +169,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
