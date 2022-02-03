@@ -23,7 +23,7 @@
         <string name="app_bt_no">no</string>
         <string name="app_bt_ok">OK</string>
         <string name="app_bt_edit">Edit</string>
-        <string name="app_bt_undo">undo</string>
+        <string name="app_bt_undoLastAction">Undo the last action</string>
         <string name="app_bt_cancel">cancel</string>
         <string name="app_bt_next">next</string>
         <string name="app_bt_create">Create</string>
@@ -51,6 +51,9 @@
         <string name="app_bt_copyLogin">Copy login</string>
         <string name="app_bt_copyPassword">Copy password</string>
         <string name="app_bt_remove">Remove</string>
+        <string name="app_bt_returnToHome">Return to Home screen</string>
+        <string name="app_bt_tryEditLastItem">Try to edit the last item</string>
+        <string name="app_bt_createNewFile">Create new file</string>
         <!-- end! -->
 
     <!-- END -->
@@ -103,7 +106,7 @@
         <string name="dlg_title_enterMasterPassword">Enter master password</string>
         <string name="dlg_title_enterNewMasterPassword">Enter new master password</string>
         <string name="dlg_title_enterFileName">Enter file name</string>
-        <string name="dlg_title_notSaved">Not saved</string>
+        <string name="dlg_title_changesNotSaved">Changes will not be saved</string>
         <string name="dlg_title_saveFailed">Save failed</string>
         <string name="dlg_title_areYouSure">Are you sure?</string>
         <string name="dlg_title_warning">Warning!</string>
@@ -112,6 +115,9 @@
         <string name="dlg_title_closeWithoutSaving">Close without saving?</string>
         <string name="dlg_title_removeItem">Remove item?</string>
         <string name="dlg_title_removeItemWithNote">Remove \"%1$s\"?</string>
+        <string name="dlg_title_criticalError">Critical error</string>
+        <string name="dlg_title_encryptionError">Encryption error</string>
+        <string name="dlg_title_writeError">Write error</string>
         <!-- end! -->
 
         <!-- ct (content) -->
@@ -126,22 +132,20 @@
         <!-- end! -->
 
         <!-- err (error) -->
-        <string name="dlg_err_uriIsNull">"UriIsNull"</string>
-        <string name="dlg_err_invalidFileVer">"InvalidFileVer"</string>
-        <string name="dlg_err_corruptedFile">"CorruptedFile"</string>
-        <string name="dlg_err_unsupportedFile">"UnsupportedFile"</string>
+        <string name="dlg_err_uriIsNull">The file path was not received. Please try to open file again.</string>
+        <string name="dlg_err_invalidFileVer">This file was created in a later version of the app and cannot be opened. Update the app.</string>
+        <string name="dlg_err_corruptedFile">The file is damaged.</string>
+        <string name="dlg_err_unsupportedFile">This file type is not supported.</string>
         <string name="dlg_err_unableToOpenFile">The file at the specified path does not exist or the app does not have sufficient permissions to open it.</string>
-        <string name="dlg_err_noDataReceived">"Reason: No data received"</string>
-        <string name="dlg_err_someDataNull">"Reason: Not all data received"</string>
-        <string name="dlg_err_saveIdentity">"Identity check failed"</string>
-        <string name="dlg_err_saveSpecifiedDir">"Failed to save the file in the specified directory"</string>
-        <string name="dlg_err_saveWithoutRecords">"Table without records"</string>
-        <string name="dlg_err_saveEncryptionProblem">"File encryption error. Undo the last action or try to edit the last item."</string>
-        <string name="dlg_err_saveWriting">"Error writing data to the file. Choose a new file path to avoid losing data."</string>
-        <string name="dlg_err_fileLost">"The file is lost."</string>
+        <string name="dlg_err_noDataReceived">The application could not read the updated data. Please try again.</string>
+        <string name="dlg_err_someDataNull">The application could not read the updated data. Please try again.</string>
+        <string name="dlg_err_saveEncryptionProblem">This is probably caused by using an unsupported character.</string>
+        <string name="dlg_err_saveEncryptionDelete">Try to add another item and then delete both.</string>
+        <string name="dlg_err_saveWriting">The file at the specified path does not exist or the app does not have sufficient permissions to write data to it. You need to save the data to a new file to avoid losing data.</string>
+        <string name="dlg_err_fileLost">The file at the specified path does not exist and will be removed from the list.</string>
         <string name="dlg_err_biometricSensorNotAvailable">Biometric sensor is not available.</string>
-        <string name="dlg_err_encryptedMasterPassNotFound">Encrypted master password not found. Remove all saved passwords.</string>
-        <string name="dlg_err_encryptedMasterPassSaveFail">Failed to encrypt the master password. Try again later.</string>
+        <string name="dlg_err_encryptedMasterPassNotFound">The biometric authentication token is damaged. Please disable authentication for this file.</string>
+        <string name="dlg_err_encryptedMasterPassSaveFail">It is not possible to enable biometric authentication at the moment. Try again later.</string>
         <string name="dlg_err_fileNameBlank">File name cannot be empty</string>
         <string name="dlg_err_fileNameInvalidChars">File name contains invalid characters:</string>
         <string name="dlg_err_fileNameWhitespaceChar">File name cannot start with a space character</string>

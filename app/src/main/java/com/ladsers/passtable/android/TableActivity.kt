@@ -95,7 +95,7 @@ class TableActivity : AppCompatActivity() {
             }
         }
         if (uri == null) {
-            showErrDialog(getString(R.string.dlg_err_uriIsNull))
+            showCriticalError(getString(R.string.dlg_err_uriIsNull))
             return
         }
 
@@ -113,7 +113,7 @@ class TableActivity : AppCompatActivity() {
             cryptData = BufferedReader(InputStreamReader(inputStream)).readText()
         } catch (e: Exception) {
             RecentFiles.remove(this, mainUri)
-            showErrDialog(getString(R.string.dlg_err_unableToOpenFile))
+            showCriticalError(getString(R.string.dlg_err_unableToOpenFile))
             return
         }
 
@@ -170,17 +170,17 @@ class TableActivity : AppCompatActivity() {
         val fileExtension = getString(R.string.app_com_fileExtension)
         getFileNameWithExt(mainUri)?.let { it ->
             if (!it.endsWith(fileExtension)) {
-                showErrDialog(getString(R.string.dlg_err_unsupportedFile))
+                showCriticalError(getString(R.string.dlg_err_unsupportedFile))
                 return
             }
         }
 
         table = DataTableAndroid(mainUri.toString(), "/test", cryptData, contentResolver)
         when (table.fill()) {
-            2 -> showErrDialog(getString(R.string.dlg_err_invalidFileVer))
+            2 -> showCriticalError(getString(R.string.dlg_err_invalidFileVer))
             -2 -> {
                 RecentFiles.remove(this, mainUri)
-                showErrDialog(getString(R.string.dlg_err_corruptedFile))
+                showCriticalError(getString(R.string.dlg_err_corruptedFile))
             }
             else -> {
                 if (!quickView && ParamStorage.getBool(this, Param.REMEMBER_RECENT_FILES)) {
@@ -193,21 +193,18 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
-    private fun showMsgDialog(text: String, title: String = "") {
-        val builder = AlertDialog.Builder(this)
-        builder.setMessage(text)
-        if (title.isNotEmpty()) builder.setTitle(title)
-        builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ -> }
-        builder.show()
+    private fun showError(error: String, reason: String) {
+        msgDialog.quickDialog(error, reason, {})
     }
 
-    private fun showErrDialog(text: String, title: String = "") {
-        val builder = AlertDialog.Builder(this)
-        builder.setMessage(text)
-        if (title.isNotEmpty()) builder.setTitle(title)
-        builder.setCancelable(false)
-        builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ -> finish() }
-        builder.show()
+    private fun showCriticalError(reason: String) {
+        msgDialog.create(getString(R.string.dlg_title_criticalError), reason)
+        msgDialog.addPositiveBtn(
+            getString(R.string.app_bt_returnToHome),
+            R.drawable.ic_back_arrow
+        ) { finish() }
+        msgDialog.disableSkip()
+        msgDialog.show()
     }
 
     private fun loginSucceeded() {
@@ -381,9 +378,9 @@ class TableActivity : AppCompatActivity() {
 
     private fun parseDataFromEditActivity(data: Intent?): List<String>? {
         return if (data == null) {
-            showMsgDialog(
-                getString(R.string.dlg_err_noDataReceived),
-                getString(R.string.dlg_title_notSaved)
+            showError(
+                getString(R.string.dlg_title_changesNotSaved),
+                getString(R.string.dlg_err_noDataReceived)
             )
             null
         } else {
@@ -394,9 +391,9 @@ class TableActivity : AppCompatActivity() {
             if (newTag != null && newNote != null && newLogin != null && newPassword != null)
                 listOf(newTag, newNote, newLogin, newPassword)
             else {
-                showMsgDialog(
-                    getString(R.string.dlg_err_someDataNull),
-                    getString(R.string.dlg_title_notSaved)
+                showError(
+                    getString(R.string.dlg_title_changesNotSaved),
+                    getString(R.string.dlg_err_someDataNull)
                 )
                 null
             }
@@ -526,8 +523,8 @@ class TableActivity : AppCompatActivity() {
                 ).show()
                 return true
             }
-            2, -2 -> fixSaveErrEncryption(resCode)
-            -3 -> fixSaveErrFileCorrupted()
+            2, -2 -> fixSaveErrEncryption()
+            -3 -> fixSaveErrWrite()
         }
         return false
     }
@@ -742,7 +739,7 @@ class TableActivity : AppCompatActivity() {
         } else disableLockFileSystem = false
     }
 
-    private fun fixSaveErrEncryption(errCode: Int) {
+    private fun fixSaveErrEncryption() {
         disableLockFileSystem = true
         mtList.clear()
         mtList.addAll(table.getData())
@@ -750,38 +747,54 @@ class TableActivity : AppCompatActivity() {
         adapter.notifyDataSetChanged()
         if (tagFilter.any { it } || searchMode) openSearchPanel()
 
-        val builder = AlertDialog.Builder(this)
-        //TODO: show different err code
-        builder.setMessage(getString(R.string.dlg_err_saveEncryptionProblem))
-        builder.setTitle(getString(R.string.dlg_title_saveFailed))
-        builder.setCancelable(false)
-        builder.setPositiveButton(getString(R.string.app_bt_edit)) { _, _ ->
-            editItem(blockClosing = true)
-        }
-        builder.setNegativeButton(getString(R.string.app_bt_undo)) { _, _ ->
-            table.fill()
-            mtList.clear()
-            mtList.addAll(table.getData())
-            notifyUser()
-            adapter.notifyDataSetChanged()
-            disableLockFileSystem = false
-        }
-        builder.show().apply {
-            if (afterRemoval) this.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+        if (!afterRemoval) {
+            msgDialog.create(getString(R.string.dlg_title_encryptionError), getString(R.string.dlg_err_saveEncryptionProblem))
+            msgDialog.addPositiveBtn(
+                getString(R.string.app_bt_tryEditLastItem),
+                R.drawable.ic_edit
+            ) { editItem(blockClosing = true) }
+            msgDialog.addNegativeBtn(
+                getString(R.string.app_bt_undoLastAction),
+                R.drawable.ic_undo
+            ) { fixSaveErrEncryptionUndo() }
+            msgDialog.disableSkip()
+            msgDialog.show()
+        } else {
+            msgDialog.create(getString(R.string.dlg_title_encryptionError), getString(R.string.dlg_err_saveEncryptionDelete))
+            msgDialog.addPositiveBtn(
+                getString(R.string.app_bt_undoLastAction),
+                R.drawable.ic_undo
+            ) { fixSaveErrEncryptionUndo() }
+            msgDialog.disableSkip()
+            msgDialog.show()
         }
     }
 
-    private fun fixSaveErrFileCorrupted() {
+    private fun fixSaveErrEncryptionUndo() {
+        table.fill()
+        mtList.clear()
+        mtList.addAll(table.getData())
+        notifyUser()
+        adapter.notifyDataSetChanged()
+        disableLockFileSystem = false
+    }
+
+    private fun fixSaveErrWrite() {
         disableLockFileSystem = true
-        val builder = AlertDialog.Builder(this)
-        builder.setMessage(getString(R.string.dlg_err_saveWriting))
-        builder.setTitle(getString(R.string.dlg_title_saveFailed))
-        builder.setCancelable(false)
-        builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ ->
+
+        msgDialog.create(
+            getString(R.string.dlg_title_writeError),
+            getString(R.string.dlg_err_saveWriting)
+        )
+        msgDialog.addPositiveBtn(
+            getString(R.string.app_bt_createNewFile),
+            R.drawable.ic_new_file
+        ) {
             saveAsMode = false
             fileCreator.askName(getFileName(mainUri), false)
         }
-        builder.show()
+        msgDialog.disableSkip()
+        msgDialog.show()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
