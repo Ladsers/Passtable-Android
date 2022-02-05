@@ -64,9 +64,9 @@ class MpRequester(
 
         binding.tvTitle.text = context.getString(
             when (mode) {
-                Mode.OPEN -> R.string.dlg_ct_openTheFile
-                Mode.NEW -> R.string.dlg_ct_createNewFile
-                Mode.SAVEAS -> R.string.dlg_ct_saveAs
+                Mode.OPEN -> R.string.dlg_title_openTheFile
+                Mode.NEW -> R.string.dlg_title_createNewFile
+                Mode.SAVEAS -> R.string.dlg_title_saveAs
             }
         )
         binding.clPassword.visibility = View.VISIBLE
@@ -90,11 +90,7 @@ class MpRequester(
             binding.btNeutral.icon = ContextCompat.getDrawable(context, R.drawable.ic_save)
         }
 
-        binding.btNegative.text = context.getString(R.string.app_bt_cancel).replaceFirstChar {
-            if (it.isLowerCase()) it.titlecase(
-                Locale.getDefault()
-            ) else it.toString()
-        }
+        binding.btNegative.text = context.getString(R.string.app_bt_cancel)
         binding.btNegative.icon = ContextCompat.getDrawable(context, R.drawable.ic_close)
 
         binding.btShowPass.setOnClickListener {
@@ -150,11 +146,11 @@ class MpRequester(
                 binding.btPositive.isEnabled = errCode == 0
                 binding.clErr.visibility = if (errCode == 0) View.GONE else View.VISIBLE
                 val errMsg = when (errCode) {
-                    1 -> context.getString(R.string.dlg_err_mpEmpty)
-                    2 -> context.getString(R.string.dlg_err_mpInvalidChars) + ' ' + Verifier.getMpAllowedChars(
+                    1 -> context.getString(R.string.dlg_ct_primaryEmpty)
+                    2 -> context.getString(R.string.dlg_ct_primaryInvalidChars) + ' ' + Verifier.getMpAllowedChars(
                         context.getString(R.string.app_com_spaceChar)
                     )
-                    3 -> context.getString(R.string.dlg_err_mpSlashChar)
+                    3 -> context.getString(R.string.dlg_ct_primarySlashChar)
                     else -> ""
                 }
                 binding.tvErrMsg.text = errMsg

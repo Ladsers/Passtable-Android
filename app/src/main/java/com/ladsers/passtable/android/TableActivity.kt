@@ -3,8 +3,6 @@ package com.ladsers.passtable.android
 import DataItem
 import android.app.Activity
 import android.content.*
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -14,7 +12,6 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
@@ -24,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
-import com.ladsers.passtable.android.databinding.DialogItemBinding
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.*
@@ -49,9 +45,6 @@ class TableActivity : AppCompatActivity() {
     private var searchMode = false
     private var saveAsMode = false
     private var afterRemoval = false
-
-    private var overlayCard = false
-    private var overlayRmWin = false
 
     private var quickView = false
 
@@ -180,7 +173,7 @@ class TableActivity : AppCompatActivity() {
             2 -> showCriticalError(getString(R.string.dlg_err_invalidFileVer))
             -2 -> {
                 RecentFiles.remove(this, mainUri)
-                showCriticalError(getString(R.string.dlg_err_corruptedFile))
+                showCriticalError(getString(R.string.dlg_err_damagedFile))
             }
             else -> {
                 if (!quickView && ParamStorage.getBool(this, Param.REMEMBER_RECENT_FILES)) {
@@ -234,78 +227,6 @@ class TableActivity : AppCompatActivity() {
         notifyUser()
     }
 
-    private fun showCard(id: Int) {
-        val builder = AlertDialog.Builder(this)
-        val binding = DialogItemBinding.inflate(layoutInflater)
-        builder.setView(binding.root)
-
-        val tableId = if (mtList[id].id == -1) id else mtList[id].id
-        binding.vTag.setBackgroundColor(
-            MaterialColors.getColor(
-                binding.vTag,
-                colorSelectionByTagCode(
-                    table.getData(
-                        tableId,
-                        "t"
-                    )
-                )
-            )
-        )
-
-        val n = table.getData(tableId, "n")
-        val l = table.getData(tableId, "l")
-        val p = table.getData(tableId, "p")
-
-        if (n.isNotEmpty()) binding.tbNote.text = n
-        else {
-            binding.tbNote.text = getString(R.string.app_com_itemHasNoNote) //TODO: add text styles
-            binding.btCopyNote.visibility = View.INVISIBLE
-        }
-
-        if (l.isNotEmpty()) binding.tbLogin.text = l
-        else {
-            binding.tbLogin.visibility = View.INVISIBLE
-            binding.btCopyLogin.visibility = View.INVISIBLE
-        }
-
-        if (p.isNotEmpty()) {
-            binding.tbPassword.text =
-                if (ParamStorage.getBool(this, Param.SHOW_PASSWORD_IN_CARD)) p
-                else getString(R.string.app_com_passwordSecret)
-        } else {
-            binding.tbPassword.visibility = View.INVISIBLE
-            binding.btCopyPassword.visibility = View.INVISIBLE
-            binding.btShowPassword.visibility = View.INVISIBLE
-        }
-
-        binding.btCopyNote.setOnClickListener { toClipboard(id, "n") }
-        binding.btCopyLogin.setOnClickListener { toClipboard(id, "l") }
-        binding.btCopyPassword.setOnClickListener { toClipboard(id, "p") }
-        binding.btShowPassword.setOnClickListener {
-            binding.tbPassword.text = if (binding.tbPassword.text ==
-                getString(R.string.app_com_passwordSecret)
-            ) p else getString(R.string.app_com_passwordSecret)
-        }
-
-        overlayCard = true
-        builder.setOnDismissListener { overlayCard = false }
-
-        builder.show().apply {
-            this.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-            binding.btEdit.setOnClickListener {
-                editId = id
-                editItem()
-                this.dismiss()
-            }
-            binding.btDelete.setOnClickListener {
-                //if (!overlayRmWin) removeItem(id, this)
-            }
-
-            binding.btOk.setOnClickListener { this.dismiss() }
-        }
-    }
-
     private fun popupAction(id: Int, resCode: Int){
         val tableId = if (mtList[id].id == -1) id else mtList[id].id
         when (resCode){
@@ -339,22 +260,14 @@ class TableActivity : AppCompatActivity() {
                     posIcon = R.drawable.ic_copy
                 )
             }
-            4 -> { // copy note
-                toClipboard(id, "n")
-            }
-            5 -> { // copy login
-                toClipboard(id, "l")
-            }
-            6 -> { // copy password
-                toClipboard(id, "p")
-            }
+            4 -> toClipboard(id, "n") // copy note
+            5 -> toClipboard(id, "l") // copy login
+            6 -> toClipboard(id, "p") // copy password
             7 -> { // edit
                 editId = id
                 editItem()
             }
-            8 -> { // remove
-                removeItem(id, table.getData(tableId, "n"))
-            }
+            8 -> removeItem(id, table.getData(tableId, "n")) // remove
         }
     }
 

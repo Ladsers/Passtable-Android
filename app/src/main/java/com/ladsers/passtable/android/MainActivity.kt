@@ -11,7 +11,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -48,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         fileCreator =
             FileCreator(this, contentResolver, window) { openFileExplorer(true) }
 
-        binding.btnOpenFile.setOnClickListener { openFileExplorer(false) }
+        binding.btOpenFile.setOnClickListener { openFileExplorer(false) }
         binding.btNewFile.setOnClickListener { v -> fileCreator.askName(btView = v) }
         //binding.btAbout.setOnClickListener { }
 
@@ -157,7 +156,7 @@ class MainActivity : AppCompatActivity() {
             2 -> { // local file is lost
                 msgDialog.create(
                     getString(R.string.dlg_title_cannotBeOpened),
-                    getString(R.string.dlg_err_fileLost)
+                    getString(R.string.dlg_err_recentFileDoesNotExist)
                 )
                 msgDialog.addPositiveBtn(
                     getString(R.string.app_bt_ok),

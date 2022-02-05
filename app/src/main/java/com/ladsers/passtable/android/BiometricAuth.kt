@@ -36,7 +36,7 @@ class BiometricAuth(
             return
         }
         if (masterPassEncrypted.isBlank() || masterPassEncrypted == "@") {
-            showAuthError(context.getString(R.string.dlg_err_encryptedMasterPassNotFound))
+            showAuthError(context.getString(R.string.dlg_err_biometricTokenDamaged))
             authFailed()
             return
         }
@@ -93,7 +93,7 @@ class BiometricAuth(
                 context.getString(R.string.ui_msg_fingerprintActivated),
                 Toast.LENGTH_SHORT
             ).show()
-        } else showActivateError(context.getString(R.string.dlg_err_encryptedMasterPassSaveFail))
+        } else showActivateError(context.getString(R.string.dlg_err_biometricEnableFail))
         afterActivation()
     }
 
@@ -142,7 +142,7 @@ class BiometricAuth(
 
     private val promptInfoLogin = BiometricPrompt.PromptInfo.Builder()
         .setTitle(context.getString(R.string.dlg_title_loginByFingerprint))
-        .setNegativeButtonText(context.getString(R.string.app_bt_usePassword))
+        .setNegativeButtonText(context.getString(R.string.app_bt_enterPassword))
         .build()
 
     private val biometricPrompt = BiometricPrompt(activity, executor,
@@ -169,7 +169,7 @@ class BiometricAuth(
                     }
                     else -> {
                         if (isActivation) {
-                            showActivateError(context.getString(R.string.dlg_err_encryptedMasterPassSaveFail))
+                            showActivateError(context.getString(R.string.dlg_err_biometricEnableFail))
                             afterActivation()
                         } else {
                             Toast.makeText(

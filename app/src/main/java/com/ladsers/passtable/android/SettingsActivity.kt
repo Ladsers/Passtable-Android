@@ -47,7 +47,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun componentValInit() {
         binding.swShowPasswordInCard.isChecked =
-            ParamStorage.getBool(this, Param.SHOW_PASSWORD_IN_CARD)
+            ParamStorage.getBool(this, Param.SHOW_PASSWORD_IN_CARD) //TODO: remove
 
         binding.swCheckboxRememberPasswordByDefault.isChecked =
             ParamStorage.getBool(this, Param.CHECKBOX_REMEMBER_PASSWORD_BY_DEFAULT)
@@ -83,7 +83,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun componentActionInit() {
         binding.swShowPasswordInCard.setOnCheckedChangeListener { _, isChecked ->
-            ParamStorage.set(this, Param.SHOW_PASSWORD_IN_CARD, isChecked)
+            ParamStorage.set(this, Param.SHOW_PASSWORD_IN_CARD, isChecked) //TODO: remove
         }
 
         binding.swCheckboxRememberPasswordByDefault.setOnCheckedChangeListener { _, isChecked ->

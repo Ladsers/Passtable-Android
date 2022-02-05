@@ -32,17 +32,13 @@ class FileCreator(
         builder.setCancelable(isCancelable)
 
         binding.tvTitle.text =
-            context.getString(if (oldName == null) R.string.dlg_ct_createNewFile else R.string.dlg_ct_saveAs)
+            context.getString(if (oldName == null) R.string.dlg_title_createNewFile else R.string.dlg_title_saveAs)
         binding.clFileName.visibility = View.VISIBLE
 
         binding.btPositive.text = context.getString(R.string.app_bt_selectFolder)
         binding.btPositive.icon = ContextCompat.getDrawable(context, R.drawable.ic_next_arrow)
 
-        binding.btNegative.text = context.getString(R.string.app_bt_cancel).replaceFirstChar {
-            if (it.isLowerCase()) it.titlecase(
-                Locale.getDefault()
-            ) else it.toString()
-        }
+        binding.btNegative.text = context.getString(R.string.app_bt_cancel)
         binding.btNegative.icon = ContextCompat.getDrawable(context, R.drawable.ic_close)
         binding.btNegative.visibility = if (isCancelable) View.VISIBLE else View.GONE
 
@@ -76,10 +72,10 @@ class FileCreator(
                 binding.btPositive.isEnabled = res == 0
                 binding.clErr.visibility = if (res == 0) View.GONE else View.VISIBLE
                 val errMsg = when (res) {
-                    1 -> context.getString(R.string.dlg_err_fileNameBlank)
-                    2 -> context.getString(R.string.dlg_err_fileNameInvalidChars) + ' ' + Verifier.fileNameInvalidChars
-                    3 -> context.getString(R.string.dlg_err_fileNameWhitespaceChar)
-                    4 -> context.getString(R.string.dlg_err_fileNameInvalidForWindows) + ' ' + Verifier.fileNameInvalidWinWords
+                    1 -> context.getString(R.string.dlg_ct_fileNameBlank)
+                    2 -> context.getString(R.string.dlg_ct_fileNameInvalidChars) + ' ' + Verifier.fileNameInvalidChars
+                    3 -> context.getString(R.string.dlg_ct_fileNameWhitespaceChar)
+                    4 -> context.getString(R.string.dlg_ct_fileNameInvalidForWindows) + ' ' + Verifier.fileNameInvalidWinWords
                     else -> ""
                 }
                 binding.tvErrMsg.text = errMsg
