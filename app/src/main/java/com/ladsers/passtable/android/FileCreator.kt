@@ -44,6 +44,7 @@ class FileCreator(
             ) else it.toString()
         }
         binding.btNegative.icon = ContextCompat.getDrawable(context, R.drawable.ic_close)
+        binding.btNegative.visibility = if (isCancelable) View.VISIBLE else View.GONE
 
         builder.show().apply {
             var maxWidthIsSet = false
