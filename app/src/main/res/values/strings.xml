@@ -54,6 +54,7 @@
         <string name="app_bt_returnToHome">Return to Home screen</string>
         <string name="app_bt_tryEditLastItem">Try to edit the last item</string>
         <string name="app_bt_createNewFile">Create new file</string>
+        <string name="app_bt_enterPassword">Enter password</string>
         <!-- end! -->
 
     <!-- END -->
@@ -118,6 +119,9 @@
         <string name="dlg_title_criticalError">Critical error</string>
         <string name="dlg_title_encryptionError">Encryption error</string>
         <string name="dlg_title_writeError">Write error</string>
+        <string name="dlg_title_cannotBeOpened">Cannot be opened</string>
+        <string name="dlg_title_operationCanceled">Operation canceled</string>
+        <string name="dlg_title_authenticationError">Authentication error</string>
         <!-- end! -->
 
         <!-- ct (content) -->

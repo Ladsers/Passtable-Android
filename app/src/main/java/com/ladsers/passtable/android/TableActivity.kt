@@ -194,7 +194,12 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun showError(error: String, reason: String) {
-        msgDialog.quickDialog(error, reason, {})
+        msgDialog.create(error, reason)
+        msgDialog.addPositiveBtn(
+            getString(R.string.app_bt_ok),
+            R.drawable.ic_accept
+        ) {}
+        msgDialog.show()
     }
 
     private fun showCriticalError(reason: String) {

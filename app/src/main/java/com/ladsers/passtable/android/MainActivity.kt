@@ -29,11 +29,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recentMps: MutableList<Boolean>
     private lateinit var adapter: RecentAdapter
     private lateinit var fileCreator: FileCreator
+    private lateinit var msgDialog: MsgDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        msgDialog = MsgDialog(this, window)
 
         binding.toolbar.root.title = getString(R.string.ui_ct_home)
         binding.toolbar.root.navigationIcon = ContextCompat.getDrawable(
@@ -153,11 +155,16 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
             2 -> { // local file is lost
-                val builder = AlertDialog.Builder(this)
-                builder.setMessage(getString(R.string.dlg_err_fileLost))
-                builder.setPositiveButton(getString(R.string.app_bt_ok)) { _, _ -> }
-                builder.setOnDismissListener { removeFromRecentList(id) }
-                builder.show()
+                msgDialog.create(
+                    getString(R.string.dlg_title_cannotBeOpened),
+                    getString(R.string.dlg_err_fileLost)
+                )
+                msgDialog.addPositiveBtn(
+                    getString(R.string.app_bt_ok),
+                    R.drawable.ic_accept
+                ) { removeFromRecentList(id) }
+                msgDialog.addSkipAction { removeFromRecentList(id) }
+                msgDialog.show()
             }
         }
     }

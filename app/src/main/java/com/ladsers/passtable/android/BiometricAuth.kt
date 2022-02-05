@@ -4,7 +4,6 @@ import android.content.Context
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
@@ -32,12 +31,12 @@ class BiometricAuth(
 
     fun startAuth(masterPassEncrypted: String) {
         if (!checkAvailability()) {
-            showMsgDialog(context.getString(R.string.dlg_err_biometricSensorNotAvailable))
+            showAuthError(context.getString(R.string.dlg_err_biometricSensorNotAvailable))
             authFailed()
             return
         }
         if (masterPassEncrypted.isBlank() || masterPassEncrypted == "@") {
-            showMsgDialog(context.getString(R.string.dlg_err_encryptedMasterPassNotFound))
+            showAuthError(context.getString(R.string.dlg_err_encryptedMasterPassNotFound))
             authFailed()
             return
         }
@@ -58,7 +57,7 @@ class BiometricAuth(
 
     fun activateAuth(masterPass: String) {
         if (!checkAvailability()) {
-            showMsgDialog(context.getString(R.string.dlg_err_biometricSensorNotAvailable))
+            showActivateError(context.getString(R.string.dlg_err_biometricSensorNotAvailable))
             afterActivation()
             return
         }
@@ -94,7 +93,7 @@ class BiometricAuth(
                 context.getString(R.string.ui_msg_fingerprintActivated),
                 Toast.LENGTH_SHORT
             ).show()
-        } else showMsgDialog(context.getString(R.string.dlg_err_encryptedMasterPassSaveFail))
+        } else showActivateError(context.getString(R.string.dlg_err_encryptedMasterPassSaveFail))
         afterActivation()
     }
 
@@ -170,7 +169,7 @@ class BiometricAuth(
                     }
                     else -> {
                         if (isActivation) {
-                            showMsgDialog(context.getString(R.string.dlg_err_encryptedMasterPassSaveFail))
+                            showActivateError(context.getString(R.string.dlg_err_encryptedMasterPassSaveFail))
                             afterActivation()
                         } else {
                             Toast.makeText(
@@ -194,11 +193,24 @@ class BiometricAuth(
             }
         })
 
-    private fun showMsgDialog(text: String, title: String = "") {
-        val builder = AlertDialog.Builder(context)
-        builder.setMessage(text)
-        if (title.isNotEmpty()) builder.setTitle(title)
-        builder.setPositiveButton(context.getString(R.string.app_bt_ok)) { _, _ -> }
-        builder.show()
+    private fun showActivateError(reason: String) {
+        val msgDialog = MsgDialog(context, activity.window)
+        msgDialog.create(context.getString(R.string.dlg_title_operationCanceled), reason)
+        msgDialog.addPositiveBtn(
+            context.getString(R.string.app_bt_ok),
+            R.drawable.ic_accept
+        ) {}
+        msgDialog.show()
+    }
+
+    private fun showAuthError(reason: String) {
+        val msgDialog = MsgDialog(context, activity.window)
+        msgDialog.create(context.getString(R.string.dlg_title_authenticationError), reason)
+        msgDialog.addPositiveBtn(
+            context.getString(R.string.app_bt_enterPassword),
+            R.drawable.ic_next_arrow
+        ) {}
+        msgDialog.disableSkip()
+        msgDialog.show()
     }
 }
