@@ -118,7 +118,7 @@ class TableActivity : AppCompatActivity() {
         if (tagFilter.any { it } || searchMode) openSearchPanel() else super.onBackPressed()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_table, menu)
         return true
     }

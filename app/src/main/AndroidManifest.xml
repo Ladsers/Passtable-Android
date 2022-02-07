@@ -17,7 +17,8 @@
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
         <activity
             android:name=".TableActivity"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden">
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:exported="true">
             <intent-filter android:label='@string/app_com_fileLabel'>
                 <action android:name='android.intent.action.VIEW' />
                 <category android:name='android.intent.category.DEFAULT' />
@@ -31,7 +32,8 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden">
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
