@@ -64,7 +64,7 @@
         <string name="ui_ct_settings">Settings</string>
         <string name="ui_ct_searchHint">Search by notes and logins</string>
         <string name="ui_ct_showPasswordInCard">Show the password in the card</string> <!-- TODO: remove -->
-        <string name="ui_ct_checkboxRememberPasswordByDefault">The checkbox \"remember password\" is checked by default</string>
+        <string name="ui_ct_checkboxRememberPasswordByDefault">The checkbox \"%1$s\" is checked by default</string>
         <string name="ui_ct_rememberRecentFiles">Remember recently opened files</string>
         <string name="ui_ct_clearRecentFiles">Clear the list of recent files</string>
         <string name="ui_ct_clearRecentFilesAndForgetPasswords">Clear the list of recent files and forget all passwords</string>
@@ -125,11 +125,11 @@
         <string name="dlg_ct_incorrectPassword">Incorrect password</string>
         <string name="dlg_ct_passwordsDoNotMatch">Passwords don\'t match</string>
         <string name="dlg_ct_fileNameBlank">File name cannot be empty</string>
-        <string name="dlg_ct_fileNameInvalidChars">File name contains invalid characters:</string>
+        <string name="dlg_ct_fileNameInvalidChars">File name contains invalid characters: %1$s</string>
         <string name="dlg_ct_fileNameWhitespaceChar">File name cannot start with a space character</string>
-        <string name="dlg_ct_fileNameInvalidForWindows">File name is invalid word for Windows.\nInvalid words:</string>
+        <string name="dlg_ct_fileNameInvalidForWindows">File name is invalid word for Windows.\nInvalid words: %1$s</string>
         <string name="dlg_ct_primaryEmpty">Primary password cannot be empty</string>
-        <string name="dlg_ct_primaryInvalidChars">Primary password contains invalid characters.\nAllowed characters:</string>
+        <string name="dlg_ct_primaryInvalidChars">Primary password contains invalid characters.\nAllowed characters: %1$s</string>
         <string name="dlg_ct_primarySlashChar">Primary password cannot start with a forward slash</string>
         <!-- end! -->
 

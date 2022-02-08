@@ -49,6 +49,10 @@ class SettingsActivity : AppCompatActivity() {
         binding.swShowPasswordInCard.isChecked =
             ParamStorage.getBool(this, Param.SHOW_PASSWORD_IN_CARD) //TODO: remove
 
+        binding.swCheckboxRememberPasswordByDefault.text = getString(
+            R.string.ui_ct_checkboxRememberPasswordByDefault,
+            getString(R.string.dlg_ct_fingerprintLogin)
+        )
         binding.swCheckboxRememberPasswordByDefault.isChecked =
             ParamStorage.getBool(this, Param.CHECKBOX_REMEMBER_PASSWORD_BY_DEFAULT)
 

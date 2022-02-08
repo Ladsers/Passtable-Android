@@ -147,8 +147,9 @@ class MpRequester(
                 binding.clErr.visibility = if (errCode == 0) View.GONE else View.VISIBLE
                 val errMsg = when (errCode) {
                     1 -> context.getString(R.string.dlg_ct_primaryEmpty)
-                    2 -> context.getString(R.string.dlg_ct_primaryInvalidChars) + ' ' + Verifier.getMpAllowedChars(
-                        context.getString(R.string.app_com_spaceChar)
+                    2 -> context.getString(
+                        R.string.dlg_ct_primaryInvalidChars,
+                        Verifier.getMpAllowedChars(context.getString(R.string.app_com_spaceChar))
                     )
                     3 -> context.getString(R.string.dlg_ct_primarySlashChar)
                     else -> ""
