@@ -3,8 +3,11 @@ package com.ladsers.passtable.android
 import android.content.Context
 import android.net.Uri
 import android.os.Build
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.*
 import android.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ladsers.passtable.android.databinding.ItemRecentBinding
 import java.lang.Exception
@@ -101,6 +104,12 @@ class RecentAdapter(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) pop.setForceShowIcon(true)
 
         pop.menu.findItem(R.id.btForgetPassword).isVisible = recentMps[position]
+        val colorNegative = ContextCompat.getColor(contextActivity, R.color.actionNegative)
+        val itemMenuRemove = pop.menu.findItem(R.id.btRemoveFromList)
+        val spanStr = SpannableString(itemMenuRemove.title.toString())
+        spanStr.setSpan(ForegroundColorSpan(colorNegative), 0, spanStr.length, 0)
+        itemMenuRemove.title = spanStr
+
         pop.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.btRemoveFromList -> popupAction(position, 1)
