@@ -46,7 +46,8 @@
         <string name="app_bt_copyLogin">Copy login</string>
         <string name="app_bt_copyPassword">Copy password</string>
         <string name="app_bt_remove">Remove</string>
-        <string name="app_bt_returnToHome">Return to Home screen</string>
+        <string name="app_bt_closeFile">Close file</string>
+        <string name="app_bt_closeFileDataLoss">Close file with data loss</string>
         <string name="app_bt_tryEditLastItem">Try to edit the last item</string>
         <string name="app_bt_createNewFile">Create new file</string>
         <string name="app_bt_enterPassword">Enter password</string>

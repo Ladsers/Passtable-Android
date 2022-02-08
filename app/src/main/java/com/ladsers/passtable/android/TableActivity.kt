@@ -198,8 +198,8 @@ class TableActivity : AppCompatActivity() {
     private fun showCriticalError(reason: String) {
         msgDialog.create(getString(R.string.dlg_title_criticalError), reason)
         msgDialog.addPositiveBtn(
-            getString(R.string.app_bt_returnToHome),
-            R.drawable.ic_back_arrow
+            getString(R.string.app_bt_closeFile),
+            R.drawable.ic_exit
         ) { finish() }
         msgDialog.disableSkip()
         msgDialog.show()
@@ -711,6 +711,10 @@ class TableActivity : AppCompatActivity() {
             saveAsMode = false
             fileCreator.askName(getFileName(mainUri), false)
         }
+        msgDialog.addNegativeBtn(
+            getString(R.string.app_bt_closeFileDataLoss),
+            R.drawable.ic_exit
+        ) { finish() }
         msgDialog.disableSkip()
         msgDialog.show()
     }
