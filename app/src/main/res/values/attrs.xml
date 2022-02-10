@@ -8,6 +8,7 @@
     <attr name="whiteOrBlack" format="color" />
     <attr name="textSecondary" format="color" />
     <attr name="editBackground" format="color" />
+    <attr name="settingsItemBackground" format="color" />
     <attr name="actionDisabled" format="color" />
     <attr name="infoErrorBackground" format="color" />
     <attr name="infoErrorForeground" format="color" />

@@ -22,6 +22,7 @@
         <item name="tagNoneStroke">@color/tagNoneStrokeLight</item>
         <item name="whiteOrBlack">@color/white</item>
         <item name="editBackground">@color/editBackgroundLight</item>
+        <item name="settingsItemBackground">@color/editBackgroundLight</item>
         <item name="actionDisabled">@color/actionDisabledLight</item>
         <item name="infoErrorForeground">@color/infoRedPrimaryLight</item>
         <item name="infoErrorBackground">@color/infoRedSecondaryLight</item>

@@ -18,6 +18,7 @@
         <item name="tagNoneStroke">@color/tagNoneStrokeDark</item>
         <item name="whiteOrBlack">@color/black</item>
         <item name="editBackground">@color/editBackgroundDark</item>
+        <item name="settingsItemBackground">@color/grayOverlay</item>
         <item name="actionDisabled">@color/actionDisabledDark</item>
         <item name="infoErrorForeground">@color/infoRedPrimaryDark</item>
         <item name="infoErrorBackground">@color/infoRedSecondaryDark</item>

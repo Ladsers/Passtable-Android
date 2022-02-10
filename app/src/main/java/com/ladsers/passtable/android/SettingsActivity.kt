@@ -6,6 +6,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import com.ladsers.passtable.android.databinding.ActivitySettingsBinding
@@ -90,12 +91,15 @@ class SettingsActivity : AppCompatActivity() {
     private fun componentActionInit() {
         binding.theme.rbThemeDefault.setOnClickListener {
             ParamStorage.set(this, Param.THEME, 0)
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
         binding.theme.rbThemeLight.setOnClickListener {
             ParamStorage.set(this, Param.THEME, 1)
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
         binding.theme.rbThemeDark.setOnClickListener {
             ParamStorage.set(this, Param.THEME, 2)
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
 
        binding.lockFile.rbLockModeTimePeriod.setOnClickListener {

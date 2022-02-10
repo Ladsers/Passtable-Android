@@ -3,7 +3,7 @@
     android:color="?colorControlHighlight">
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="?attr/editBackground" />
+            <solid android:color="?attr/settingsItemBackground" />
             <corners android:radius="25dp" />
         </shape>
     </item>

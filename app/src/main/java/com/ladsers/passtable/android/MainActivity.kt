@@ -11,6 +11,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,6 +33,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(
+            when (ParamStorage.getInt(this, Param.THEME)) {
+                1 -> AppCompatDelegate.MODE_NIGHT_NO
+                2 -> AppCompatDelegate.MODE_NIGHT_YES
+                else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            }
+        )
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         msgDialog = MsgDialog(this, window)
@@ -42,6 +50,7 @@ class MainActivity : AppCompatActivity() {
             R.drawable.ic_logo
         )
         binding.toolbar.root.navigationIcon?.setTintList(null)
+        binding.toolbar.root.navigationContentDescription = getString(R.string.app_info_appName)
         setSupportActionBar(binding.toolbar.root)
 
         fileCreator =
