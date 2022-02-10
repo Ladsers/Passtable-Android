@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
@@ -124,6 +125,11 @@ class SettingsActivity : AppCompatActivity() {
         }
        binding.lockFile.swLockAllowWhenEditing.setOnCheckedChangeListener { _, isChecked ->
             ParamStorage.set(this, Param.LOCK_ALLOW_WHEN_EDITING, isChecked)
+        }
+        binding.lockFile.clLockSecs.setOnClickListener {
+            binding.lockFile.etLockSecs.requestFocus()
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(binding.lockFile.etLockSecs, 0)
         }
         etLockSecsInit()
 
