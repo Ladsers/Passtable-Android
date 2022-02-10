@@ -54,6 +54,12 @@ class TableActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (ParamStorage.getBool(this, Param.PREVENT_SCREEN_CAPTURE)) {
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE
+            )
+        }
         binding = ActivityTableBinding.inflate(layoutInflater)
         setContentView(binding.root)
         msgDialog = MsgDialog(this, window)
