@@ -10,12 +10,13 @@ enum class Param(
 ) {
     INITIAL_SETUP("initialSetup", defBool = true),
 
-    SHOW_PASSWORD_IN_CARD("showPasswordInCard", defBool = false), //TODO: remove
     CHECKBOX_REMEMBER_PASSWORD_BY_DEFAULT("checkboxRememberPasswordByDefault", defBool = true),
     LOCK_MODE("lockMode", defInt = 0),
     LOCK_SECS("lockSecs", defInt = 120),
     LOCK_ALLOW_WHEN_EDITING("lockAllowWhenEditing", defBool = true),
-    REMEMBER_RECENT_FILES("rememberRecentFiles", defBool = true)
+    REMEMBER_RECENT_FILES("rememberRecentFiles", defBool = true),
+    THEME("theme", defInt = 0),
+    PREVENT_SCREEN_CAPTURE("preventScreenCapture", defBool = true)
 }
 
 object ParamStorage {

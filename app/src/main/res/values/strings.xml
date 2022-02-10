@@ -51,6 +51,7 @@
         <string name="app_bt_tryEditLastItem">Try to edit the last item</string>
         <string name="app_bt_createNewFile">Create new file</string>
         <string name="app_bt_enterPassword">Enter password</string>
+        <string name="app_bt_disableBiometricAuth">Disable biometric authentication for all files</string>
         <!-- end! -->
 
     <!-- END -->
@@ -64,7 +65,6 @@
         <string name="ui_ct_addItem">Add item</string>
         <string name="ui_ct_settings">Settings</string>
         <string name="ui_ct_searchHint">Search by notes and logins</string>
-        <string name="ui_ct_showPasswordInCard">Show the password in the card</string> <!-- TODO: remove -->
         <string name="ui_ct_checkboxRememberPasswordByDefault">The checkbox \"%1$s\" is checked by default</string>
         <string name="ui_ct_rememberRecentFiles">Remember recently opened files</string>
         <string name="ui_ct_clearRecentFiles">Clear the list of recent files</string>
@@ -73,13 +73,21 @@
         <string name="ui_ct_lockFile">Lock the file</string>
         <string name="ui_ct_lockTimePeriod">After the specified time period after minimizing the app</string>
         <string name="ui_ct_lockMinAndLockPhone">When minimizing the app or locking the phone</string>
-        <string name="ui_ct_lockAllowWhenEditing">Allow locking when editing or creating entries</string>
+        <string name="ui_ct_lockAllowWhenEditing">Lock when editing or creating items</string>
         <string name="ui_ct_lockDoNotLock">Do not lock</string>
         <string name="ui_ct_timePeriodForLocking">Time period for locking (seconds):</string>
         <string name="ui_ct_leaveBlankToSkip">Leave blank to skip verification</string>
         <string name="ui_ct_fileNoItems">File contains no items</string>
         <string name="ui_ct_fileNoItemsHint">Click on \"+\" in the top right corner to add a new item</string>
         <string name="ui_ct_nothingFound">Nothing found</string>
+        <string name="ui_ct_biometricAuth">Biometric authentication</string>
+        <string name="ui_ct_recentFiles">Recent files</string>
+        <string name="ui_ct_theme">Theme</string>
+        <string name="ui_ct_systemDefault">System default</string>
+        <string name="ui_ct_light">Light</string>
+        <string name="ui_ct_dark">Dark</string>
+        <string name="ui_ct_security">Security</string>
+        <string name="ui_ct_preventScreenCapture">Prevent screen capture</string>
         <!-- end! -->
 
         <!-- msg (message) -->

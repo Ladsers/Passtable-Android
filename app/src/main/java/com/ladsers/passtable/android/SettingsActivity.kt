@@ -6,7 +6,6 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import com.ladsers.passtable.android.databinding.ActivitySettingsBinding
@@ -41,89 +40,94 @@ class SettingsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        binding.etLockSecs.setText(ParamStorage.getInt(this, Param.LOCK_SECS).toString())
-        binding.etLockSecs.clearFocus()
+        binding.lockFile.etLockSecs.setText(ParamStorage.getInt(this, Param.LOCK_SECS).toString())
+        binding.lockFile.etLockSecs.clearFocus()
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.lockFile.etLockSecs.windowToken, 0)
     }
 
     private fun componentValInit() {
-        binding.swShowPasswordInCard.isChecked =
-            ParamStorage.getBool(this, Param.SHOW_PASSWORD_IN_CARD) //TODO: remove
-
-        binding.swCheckboxRememberPasswordByDefault.text = getString(
-            R.string.ui_ct_checkboxRememberPasswordByDefault,
-            getString(R.string.dlg_ct_fingerprintLogin)
-        )
-        binding.swCheckboxRememberPasswordByDefault.isChecked =
-            ParamStorage.getBool(this, Param.CHECKBOX_REMEMBER_PASSWORD_BY_DEFAULT)
+        when (ParamStorage.getInt(this, Param.THEME)){
+            0 -> binding.theme.rbThemeDefault.isChecked = true
+            1 -> binding.theme.rbThemeLight.isChecked = true
+            2 -> binding.theme.rbThemeDark.isChecked = true
+        }
 
         val lockMode = ParamStorage.getInt(this, Param.LOCK_MODE)
         when (lockMode) {
-            0 -> binding.rbLockModeTimePeriod.isChecked = true
-            1 -> binding.rbLockModeAlways.isChecked = true
-            2 -> binding.rbLockModeNever.isChecked = true
+            0 -> binding.lockFile.rbLockModeTimePeriod.isChecked = true
+            1 -> binding.lockFile.rbLockModeAlways.isChecked = true
+            2 -> binding.lockFile.rbLockModeNever.isChecked = true
         }
 
-        if (lockMode == 2) binding.cbLockAllowWhenEditing.isEnabled = false
-        binding.cbLockAllowWhenEditing.isChecked =
+        if (lockMode == 2) binding.lockFile.swLockAllowWhenEditing.isEnabled = false
+        binding.lockFile.swLockAllowWhenEditing.isChecked =
             ParamStorage.getBool(this, Param.LOCK_ALLOW_WHEN_EDITING)
 
-        if (lockMode != 0) binding.etLockSecs.isEnabled = false
-        binding.etLockSecs.setText(ParamStorage.getInt(this, Param.LOCK_SECS).toString())
+        if (lockMode != 0) binding.lockFile.etLockSecs.isEnabled = false
+        binding.lockFile.etLockSecs.setText(ParamStorage.getInt(this, Param.LOCK_SECS).toString())
 
-        binding.swRememberRecentFiles.isChecked =
+        binding.security.swPreventScreenCapture.isChecked =
+            ParamStorage.getBool(this, Param.PREVENT_SCREEN_CAPTURE)
+
+        binding.recentFiles.swRememberRecentFiles.isChecked =
             ParamStorage.getBool(this, Param.REMEMBER_RECENT_FILES)
-        updateComponentsForRecentFiles(binding.swRememberRecentFiles.isChecked)
+        updateComponentsForRecentFiles(binding.recentFiles.swRememberRecentFiles.isChecked)
+
+        binding.biometricAuth.swCheckboxRememberPasswordByDefault.text = getString(
+            R.string.ui_ct_checkboxRememberPasswordByDefault,
+            getString(R.string.dlg_ct_fingerprintLogin)
+        )
+        binding.biometricAuth.swCheckboxRememberPasswordByDefault.isChecked =
+            ParamStorage.getBool(this, Param.CHECKBOX_REMEMBER_PASSWORD_BY_DEFAULT)
 
         val biometricAuth = BiometricAuth(this, this, {}, {}, {})
         biometricAuthIsAvailable = biometricAuth.checkAvailability()
-        if (biometricAuthIsAvailable) {
-            binding.swCheckboxRememberPasswordByDefault.visibility = View.VISIBLE
-            binding.tvForgetPasswords.visibility = View.VISIBLE
-            binding.btForgetPasswords.visibility = View.VISIBLE
-            binding.tvClearRecentFiles.text =
-                getString(R.string.ui_ct_clearRecentFilesAndForgetPasswords)
-        }
+        binding.biometricAuth.clBiometricAuth.visibility =
+            if (biometricAuthIsAvailable) View.VISIBLE else View.GONE
     }
 
     private fun componentActionInit() {
-        binding.swShowPasswordInCard.setOnCheckedChangeListener { _, isChecked ->
-            ParamStorage.set(this, Param.SHOW_PASSWORD_IN_CARD, isChecked) //TODO: remove
+        binding.theme.rbThemeDefault.setOnClickListener {
+            ParamStorage.set(this, Param.THEME, 0)
+        }
+        binding.theme.rbThemeLight.setOnClickListener {
+            ParamStorage.set(this, Param.THEME, 1)
+        }
+        binding.theme.rbThemeDark.setOnClickListener {
+            ParamStorage.set(this, Param.THEME, 2)
         }
 
-        binding.swCheckboxRememberPasswordByDefault.setOnCheckedChangeListener { _, isChecked ->
-            ParamStorage.set(this, Param.CHECKBOX_REMEMBER_PASSWORD_BY_DEFAULT, isChecked)
-        }
-
-        binding.rbLockModeTimePeriod.setOnClickListener {
+       binding.lockFile.rbLockModeTimePeriod.setOnClickListener {
             if (ParamStorage.getInt(this, Param.LOCK_MODE) != 0) {
                 ParamStorage.set(this, Param.LOCK_MODE, 0)
-                binding.cbLockAllowWhenEditing.isEnabled = true
-                binding.etLockSecs.isEnabled = true
-                binding.etLockSecs.clearFocus()
+               binding.lockFile.swLockAllowWhenEditing.isEnabled = true
+               binding.lockFile.etLockSecs.isEnabled = true
+               binding.lockFile.etLockSecs.clearFocus()
             }
         }
-
-        binding.rbLockModeAlways.setOnClickListener {
+       binding.lockFile.rbLockModeAlways.setOnClickListener {
             ParamStorage.set(this, Param.LOCK_MODE, 1)
-            binding.cbLockAllowWhenEditing.isEnabled = true
-            binding.etLockSecs.isEnabled = false
-            binding.etLockSecs.setText(ParamStorage.getInt(this, Param.LOCK_SECS).toString())
+           binding.lockFile.swLockAllowWhenEditing.isEnabled = true
+           binding.lockFile.etLockSecs.isEnabled = false
+           binding.lockFile.etLockSecs.setText(ParamStorage.getInt(this, Param.LOCK_SECS).toString())
         }
-
-        binding.rbLockModeNever.setOnClickListener {
+       binding.lockFile.rbLockModeNever.setOnClickListener {
             ParamStorage.set(this, Param.LOCK_MODE, 2)
-            binding.cbLockAllowWhenEditing.isEnabled = false
-            binding.etLockSecs.isEnabled = false
-            binding.etLockSecs.setText(ParamStorage.getInt(this, Param.LOCK_SECS).toString())
+           binding.lockFile.swLockAllowWhenEditing.isEnabled = false
+           binding.lockFile.etLockSecs.isEnabled = false
+           binding.lockFile.etLockSecs.setText(ParamStorage.getInt(this, Param.LOCK_SECS).toString())
         }
-
-        binding.cbLockAllowWhenEditing.setOnCheckedChangeListener { _, isChecked ->
+       binding.lockFile.swLockAllowWhenEditing.setOnCheckedChangeListener { _, isChecked ->
             ParamStorage.set(this, Param.LOCK_ALLOW_WHEN_EDITING, isChecked)
         }
-
         etLockSecsInit()
 
-        binding.swRememberRecentFiles.setOnClickListener {
+        binding.security.swPreventScreenCapture.setOnCheckedChangeListener { _, isChecked ->
+            ParamStorage.set(this, Param.PREVENT_SCREEN_CAPTURE, isChecked)
+        }
+
+       binding.recentFiles.swRememberRecentFiles.setOnClickListener {
             if (RecentFiles.isNotEmpty(this)) {
                 val msg =
                     if (biometricAuthIsAvailable) getString(R.string.dlg_msg_disableRememberingRecentFilesAndPasswords)
@@ -137,13 +141,13 @@ class SettingsActivity : AppCompatActivity() {
                 msgDialog.addNegativeBtn(
                     getString(R.string.app_bt_cancel),
                     R.drawable.ic_close
-                ) { binding.swRememberRecentFiles.isChecked = true }
-                msgDialog.addSkipAction { binding.swRememberRecentFiles.isChecked = true }
+                ) {binding.recentFiles.swRememberRecentFiles.isChecked = true }
+                msgDialog.addSkipAction {binding.recentFiles.swRememberRecentFiles.isChecked = true }
                 msgDialog.show(it)
-            } else changeRememberingRecentFiles(binding.swRememberRecentFiles.isChecked)
+            } else changeRememberingRecentFiles(binding.recentFiles.swRememberRecentFiles.isChecked)
         }
 
-        binding.btClearRecentFiles.setOnClickListener {
+       binding.recentFiles.btClearRecentFiles.setOnClickListener {
             val msg =
                 if (biometricAuthIsAvailable) getString(R.string.dlg_msg_recentFilesAndPasswordsWillBeCleared)
                 else getString(R.string.dlg_msg_recentFilesWillBeCleared)
@@ -156,7 +160,12 @@ class SettingsActivity : AppCompatActivity() {
             }, it)
         }
 
-        binding.btForgetPasswords.setOnClickListener {
+        binding.biometricAuth.swCheckboxRememberPasswordByDefault.setOnCheckedChangeListener { _, isChecked ->
+            ParamStorage.set(this, Param.CHECKBOX_REMEMBER_PASSWORD_BY_DEFAULT, isChecked)
+        }
+
+
+        binding.biometricAuth.btForgetPasswords.setOnClickListener {
             msgDialog.quickDialog(
                 getString(R.string.dlg_title_areYouSure),
                 getString(R.string.dlg_msg_passwordsWillBeForgotten), {
@@ -170,18 +179,18 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun etLockSecsInit() {
-        binding.etLockSecs.setOnKeyListener { v, keyCode, _ ->
+        binding.lockFile.etLockSecs.setOnKeyListener { v, keyCode, _ ->
             if (keyCode == KeyEvent.KEYCODE_ENTER) {
                 v.clearFocus()
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(v.windowToken, 0)
 
-                if (binding.etLockSecs.text.toString().isNotEmpty()) ParamStorage.set(
+                if (binding.lockFile.etLockSecs.text.toString().isNotEmpty()) ParamStorage.set(
                     this,
                     Param.LOCK_SECS,
-                    binding.etLockSecs.text.toString().toInt()
+                    binding.lockFile.etLockSecs.text.toString().toInt()
                 )
-                else binding.etLockSecs.setText(
+                else binding.lockFile.etLockSecs.setText(
                     ParamStorage.getInt(this, Param.LOCK_SECS).toString()
                 )
 
@@ -189,15 +198,17 @@ class SettingsActivity : AppCompatActivity() {
             }
             return@setOnKeyListener false
         }
-        binding.etLockSecs.doAfterTextChanged { x ->
-            if (x.toString().startsWith('0')) binding.etLockSecs.setText("")
+        binding.lockFile.etLockSecs.doAfterTextChanged { x ->
+            if (x.toString().startsWith('0')) binding.lockFile.etLockSecs.setText("")
         }
     }
 
     private fun updateComponentsForRecentFiles(isEnabled: Boolean) {
-        binding.swCheckboxRememberPasswordByDefault.isEnabled = isEnabled
-        binding.btClearRecentFiles.isEnabled = isEnabled
-        binding.btForgetPasswords.isEnabled = isEnabled
+        binding.biometricAuth.swCheckboxRememberPasswordByDefault.isEnabled = isEnabled
+        binding.recentFiles.btClearRecentFiles.isEnabled = isEnabled
+        binding.biometricAuth.btForgetPasswords.isEnabled = isEnabled
+        binding.recentFiles.btClearRecentFiles.alpha = if (isEnabled) 1.0f else 0.5f
+        binding.biometricAuth.btForgetPasswords.alpha = if (isEnabled) 1.0f else 0.5f
     }
 
     private fun changeRememberingRecentFiles(isEnabled: Boolean) {

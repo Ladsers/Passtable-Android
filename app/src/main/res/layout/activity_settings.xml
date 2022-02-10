@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".SettingsActivity">
 
     <include
@@ -28,171 +30,57 @@
             android:focusable="true"
             android:focusableInTouchMode="true">
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/swShowPasswordInCard"
+            <include
+                android:id="@+id/theme"
+                layout="@layout/settings_theme"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/ui_ct_showPasswordInCard"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/swCheckboxRememberPasswordByDefault"
+            <include
+                android:id="@+id/lockFile"
+                layout="@layout/settings_lock_file"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/ui_ct_checkboxRememberPasswordByDefault"
-                android:visibility="gone"
+                android:layout_marginTop="22dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/swShowPasswordInCard"
-                tools:visibility="visible" />
+                app:layout_constraintTop_toBottomOf="@+id/theme" />
 
-            <TextView
-                android:id="@+id/tvLockMode"
+            <include
+                android:id="@+id/security"
+                layout="@layout/settings_security"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/ui_ct_lockFile"
+                android:layout_marginTop="22dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/swCheckboxRememberPasswordByDefault" />
+                app:layout_constraintTop_toBottomOf="@+id/lockFile" />
 
-            <RadioGroup
-                android:id="@+id/rbLockMode"
+            <include
+                android:id="@+id/recentFiles"
+                layout="@layout/settings_recent_files"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="24dp"
+                android:layout_marginTop="22dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvLockMode">
+                app:layout_constraintTop_toBottomOf="@+id/security" />
 
-                <RadioButton
-                    android:id="@+id/rbLockModeTimePeriod"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/ui_ct_lockTimePeriod" />
-
-                <RadioButton
-                    android:id="@+id/rbLockModeAlways"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/ui_ct_lockMinAndLockPhone" />
-
-                <RadioButton
-                    android:id="@+id/rbLockModeNever"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/ui_ct_lockDoNotLock" />
-            </RadioGroup>
-
-            <CheckBox
-                android:id="@+id/cbLockAllowWhenEditing"
+            <include
+                android:id="@+id/biometricAuth"
+                layout="@layout/settings_biometric_auth"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/ui_ct_lockAllowWhenEditing"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rbLockMode" />
-
-            <TextView
-                android:id="@+id/tvLockSecs"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
-                android:text="@string/ui_ct_timePeriodForLocking"
-                app:layout_constraintEnd_toStartOf="@+id/etLockSecs"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cbLockAllowWhenEditing" />
-
-            <com.ladsers.passtable.android.EditTextLockSecs
-                android:id="@+id/etLockSecs"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:ems="10"
-                android:inputType="number"
-                android:maxLength="3"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cbLockAllowWhenEditing" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/swRememberRecentFiles"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/ui_ct_rememberRecentFiles"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etLockSecs" />
-
-            <TextView
-                android:id="@+id/tvClearRecentFiles"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="32dp"
-                android:text="@string/ui_ct_clearRecentFiles"
-                app:layout_constraintEnd_toStartOf="@+id/btClearRecentFiles"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/swRememberRecentFiles" />
-
-            <Button
-                android:id="@+id/btClearRecentFiles"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                app:icon="@drawable/ic_close"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/swRememberRecentFiles" />
-
-            <TextView
-                android:id="@+id/tvForgetPasswords"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="32dp"
-                android:text="@string/ui_ct_forgetPasswords"
-                android:visibility="gone"
-                app:layout_constraintEnd_toStartOf="@+id/btClearRecentFiles"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvClearRecentFiles"
-                tools:visibility="visible" />
-
-            <Button
-                android:id="@+id/btForgetPasswords"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:visibility="gone"
-                app:icon="@drawable/ic_close"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvClearRecentFiles"
-                tools:visibility="visible" />
+                app:layout_constraintTop_toBottomOf="@+id/recentFiles" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
