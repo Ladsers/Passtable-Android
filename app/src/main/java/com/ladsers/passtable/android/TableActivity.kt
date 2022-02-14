@@ -45,6 +45,7 @@ class TableActivity : AppCompatActivity() {
     private var searchMode = false
     private var saveAsMode = false
     private var afterRemoval = false
+    private var escPressed = false
 
     private var quickView = false
 
@@ -121,7 +122,17 @@ class TableActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (tagFilter.any { it } || searchMode) openSearchPanel() else super.onBackPressed()
+        if (tagFilter.any { it } || searchMode) openSearchPanel() else {
+            if (!escPressed) super.onBackPressed()
+            else {
+                val msg = getString(
+                    R.string.ui_msg_closeViaEscape,
+                    getString(R.string.app_sh_closeFile)
+                )
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+            }
+        }
+        escPressed = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -733,10 +744,7 @@ class TableActivity : AppCompatActivity() {
                     if (!searchMode) openSearchPanel()
                 }
             }
-            KeyEvent.KEYCODE_ESCAPE -> {
-                searchMode = true
-                openSearchPanel()
-            }
+            KeyEvent.KEYCODE_ESCAPE -> escPressed = true
             KeyEvent.KEYCODE_N -> {
                 if (event?.isCtrlPressed ?: return super.onKeyDown(keyCode, event)) {
                     addItem()
@@ -747,6 +755,8 @@ class TableActivity : AppCompatActivity() {
                     finish()
                 }
             }
+            KeyEvent.KEYCODE_MOVE_HOME -> binding.rvTable.smoothScrollToPosition(0)
+            KeyEvent.KEYCODE_MOVE_END -> binding.rvTable.smoothScrollToPosition(mtList.lastIndex)
         }
         return super.onKeyDown(keyCode, event)
     }

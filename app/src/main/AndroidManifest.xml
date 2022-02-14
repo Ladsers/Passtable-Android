@@ -11,13 +11,13 @@
         android:theme="@style/Theme.Passtable">
         <activity
             android:name=".SettingsActivity"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|keyboard|navigation" />
         <activity
             android:name=".EditActivity"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|keyboard|navigation" />
         <activity
             android:name=".TableActivity"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|keyboard|navigation"
             android:exported="true">
             <intent-filter android:label='@string/app_com_fileLabel'>
                 <action android:name='android.intent.action.VIEW' />
@@ -32,7 +32,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|keyboard|navigation"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

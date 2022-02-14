@@ -1,6 +1,7 @@
 package com.ladsers.passtable.android
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.HapticFeedbackConstants
@@ -72,7 +73,8 @@ class EditActivity : AppCompatActivity() {
             binding.toolbar.root.setNavigationOnClickListener { unsavedChangesCheck() }
         }
 
-        binding.etNote.inputType = EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE
+        binding.etNote.inputType =
+            EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE or EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES
         binding.etNote.setHorizontallyScrolling(false)
         binding.etNote.maxLines = Integer.MAX_VALUE
 
@@ -88,6 +90,8 @@ class EditActivity : AppCompatActivity() {
         editTextBehavior(binding.etNote, binding.btUndoNote, originalNote)
         editTextBehavior(binding.etLogin, binding.btUndoLogin, originalLogin)
         editTextBehavior(binding.etPassword, binding.btUndoPassword, originalPassword)
+
+        if (resources.configuration.keyboard == Configuration.KEYBOARD_QWERTY) binding.etNote.requestFocus()
 
         binding.btShowPass.setOnClickListener {
             passwordIsVisible =

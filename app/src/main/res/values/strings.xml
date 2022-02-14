@@ -54,6 +54,10 @@
         <string name="app_bt_disableBiometricAuth">Disable biometric authentication for all files</string>
         <!-- end! -->
 
+        <!-- sh (keyboard shortcut) -->
+        <string name="app_sh_closeFile">Ctrl+Q</string>
+        <!-- end! -->
+
     <!-- END -->
 
     <!-- UI -->
@@ -101,6 +105,7 @@
         <string name="ui_msg_fingerprintActivated">Login by fingerprint was activated</string>
         <string name="ui_msg_recentFilesUpdated">The list of recent files has been updated</string>
         <string name="ui_msg_done">Done</string>
+        <string name="ui_msg_closeViaEscape">Press %1$s to close file</string>
         <!-- end! -->
 
     <!-- END -->
