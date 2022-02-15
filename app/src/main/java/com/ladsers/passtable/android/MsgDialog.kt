@@ -1,12 +1,13 @@
 package com.ladsers.passtable.android
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.text.method.ScrollingMovementMethod
 import android.view.View
 import android.view.Window
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.ladsers.passtable.android.databinding.DialogMsgBinding
@@ -133,6 +134,16 @@ class MsgDialog(
                 actionNeutral()
                 doSkip = false
                 this.dismiss()
+            }
+
+            binding.tvMessage.post {
+                val screenHeight = Resources.getSystem().displayMetrics.heightPixels
+                val dialogHeight = this.window!!.decorView.height
+                val rect = Rect()
+                window!!.decorView.getWindowVisibleDisplayFrame(rect)
+                val statusBar = rect.top
+
+                if (dialogHeight + statusBar >= screenHeight) binding.tvMessage.maxLines = 4
             }
         }
 
