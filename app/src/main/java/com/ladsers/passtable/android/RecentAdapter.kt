@@ -103,7 +103,9 @@ class RecentAdapter(
         pop.inflate(R.menu.menu_recentfiles)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) pop.setForceShowIcon(true)
 
-        pop.menu.findItem(R.id.btForgetPassword).isVisible = recentMps[position]
+        val btForgetPassword = pop.menu.findItem(R.id.btForgetPassword)
+        btForgetPassword.isVisible = recentMps[position]
+        btForgetPassword.isEnabled = recentMps[position]
         val colorNegative = ContextCompat.getColor(contextActivity, R.color.actionNegative)
         val itemMenuRemove = pop.menu.findItem(R.id.btRemoveFromList)
         val spanStr = SpannableString(itemMenuRemove.title.toString())
