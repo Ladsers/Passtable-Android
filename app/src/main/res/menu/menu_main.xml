@@ -3,6 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/btUpdate"
+        android:enabled="false"
+        android:icon="@drawable/ic_update"
+        android:title="@string/app_bt_updateAvailable"
+        android:visible="false"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/btSettings"
         android:icon="@drawable/ic_settings"
         android:title="@string/app_bt_settings"

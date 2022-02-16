@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.color.MaterialColors
 import com.ladsers.passtable.android.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -92,8 +93,24 @@ class MainActivity : AppCompatActivity() {
         else refreshRecentList()
     }
 
+    private fun checkUpdate(menu: Menu){
+        Thread {
+            try {
+                val res = Updater.check("apk", BuildConfig.VERSION_NAME)
+                window.decorView.post {
+                    val button = menu.findItem(R.id.btUpdate)
+                    button.isVisible = res == 1
+                    button.isEnabled = res == 1
+                }
+            } catch (e: Exception) { }
+        }.start()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
+        val color = MaterialColors.getColor(window.decorView, R.attr.notificationTint)
+        menu.findItem(R.id.btUpdate).icon.setTint(color)
+        checkUpdate(menu)
         return true
     }
 
@@ -102,6 +119,18 @@ class MainActivity : AppCompatActivity() {
             R.id.btSettings -> {
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
+                true
+            }
+            R.id.btUpdate -> {
+                msgDialog.create(
+                    getString(R.string.dlg_title_updateAvailable),
+                    getString(R.string.dlg_msg_downloadNewVersion)
+                )
+                msgDialog.addPositiveBtn(
+                    getString(R.string.app_bt_ok),
+                    R.drawable.ic_accept
+                ) {}
+                msgDialog.show()
                 true
             }
             else -> super.onOptionsItemSelected(item)

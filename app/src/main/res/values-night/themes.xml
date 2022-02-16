@@ -22,6 +22,7 @@
         <item name="actionDisabled">@color/actionDisabledDark</item>
         <item name="infoErrorForeground">@color/infoRedPrimaryDark</item>
         <item name="infoErrorBackground">@color/infoRedSecondaryDark</item>
+        <item name="notificationTint">@color/notificationTintDark</item>
 
         <item name="tagNone">@color/tagNoneDark</item>
         <item name="tagRed">@color/tagRedDark</item>

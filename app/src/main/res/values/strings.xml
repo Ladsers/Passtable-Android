@@ -52,6 +52,7 @@
         <string name="app_bt_createNewFile">Create new file</string>
         <string name="app_bt_enterPassword">Enter password</string>
         <string name="app_bt_disableBiometricAuth">Disable biometric authentication for all files</string>
+        <string name="app_bt_updateAvailable">Update available</string>
         <!-- end! -->
 
         <!-- sh (keyboard shortcut) -->
@@ -130,6 +131,7 @@
         <string name="dlg_title_createNewFile">Create a new file</string>
         <string name="dlg_title_saveAs">Save as</string>
         <string name="dlg_title_openTheFile">Open the file</string>
+        <string name="dlg_title_updateAvailable">Update available</string>
         <!-- end! -->
 
         <!-- ct (content) -->
@@ -172,6 +174,7 @@
         <string name="dlg_msg_recentFilesAndPasswordsWillBeCleared">The list of recent files will be cleared and all passwords will be forgotten</string>
         <string name="dlg_msg_passwordsWillBeForgotten">All passwords will be forgotten</string>
         <string name="dlg_msg_unsavedDataWillBeLost">All unsaved data will be lost</string>
+        <string name="dlg_msg_downloadNewVersion">Download the new version from Google Play or the GitHub repository</string>
         <!-- end! -->
 
     <!-- END -->

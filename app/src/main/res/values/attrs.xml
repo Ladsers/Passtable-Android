@@ -12,6 +12,7 @@
     <attr name="actionDisabled" format="color" />
     <attr name="infoErrorBackground" format="color" />
     <attr name="infoErrorForeground" format="color" />
+    <attr name="notificationTint" format="color" />
 
     <attr name="tagNone" format="color" />
     <attr name="tagRed" format="color" />

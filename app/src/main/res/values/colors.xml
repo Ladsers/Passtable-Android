@@ -44,4 +44,7 @@
 
     <color name="tablePanelLight">#FFFFFF</color>
     <color name="tablePanelDark">#121212</color>
+
+    <color name="notificationTintLight">#F98600</color>
+    <color name="notificationTintDark">#FF9F2D</color>
 </resources>
