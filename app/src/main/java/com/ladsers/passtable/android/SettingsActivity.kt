@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
@@ -37,6 +36,7 @@ class SettingsActivity : AppCompatActivity() {
 
         componentValInit()
         componentActionInit()
+        aboutInit()
     }
 
     override fun onResume() {
@@ -225,5 +225,11 @@ class SettingsActivity : AppCompatActivity() {
         ParamStorage.set(this, Param.REMEMBER_RECENT_FILES, isEnabled)
         updateComponentsForRecentFiles(isEnabled)
         RecentFiles.clear(this)
+    }
+
+    private fun aboutInit() {
+        binding.about.tvAuthor.text =
+            getString(R.string.ui_ct_createdBy, getString(R.string.app_com_maxKorolev))
+        binding.about.tvVersion.text = BuildConfig.VERSION_NAME
     }
 }

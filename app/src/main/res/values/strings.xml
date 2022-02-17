@@ -14,6 +14,7 @@
         <string name="app_com_fileLabel">Passtable File</string>
         <string name="app_com_spaceChar">space</string>
         <string name="app_com_confirm">Confirm</string>
+        <string name="app_com_maxKorolev">Max Korolev</string>
         <!-- end! -->
 
         <!-- bt (button) -->
@@ -53,6 +54,12 @@
         <string name="app_bt_enterPassword">Enter password</string>
         <string name="app_bt_disableBiometricAuth">Disable biometric authentication for all files</string>
         <string name="app_bt_updateAvailable">Update available</string>
+        <string name="app_bt_webPage">Web page</string>
+        <string name="app_bt_githubRepo">GitHub repo</string>
+        <string name="app_bt_cloudFileSync">Cloud file sync</string>
+        <string name="app_bt_keyboardShortcuts">Keyboard shortcuts</string>
+        <string name="app_bt_license">License</string>
+        <string name="app_bt_thirdPartyResources">Third party resources</string>
         <!-- end! -->
 
         <!-- sh (keyboard shortcut) -->
@@ -93,6 +100,11 @@
         <string name="ui_ct_dark">Dark</string>
         <string name="ui_ct_security">Security</string>
         <string name="ui_ct_preventScreenCapture">Prevent screen capture</string>
+        <string name="ui_ct_webResources">Web resources</string>
+        <string name="ui_ct_help">Help</string>
+        <string name="ui_ct_about">About</string>
+        <string name="ui_ct_createdBy">Created by %1$s</string>
+        <string name="ui_ct_version">Version</string>
         <!-- end! -->
 
         <!-- msg (message) -->
