@@ -99,6 +99,9 @@ class TableAdapter(
         pop.menu.findItem(R.id.btCopyLogin).isVisible = binding.tvLogin.text != ""
         pop.menu.findItem(R.id.btCopyPassword).isVisible = binding.tvPassword.text != "/no"
 
+        pop.menu.findItem(R.id.btPinToScreen).isVisible =
+            binding.tvLogin.text != "" && binding.tvPassword.text != "/no"
+
         val colorNegative = ContextCompat.getColor(binding.root.context, R.color.actionNegative)
         val itemMenuRemove = pop.menu.findItem(R.id.btRemove)
         val spanStr = SpannableString(itemMenuRemove.title.toString())
@@ -115,6 +118,7 @@ class TableAdapter(
                 R.id.btCopyPassword -> popupAction(position, 6)
                 R.id.btEdit -> popupAction(position, 7)
                 R.id.btRemove -> popupAction(position, 8)
+                R.id.btPinToScreen -> popupAction(position, 9)
             }
             true
         }

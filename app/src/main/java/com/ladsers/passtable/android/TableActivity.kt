@@ -39,6 +39,7 @@ class TableActivity : AppCompatActivity() {
     private lateinit var mpRequester: MpRequester
     private lateinit var fileCreator: FileCreator
     private lateinit var msgDialog: MsgDialog
+    private lateinit var dataPanel: DataPanel
 
     private var editId = -1
     private val tagFilter = MutableList(6) { false }
@@ -85,6 +86,7 @@ class TableActivity : AppCompatActivity() {
             contentResolver,
             window
         ) { openFileExplorer() }
+        dataPanel = DataPanel(applicationContext, this)
         turnOnPanel()
 
         var uri = intent.getParcelableExtra<Uri>("fileUri")
@@ -285,6 +287,7 @@ class TableActivity : AppCompatActivity() {
                 editItem()
             }
             8 -> removeItem(id, table.getData(tableId, "n")) // remove
+            9 -> dataPanel.show(table.getData(tableId, "l"), table.getData(tableId, "p"))
         }
     }
 

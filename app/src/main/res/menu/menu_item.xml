@@ -3,6 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
+        android:id="@+id/btPinToScreen"
+        android:icon="@drawable/ic_pin"
+        android:title="@string/app_bt_pinToScreen"
+        android:visible="false" />
+
+    <item
         android:id="@+id/btShowNote"
         android:icon="@drawable/ic_open_window"
         android:title="@string/app_bt_showNote"
