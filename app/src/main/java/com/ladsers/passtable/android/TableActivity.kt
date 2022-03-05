@@ -16,8 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.widget.doAfterTextChanged
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.*
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
@@ -243,6 +242,7 @@ class TableActivity : AppCompatActivity() {
         adapter = TableAdapter(mtList, { id, resCode -> popupAction(id, resCode) },
             { id -> showPassword(id) })
         binding.rvTable.adapter = adapter
+        (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         notifyUser()
     }
 
@@ -383,7 +383,11 @@ class TableActivity : AppCompatActivity() {
             mtList[editId].login = data[2]
             mtList[editId].password = if (data[3].isNotEmpty()) "/yes" else "/no"
 
+            (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = true
             adapter.notifyItemChanged(editId)
+            binding.rvTable.post {
+                (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+            }
         } else {
             mtList.removeAt(editId)
             adapter.notifyItemRemoved(editId)
@@ -551,6 +555,7 @@ class TableActivity : AppCompatActivity() {
             )
         }
 
+        val mtListOld = mtList.toList()
         mtList.clear()
         if (tagFilter.any { it }) {
             mtList.addAll(
@@ -569,7 +574,7 @@ class TableActivity : AppCompatActivity() {
         }
 
         notifyUser()
-        adapter.notifyDataSetChanged()
+        notifyDataSetChanged(mtListOld)
     }
 
     private fun openSearchPanel() {
@@ -608,10 +613,11 @@ class TableActivity : AppCompatActivity() {
         } else {
             // closing tags
             for (i in 1..5) tagFilter[i] = false
+            val mtListOld = mtList.toList()
             mtList.clear()
             mtList.addAll(table.getData())
             notifyUser()
-            adapter.notifyDataSetChanged()
+            notifyDataSetChanged(mtListOld)
 
             with(binding) {
                 val context = this@TableActivity
@@ -627,10 +633,11 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun searchByData(query: String) {
+        val mtListOld = mtList.toList()
         mtList.clear()
         mtList.addAll(if (query.isNotEmpty()) table.searchByData(query) else table.getData())
         notifyUser(query)
-        adapter.notifyDataSetChanged()
+        notifyDataSetChanged(mtListOld)
     }
 
     private fun openFileExplorer() {
@@ -679,10 +686,11 @@ class TableActivity : AppCompatActivity() {
 
     private fun fixSaveErrEncryption() {
         disableLockFileSystem = true
+        val mtListOld = mtList.toList()
         mtList.clear()
         mtList.addAll(table.getData())
         notifyUser()
-        adapter.notifyDataSetChanged()
+        notifyDataSetChanged(mtListOld)
         if (tagFilter.any { it } || searchMode) openSearchPanel()
 
         if (!afterRemoval) {
@@ -710,10 +718,11 @@ class TableActivity : AppCompatActivity() {
 
     private fun fixSaveErrEncryptionUndo() {
         table.fill()
+        val mtListOld = mtList.toList()
         mtList.clear()
         mtList.addAll(table.getData())
         notifyUser()
-        adapter.notifyDataSetChanged()
+        notifyDataSetChanged(mtListOld)
         disableLockFileSystem = false
     }
 
@@ -801,7 +810,9 @@ class TableActivity : AppCompatActivity() {
         if (mtList.size == 0) {
             if (tagFilter.any { it } || searchQuery.isNotEmpty()) {
                 binding.notificationEmptyCollection.clInfo.visibility = View.GONE
-                binding.notificationNothingFound.clInfo.visibility = View.VISIBLE
+                binding.notificationNothingFound.clInfo.postDelayed(
+                    { binding.notificationNothingFound.clInfo.visibility = View.VISIBLE }, 300
+                )
             } else {
                 binding.notificationEmptyCollection.clInfo.visibility = View.VISIBLE
                 binding.notificationNothingFound.clInfo.visibility = View.GONE
@@ -809,6 +820,14 @@ class TableActivity : AppCompatActivity() {
         } else {
             binding.notificationEmptyCollection.clInfo.visibility = View.GONE
             binding.notificationNothingFound.clInfo.visibility = View.GONE
+        }
+    }
+
+    private fun notifyDataSetChanged(mtListOld: List<DataItem>) {
+        DiffUtil.calculateDiff(SearchDiffCallback(mtListOld, mtList), false)
+            .dispatchUpdatesTo(adapter)
+        binding.rvTable.post {
+            binding.rvTable.smoothScrollToPosition(0)
         }
     }
 }
