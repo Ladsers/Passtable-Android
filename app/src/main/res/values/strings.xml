@@ -99,6 +99,8 @@
         <string name="ui_ct_fileNoItems">File contains no items</string>
         <string name="ui_ct_fileNoItemsHint">Click on \"+\" in the top right corner to add a new item</string>
         <string name="ui_ct_nothingFound">Nothing found</string>
+        <string name="ui_ct_noRecentlyOpenedFiles">No recently opened files</string>
+        <string name="ui_ct_noRecentlyOpenedFilesHint">Open an existing file or create a new one</string>
         <string name="ui_ct_biometricAuth">Biometric authentication</string>
         <string name="ui_ct_recentFiles">Recent files</string>
         <string name="ui_ct_theme">Theme</string>

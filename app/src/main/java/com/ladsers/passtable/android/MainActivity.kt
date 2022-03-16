@@ -1,5 +1,6 @@
 package com.ladsers.passtable.android
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -9,6 +10,7 @@ import android.os.Bundle
 import android.provider.DocumentsContract
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
@@ -59,7 +61,6 @@ class MainActivity : AppCompatActivity() {
 
         binding.btOpenFile.setOnClickListener { openFileExplorer(false) }
         binding.btNewFile.setOnClickListener { v -> fileCreator.askName(btView = v) }
-        //binding.btAbout.setOnClickListener { }
 
         binding.rvRecent.layoutManager = LinearLayoutManager(
             this,
@@ -219,6 +220,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun refreshRecentList(){
         recentUri.clear()
         recentUri.addAll(RecentFiles.loadUri(this))
@@ -227,6 +229,7 @@ class MainActivity : AppCompatActivity() {
         recentMps.clear()
         recentMps.addAll(RecentFiles.loadMpsEncrypted(this))
         adapter.notifyDataSetChanged()
+        notifyUser()
     }
 
     private fun removeFromRecentList(id: Int){
@@ -236,5 +239,11 @@ class MainActivity : AppCompatActivity() {
         recentMps.removeAt(id)
         adapter.notifyItemRemoved(id)
         adapter.notifyItemRangeChanged(id, adapter.itemCount)
+        notifyUser()
+    }
+
+    private fun notifyUser(){
+        binding.notificationNoRecentlyOpened.clInfo.visibility =
+            if (recentUri.size == 0) View.VISIBLE else View.GONE
     }
 }
