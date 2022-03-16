@@ -3,6 +3,11 @@
 
         <!-- info -->
         <string name="app_info_appName">Passtable</string>
+        <string name="app_info_webPage">https://www.ladsers.com/passtable</string>
+        <string name="app_info_repo">https://github.com/Ladsers/Passtable-Android</string>
+        <string name="app_info_cloudFileSync">"cloudFileSync" TODO</string> <!-- TODO -->
+        <string name="app_info_keyboardShortcuts">"keyboardShortcuts" TODO</string> <!-- TODO -->
+        <string name="app_info_thirdPartyResources">"thirdPartyResources" TODO</string> <!-- TODO -->
         <!-- end! -->
 
         <!-- com (common) -->

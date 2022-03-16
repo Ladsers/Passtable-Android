@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Passtable">
         <activity
+            android:name=".InfoActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|keyboard|navigation" />
+        <activity
             android:name=".SettingsActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|keyboard|navigation" />
         <activity
@@ -22,12 +25,13 @@
             android:name=".TableActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|keyboard|navigation"
             android:exported="true">
-            <intent-filter android:label='@string/app_com_fileLabel'>
-                <action android:name='android.intent.action.VIEW' />
-                <category android:name='android.intent.category.DEFAULT' />
+            <intent-filter android:label="@string/app_com_fileLabel">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
 
                 <data
-                    android:host='*'
+                    android:host="*"
                     android:mimeType="application/octet-stream"
                     android:pathPattern=".*\\.passtable"
                     android:scheme="content" />
@@ -39,6 +43,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

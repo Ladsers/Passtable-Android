@@ -1,5 +1,7 @@
 package com.ladsers.passtable.android
 
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
@@ -10,6 +12,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import com.ladsers.passtable.android.databinding.ActivitySettingsBinding
+import licenseText
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySettingsBinding
@@ -228,8 +231,42 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun aboutInit() {
+        binding.help.btCloudSync.setOnClickListener {
+            val intent = Intent(this, InfoActivity::class.java)
+            intent.putExtra("title", getString(R.string.app_bt_cloudFileSync))
+            intent.putExtra("info", getString(R.string.app_info_cloudFileSync))
+            startActivity(intent)
+        }
+        binding.help.btShortcuts.setOnClickListener {
+            val intent = Intent(this, InfoActivity::class.java)
+            intent.putExtra("title", getString(R.string.app_bt_keyboardShortcuts))
+            intent.putExtra("info", getString(R.string.app_info_keyboardShortcuts))
+            startActivity(intent)
+        }
+
+        binding.web.btWebPage.setOnClickListener {
+            val webPage = Uri.parse(getString(R.string.app_info_webPage))
+            startActivity(Intent(Intent.ACTION_VIEW, webPage))
+        }
+        binding.web.btRepo.setOnClickListener {
+            val repo = Uri.parse(getString(R.string.app_info_repo))
+            startActivity(Intent(Intent.ACTION_VIEW, repo))
+        }
+
         binding.about.tvAuthor.text =
             getString(R.string.ui_ct_createdBy, getString(R.string.app_com_maxKorolev))
+        binding.about.btLicense.setOnClickListener {
+            val intent = Intent(this, InfoActivity::class.java)
+            intent.putExtra("title", getString(R.string.app_bt_license))
+            intent.putExtra("info", licenseText)
+            startActivity(intent)
+        }
+        binding.about.btThirdParty.setOnClickListener {
+            val intent = Intent(this, InfoActivity::class.java)
+            intent.putExtra("title", getString(R.string.app_bt_thirdPartyResources))
+            intent.putExtra("info", getString(R.string.app_info_thirdPartyResources))
+            startActivity(intent)
+        }
         binding.about.tvVersion.text = BuildConfig.VERSION_NAME
     }
 }
