@@ -46,6 +46,7 @@ class TableActivity : AppCompatActivity() {
     private var saveAsMode = false
     private var afterRemoval = false
     private var escPressed = false
+    private var disableElevation = false
 
     private var quickView = false
 
@@ -233,8 +234,11 @@ class TableActivity : AppCompatActivity() {
         binding.rvTable.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                binding.toolbar.root.elevation =
-                    if (!recyclerView.canScrollVertically(-1)) 0f else 7f
+                if (!recyclerView.canScrollVertically(-1)) disableElevation = false
+                if (!disableElevation) {
+                    binding.toolbar.root.elevation =
+                        if (!recyclerView.canScrollVertically(-1)) 0f else 7f
+                }
             }
         })
 
@@ -826,8 +830,11 @@ class TableActivity : AppCompatActivity() {
     private fun notifyDataSetChanged(mtListOld: List<DataItem>) {
         DiffUtil.calculateDiff(SearchDiffCallback(mtListOld, mtList), false)
             .dispatchUpdatesTo(adapter)
+            binding.toolbar.root.elevation = 0f
+            disableElevation = true
         binding.rvTable.post {
-            binding.rvTable.smoothScrollToPosition(0)
+            if (!binding.rvTable.canScrollVertically(-1)) disableElevation = false
+            else binding.rvTable.smoothScrollToPosition(0)
         }
     }
 }

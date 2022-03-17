@@ -87,6 +87,14 @@ class EditActivity : AppCompatActivity() {
         binding.btTagYellow.setOnClickListener { v -> selectTag(v) }
         binding.btTagPurple.setOnClickListener { v -> selectTag(v) }
 
+        binding.clTagButtons.post {
+            val maxWidth = (500 * resources.displayMetrics.density).toInt()
+            if (binding.clTagButtons.width > maxWidth) {
+                binding.clTagButtons.layoutParams.width = maxWidth
+                binding.clTagButtons.requestLayout()
+            }
+        }
+
         editTextBehavior(binding.etNote, binding.btUndoNote, originalNote)
         editTextBehavior(binding.etLogin, binding.btUndoLogin, originalLogin)
         editTextBehavior(binding.etPassword, binding.btUndoPassword, originalPassword)
