@@ -164,7 +164,12 @@ class MainActivity : AppCompatActivity() {
     ) { result ->
         afterSelecting = true
 
-        if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
+        if (result.resultCode != Activity.RESULT_OK) {
+            if (newFile) Toast.makeText(
+                this, getString(R.string.ui_msg_canceled), Toast.LENGTH_SHORT
+            ).show()
+            return@registerForActivityResult
+        }
 
         var uri = result.data?.data ?: return@registerForActivityResult //TODO: err msg
         val perms = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
