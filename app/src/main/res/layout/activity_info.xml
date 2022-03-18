@@ -26,11 +26,13 @@
             android:id="@+id/tvInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:autoLink="web|email"
             android:paddingStart="16dp"
             android:paddingTop="8dp"
             android:paddingEnd="16dp"
             android:paddingBottom="16dp"
             android:text="Info"
+            android:textIsSelectable="false"
             android:textSize="16sp" />
     </ScrollView>
 

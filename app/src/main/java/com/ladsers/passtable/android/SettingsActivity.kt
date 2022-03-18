@@ -240,7 +240,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.help.btShortcuts.setOnClickListener {
             val intent = Intent(this, InfoActivity::class.java)
             intent.putExtra("title", getString(R.string.app_bt_keyboardShortcuts))
-            intent.putExtra("info", getString(R.string.app_info_keyboardShortcuts))
+            intent.putExtra("info", keyboardShortcuts())
             startActivity(intent)
         }
 
@@ -268,5 +268,17 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(intent)
         }
         binding.about.tvVersion.text = BuildConfig.VERSION_NAME
+    }
+
+    private fun keyboardShortcuts(): String {
+        return getString(
+            R.string.app_info_keyboardShortcuts,
+            getString(R.string.app_sh_addItem),
+            getString(R.string.ui_ct_addItem),
+            getString(R.string.app_sh_search),
+            getString(R.string.ui_ct_searchHint),
+            getString(R.string.app_sh_closeFile),
+            getString(R.string.app_bt_closeFile)
+        )
     }
 }

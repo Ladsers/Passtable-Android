@@ -2,6 +2,7 @@ package com.ladsers.passtable.android
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Html
 import androidx.core.content.ContextCompat
 import com.ladsers.passtable.android.databinding.ActivityInfoBinding
 
@@ -25,6 +26,7 @@ class InfoActivity : AppCompatActivity() {
             if (y == 0) binding.toolbar.root.elevation = 0f
         }
 
-        binding.tvInfo.text = intent.getStringExtra("info") ?: ""
+        @Suppress("DEPRECATION")
+        binding.tvInfo.text = Html.fromHtml(intent.getStringExtra("info") ?: "")
     }
 }
