@@ -824,6 +824,7 @@ class TableActivity : AppCompatActivity() {
         } else {
             binding.notificationEmptyCollection.clInfo.visibility = View.GONE
             binding.notificationNothingFound.clInfo.visibility = View.GONE
+            showInfoItemMenu()
         }
     }
 
@@ -836,5 +837,15 @@ class TableActivity : AppCompatActivity() {
             if (!binding.rvTable.canScrollVertically(-1)) disableElevation = false
             else binding.rvTable.smoothScrollToPosition(0)
         }
+    }
+
+    private fun showInfoItemMenu() {
+        val param = Param.INITIAL_INFO_ITEM_MENU
+        if (ParamStorage.getBool(this, param) && mtList.isNotEmpty()) SnackbarManager.showInitInfo(
+            this,
+            binding.root,
+            param,
+            getString(R.string.app_info_itemMenu)
+        )
     }
 }

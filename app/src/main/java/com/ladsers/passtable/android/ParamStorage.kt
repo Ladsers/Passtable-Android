@@ -8,7 +8,9 @@ enum class Param(
     val defInt: Int = 0,
     val defStr: String = ""
 ) {
-    INITIAL_SETUP("initialSetup", defBool = true),
+    INITIAL_INFO_ITEM_MENU("initialInfoItemMenu", defBool = true),
+    INITIAL_INFO_PIN_TO_SCREEN("initialInfoPinToScreen", defBool = true),
+    INITIAL_INFO_CLOUD("initialInfoCloud", defBool = true),
 
     CHECKBOX_REMEMBER_PASSWORD_BY_DEFAULT("checkboxRememberPasswordByDefault", defBool = true),
     LOCK_MODE("lockMode", defInt = 0),

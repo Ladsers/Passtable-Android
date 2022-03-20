@@ -1,6 +1,7 @@
 package com.ladsers.passtable.android
 
 import DataItem
+import android.content.Context
 import android.os.Build
 import android.text.SpannableString
 import android.view.Gravity
@@ -15,9 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.color.MaterialColors
 import com.ladsers.passtable.android.databinding.ItemCollectionBinding
 import android.text.style.ForegroundColorSpan
-
-
-
 
 class TableAdapter(
     private val dataList: MutableList<DataItem>,
@@ -99,8 +97,9 @@ class TableAdapter(
         pop.menu.findItem(R.id.btCopyLogin).isVisible = binding.tvLogin.text != ""
         pop.menu.findItem(R.id.btCopyPassword).isVisible = binding.tvPassword.text != "/no"
 
-        pop.menu.findItem(R.id.btPinToScreen).isVisible =
-            binding.tvLogin.text != "" && binding.tvPassword.text != "/no"
+        val pinIsAvailable = binding.tvLogin.text != "" && binding.tvPassword.text != "/no"
+        pop.menu.findItem(R.id.btPinToScreen).isVisible = pinIsAvailable
+        showInfoPinToScreen(binding.root.context, binding.root, pinIsAvailable)
 
         val colorNegative = ContextCompat.getColor(binding.root.context, R.color.actionNegative)
         val itemMenuRemove = pop.menu.findItem(R.id.btRemove)
@@ -142,5 +141,15 @@ class TableAdapter(
         val layout = tv.layout ?: return false
         val count = layout.lineCount
         return count > 0 && layout.getEllipsisCount(count - 1) > 0
+    }
+
+    private fun showInfoPinToScreen(context: Context, view: View, pinIsAvailable: Boolean) {
+        val param = Param.INITIAL_INFO_PIN_TO_SCREEN
+        if (ParamStorage.getBool(context, param) && pinIsAvailable) SnackbarManager.showInitInfo(
+            context,
+            view,
+            param,
+            context.getString(R.string.app_info_pinToScreen)
+        )
     }
 }

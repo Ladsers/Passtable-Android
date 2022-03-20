@@ -23,6 +23,9 @@
         <item name="infoErrorForeground">@color/infoRedPrimaryDark</item>
         <item name="infoErrorBackground">@color/infoRedSecondaryDark</item>
         <item name="notificationTint">@color/notificationTintDark</item>
+        <item name="snackbarStyle">@style/SnackbarStyle</item>
+        <item name="snackbarButtonStyle">@style/SnackbarButton</item>
+        <item name="snackbarTextViewStyle">@style/SnackbarTextView</item>
 
         <item name="tagNone">@color/tagNoneDark</item>
         <item name="tagRed">@color/tagRedDark</item>

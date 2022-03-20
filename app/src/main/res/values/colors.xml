@@ -47,4 +47,8 @@
 
     <color name="notificationTintLight">#F98600</color>
     <color name="notificationTintDark">#FF9F2D</color>
+
+    <color name="snackbarBackground">#CEE5FD</color>
+    <color name="snackbarText">#08639A</color>
+    <color name="snackbarButton">#3482B1</color>
 </resources>

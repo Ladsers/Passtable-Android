@@ -27,6 +27,9 @@
         <item name="infoErrorForeground">@color/infoRedPrimaryLight</item>
         <item name="infoErrorBackground">@color/infoRedSecondaryLight</item>
         <item name="notificationTint">@color/notificationTintLight</item>
+        <item name="snackbarStyle">@style/SnackbarStyle</item>
+        <item name="snackbarButtonStyle">@style/SnackbarButton</item>
+        <item name="snackbarTextViewStyle">@style/SnackbarTextView</item>
 
         <item name="tagNone">@color/tagNoneLight</item>
         <item name="tagRed">@color/tagRedLight</item>
@@ -139,5 +142,27 @@
         <item name="android:textColor">?iconTint</item>
         <item name="android:fontFamily">@font/manrope_semibold</item>
         <item name="buttonTint">@color/selector_checkbox</item>
+    </style>
+
+    <style name="SnackbarStyle" parent="Widget.MaterialComponents.Snackbar">
+        <item name="materialThemeOverlay">@style/SnackbarBackground</item>
+        <item name="actionTextColorAlpha">1</item>
+    </style>
+
+    <style name="SnackbarBackground" parent="">
+        <item name="colorOnSurface">@color/snackbarBackground</item>
+    </style>
+
+    <style name="SnackbarButton" parent="Widget.MaterialComponents.Button.TextButton.Snackbar">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/manrope_medium</item>
+        <item name="android:textColor">@color/snackbarButton</item>
+    </style>
+
+    <style name="SnackbarTextView" parent="Widget.MaterialComponents.Snackbar.TextView">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/manrope_bold</item>
+        <item name="android:textColor">@color/snackbarText</item>
+        <item name="android:maxLines">15</item>
     </style>
 </resources>
