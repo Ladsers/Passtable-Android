@@ -80,8 +80,8 @@ class SettingsActivity : AppCompatActivity() {
         updateComponentsForRecentFiles(binding.recentFiles.swRememberRecentFiles.isChecked)
 
         binding.biometricAuth.swCheckboxRememberPasswordByDefault.text = getString(
-            R.string.ui_ct_checkboxRememberPasswordByDefault,
-            getString(R.string.dlg_ct_fingerprintLogin)
+            R.string.ui_ct_biometricCheckboxByDefault,
+            getString(R.string.dlg_ct_biometricAuthentication)
         )
         binding.biometricAuth.swCheckboxRememberPasswordByDefault.isChecked =
             ParamStorage.getBool(this, Param.CHECKBOX_REMEMBER_PASSWORD_BY_DEFAULT)

@@ -90,7 +90,7 @@ class BiometricAuth(
         if (RecentFiles.rememberLastMpEncrypted(context, outStr)) {
             Toast.makeText(
                 context,
-                context.getString(R.string.ui_msg_fingerprintActivated),
+                context.getString(R.string.ui_msg_biometricEnabled),
                 Toast.LENGTH_SHORT
             ).show()
         } else showActivateError(context.getString(R.string.dlg_err_biometricEnableFail))
@@ -136,12 +136,12 @@ class BiometricAuth(
     }
 
     private val promptInfoActivate = BiometricPrompt.PromptInfo.Builder()
-        .setTitle(context.getString(R.string.dlg_title_activateLoginByFingerprint))
+        .setTitle(context.getString(R.string.dlg_title_biometricEnable))
         .setNegativeButtonText(context.getString(R.string.app_bt_cancel))
         .build()
 
     private val promptInfoLogin = BiometricPrompt.PromptInfo.Builder()
-        .setTitle(context.getString(R.string.dlg_title_loginByFingerprint))
+        .setTitle(context.getString(R.string.dlg_title_biometricAuthentication))
         .setNegativeButtonText(context.getString(R.string.app_bt_enterPassword))
         .build()
 
