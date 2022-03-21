@@ -9,6 +9,7 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import org.bouncycastle.util.encoders.Base64
+import java.lang.Exception
 import java.nio.charset.StandardCharsets
 import java.security.KeyStore
 import javax.crypto.Cipher
@@ -29,15 +30,15 @@ class BiometricAuth(
     private var isActivation = false
     private var strToBiometricPrompt: String? = null
 
+    private val keyName = "EncryptedPrimaryPassword"
+
     fun startAuth(masterPassEncrypted: String) {
         if (!checkAvailability()) {
             showAuthError(context.getString(R.string.dlg_err_biometricSensorNotAvailable))
-            authFailed()
             return
         }
         if (masterPassEncrypted.isBlank() || masterPassEncrypted == "@") {
             showAuthError(context.getString(R.string.dlg_err_biometricTokenDamaged))
-            authFailed()
             return
         }
         isActivation = false
@@ -46,7 +47,15 @@ class BiometricAuth(
 
         val mpeList = masterPassEncrypted.split("@")
         val initVec = Base64.decode(mpeList[0])
-        cipher.init(Cipher.DECRYPT_MODE, secretKey, GCMParameterSpec(128, initVec))
+
+        try {
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, GCMParameterSpec(128, initVec))
+        }
+        catch (e: Exception){
+            resetAuth()
+            showAuthError(context.getString(R.string.dlg_err_biometricNewFingerprints))
+            return
+        }
 
         strToBiometricPrompt = mpeList[1]
         biometricPrompt.authenticate(
@@ -64,7 +73,16 @@ class BiometricAuth(
         isActivation = true
         val cipher = getCipher()
         val secretKey = getSecretKey()
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey)
+
+        try {
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey)
+        }
+        catch (e: Exception){
+            resetAuth()
+            showActivateError(context.getString(R.string.dlg_err_biometricNewFingerprintsEnableFail))
+            afterActivation()
+            return
+        }
 
         strToBiometricPrompt = masterPass
         biometricPrompt.authenticate(
@@ -110,7 +128,6 @@ class BiometricAuth(
     )
 
     private fun getSecretKey(): SecretKey {
-        val keyName = "EncryptingMasterPass"
         val keyStore = KeyStore.getInstance("AndroidKeyStore")
         keyStore.load(null)
         keyStore.getKey(keyName, null)?.let { return it as SecretKey }
@@ -209,8 +226,15 @@ class BiometricAuth(
         msgDialog.addPositiveBtn(
             context.getString(R.string.app_bt_enterPassword),
             R.drawable.ic_next_arrow
-        ) {}
+        ) { authFailed() }
         msgDialog.disableSkip()
         msgDialog.show()
+    }
+
+    private fun resetAuth() {
+        val keyStore = KeyStore.getInstance("AndroidKeyStore")
+        keyStore.load(null)
+        keyStore.deleteEntry(keyName)
+        RecentFiles.forgetMpsEncrypted(context)
     }
 }

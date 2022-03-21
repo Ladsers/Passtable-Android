@@ -196,6 +196,8 @@
         <string name="dlg_err_biometricSensorNotAvailable">Biometric sensor is not available.</string>
         <string name="dlg_err_biometricTokenDamaged">The biometric authentication token is damaged. Please disable authentication for this file.</string>
         <string name="dlg_err_biometricEnableFail">It is not possible to enable biometric authentication at the moment. Try again later.</string>
+        <string name="dlg_err_biometricNewFingerprints">New fingerprints were enrolled, which resulted in disabling biometric authentication for all files. Please re-enable biometric authentication for required files.</string>
+        <string name="dlg_err_biometricNewFingerprintsEnableFail">New fingerprints were enrolled, which resulted in disabling biometric authentication for all files. Please re-enable biometric authentication for this and other required files.</string>
         <!-- end! -->
 
         <!-- msg (message) -->
