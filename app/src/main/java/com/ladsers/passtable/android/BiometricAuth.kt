@@ -34,7 +34,7 @@ class BiometricAuth(
 
     fun startAuth(masterPassEncrypted: String) {
         if (!checkAvailability()) {
-            showAuthError(context.getString(R.string.dlg_err_biometricSensorNotAvailable))
+            showAuthError(context.getString(R.string.dlg_err_fingerprintSensorNotAvailable))
             return
         }
         if (masterPassEncrypted.isBlank() || masterPassEncrypted == "@") {
@@ -66,7 +66,7 @@ class BiometricAuth(
 
     fun activateAuth(masterPass: String) {
         if (!checkAvailability()) {
-            showActivateError(context.getString(R.string.dlg_err_biometricSensorNotAvailable))
+            showActivateError(context.getString(R.string.dlg_err_fingerprintSensorNotAvailable))
             afterActivation()
             return
         }
@@ -97,6 +97,13 @@ class BiometricAuth(
             BiometricManager.Authenticators.BIOMETRIC_STRONG or
                     BiometricManager.Authenticators.DEVICE_CREDENTIAL
         ) == BiometricManager.BIOMETRIC_SUCCESS
+    }
+
+    fun resetAuth() {
+        val keyStore = KeyStore.getInstance("AndroidKeyStore")
+        keyStore.load(null)
+        keyStore.deleteEntry(keyName)
+        RecentFiles.forgetMpsEncrypted(context)
     }
 
     private fun encrypt(mp: String, cipher: Cipher) {
@@ -191,7 +198,7 @@ class BiometricAuth(
                         } else {
                             Toast.makeText(
                                 context,
-                                context.getString(R.string.ui_msg_fingerprintErr),
+                                context.getString(R.string.ui_msg_biometricNotAvailable),
                                 Toast.LENGTH_LONG
                             ).show()
                             authFailed()
@@ -229,12 +236,5 @@ class BiometricAuth(
         ) { authFailed() }
         msgDialog.disableSkip()
         msgDialog.show()
-    }
-
-    private fun resetAuth() {
-        val keyStore = KeyStore.getInstance("AndroidKeyStore")
-        keyStore.load(null)
-        keyStore.deleteEntry(keyName)
-        RecentFiles.forgetMpsEncrypted(context)
     }
 }

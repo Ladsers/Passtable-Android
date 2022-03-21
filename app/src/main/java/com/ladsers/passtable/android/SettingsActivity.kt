@@ -143,12 +143,12 @@ class SettingsActivity : AppCompatActivity() {
        binding.recentFiles.swRememberRecentFiles.setOnClickListener {
             if (RecentFiles.isNotEmpty(this)) {
                 val msg =
-                    if (biometricAuthIsAvailable) getString(R.string.dlg_msg_disableRememberingRecentFilesAndPasswords)
+                    if (biometricAuthIsAvailable) getString(R.string.dlg_msg_disableRememberingRecentFilesWithBiometric)
                     else getString(R.string.dlg_msg_disableRememberingRecentFiles)
 
-                msgDialog.create(getString(R.string.dlg_title_warning), msg)
+                msgDialog.create(getString(R.string.dlg_title_disable), msg)
                 msgDialog.addPositiveBtn(
-                    getString(R.string.app_bt_ok),
+                    getString(R.string.app_bt_disable),
                     R.drawable.ic_accept
                 ) { changeRememberingRecentFiles(false) }
                 msgDialog.addNegativeBtn(
@@ -162,15 +162,15 @@ class SettingsActivity : AppCompatActivity() {
 
        binding.recentFiles.btClearRecentFiles.setOnClickListener {
             val msg =
-                if (biometricAuthIsAvailable) getString(R.string.dlg_msg_recentFilesAndPasswordsWillBeCleared)
-                else getString(R.string.dlg_msg_recentFilesWillBeCleared)
+                if (biometricAuthIsAvailable) getString(R.string.dlg_msg_recentFileClearWithBiometric)
+                else getString(R.string.dlg_msg_permanentRemoval)
 
-            msgDialog.quickDialog(getString(R.string.dlg_title_areYouSure), msg, {
+            msgDialog.quickDialog(getString(R.string.dlg_title_clearList), msg, {
                 RecentFiles.clear(this)
                 Toast.makeText(
                     this, getString(R.string.ui_msg_done), Toast.LENGTH_SHORT
                 ).show()
-            }, it)
+            }, it, getString(R.string.app_bt_clear), posIcon = R.drawable.ic_delete)
         }
 
         binding.biometricAuth.swCheckboxRememberPasswordByDefault.setOnCheckedChangeListener { _, isChecked ->
@@ -180,13 +180,13 @@ class SettingsActivity : AppCompatActivity() {
 
         binding.biometricAuth.btForgetPasswords.setOnClickListener {
             msgDialog.quickDialog(
-                getString(R.string.dlg_title_areYouSure),
-                getString(R.string.dlg_msg_passwordsWillBeForgotten), {
-                    RecentFiles.forgetMpsEncrypted(this)
+                getString(R.string.dlg_title_disable),
+                getString(R.string.dlg_msg_biometricInfoReEnable), {
+                    BiometricAuth(this, this, {}, {}, {}).resetAuth()
                     Toast.makeText(
                         this, getString(R.string.ui_msg_done), Toast.LENGTH_SHORT
                     ).show()
-                }, it
+                }, it, getString(R.string.app_bt_disable)
             )
         }
     }

@@ -73,6 +73,8 @@
         <string name="app_bt_thirdPartyResources">Third party resources</string>
         <string name="app_bt_pinToScreen">Pin to screen</string>
         <string name="app_bt_goToSettings">Go to settings</string>
+        <string name="app_bt_disable">Disable</string>
+        <string name="app_bt_clear">Clear</string>
         <!-- end! -->
 
         <!-- sh (keyboard shortcut) -->
@@ -95,8 +97,6 @@
         <string name="ui_ct_biometricCheckboxByDefault">The checkbox \"%1$s\" is checked by default in the primary password entry window</string>
         <string name="ui_ct_rememberRecentFiles">Remember recently opened files</string>
         <string name="ui_ct_clearRecentFiles">Clear the list of recent files</string>
-        <string name="ui_ct_clearRecentFilesAndForgetPasswords">Clear the list of recent files and forget all passwords</string>
-        <string name="ui_ct_forgetPasswords">Forget all passwords</string>
         <string name="ui_ct_lockFile">Lock the file</string>
         <string name="ui_ct_lockTimePeriod">After the specified time period after minimizing the app</string>
         <string name="ui_ct_lockMinAndLockPhone">When minimizing the app or locking the phone</string>
@@ -132,7 +132,7 @@
         <string name="ui_msg_saved">Saved</string>
         <string name="ui_msg_canceled">Canceled</string>
         <string name="ui_msg_fileCreated">File created</string>
-        <string name="ui_msg_fingerprintErr">There are problems with the fingerprint sensor. Try again later.</string>
+        <string name="ui_msg_biometricNotAvailable">Biometric authentication is not available at the moment. Please enter password.</string>
         <string name="ui_msg_biometricEnabled">Biometric authentication is enabled for this file</string>
         <string name="ui_msg_recentFilesUpdated">The list of recent files has been updated</string>
         <string name="ui_msg_done">Done</string>
@@ -146,8 +146,6 @@
 
         <!-- title -->
         <string name="dlg_title_changesNotSaved">Changes will not be saved</string>
-        <string name="dlg_title_areYouSure">Are you sure?</string> <!-- TODO: remove -->
-        <string name="dlg_title_warning">Warning!</string> <!-- TODO: remove -->
         <string name="dlg_title_biometricAuthentication">Biometric authentication</string>
         <string name="dlg_title_biometricEnable">Enable biometric authentication</string>
         <string name="dlg_title_closeWithoutSaving">Close without saving?</string>
@@ -164,6 +162,8 @@
         <string name="dlg_title_openTheFile">Open the file</string>
         <string name="dlg_title_updateAvailable">Update available</string>
         <string name="dlg_title_permissionRequired">Permission required</string>
+        <string name="dlg_title_disable">Disable?</string>
+        <string name="dlg_title_clearList">Clear list?</string>
         <!-- end! -->
 
         <!-- ct (content) -->
@@ -193,7 +193,7 @@
         <string name="dlg_err_saveEncryptionDelete">Try to add another item and then delete both.</string>
         <string name="dlg_err_saveWriting">The file at the specified path does not exist or the app does not have sufficient permissions to write data to it. You need to save the data to a new file to avoid losing data.</string>
         <string name="dlg_err_recentFileDoesNotExist">The file at the specified path does not exist and will be removed from the list.</string>
-        <string name="dlg_err_biometricSensorNotAvailable">Biometric sensor is not available.</string>
+        <string name="dlg_err_fingerprintSensorNotAvailable">The fingerprint sensor is not available.</string>
         <string name="dlg_err_biometricTokenDamaged">The biometric authentication token is damaged. Please disable authentication for this file.</string>
         <string name="dlg_err_biometricEnableFail">It is not possible to enable biometric authentication at the moment. Try again later.</string>
         <string name="dlg_err_biometricNewFingerprints">New fingerprints were enrolled, which resulted in disabling biometric authentication for all files. Please re-enable biometric authentication for required files.</string>
@@ -202,11 +202,11 @@
 
         <!-- msg (message) -->
         <string name="dlg_msg_permanentRemoval">This is permanent and cannot be undone</string>
-        <string name="dlg_msg_disableRememberingRecentFiles">This action will cause the list of recent files to be cleared</string>
-        <string name="dlg_msg_disableRememberingRecentFilesAndPasswords">This action will cause the list of recent files to be cleared and all passwords will be forgotten</string>
-        <string name="dlg_msg_recentFilesWillBeCleared">The list of recent files will be cleared</string>
+        <string name="dlg_msg_recentFileClearWithBiometric">This is permanent and cannot be undone. Biometric authentication will be disabled for all files.</string>
+        <string name="dlg_msg_disableRememberingRecentFiles">This action will permanently clear the list of recent files</string>
+        <string name="dlg_msg_disableRememberingRecentFilesWithBiometric">This action will permanently clear the list of recent files. Biometric authentication will be disabled for all files.</string>
         <string name="dlg_msg_recentFilesAndPasswordsWillBeCleared">The list of recent files will be cleared and all passwords will be forgotten</string>
-        <string name="dlg_msg_passwordsWillBeForgotten">All passwords will be forgotten</string>
+        <string name="dlg_msg_biometricInfoReEnable">You will be able to re-enable biometric authentication for required files</string>
         <string name="dlg_msg_unsavedDataWillBeLost">All unsaved data will be lost</string>
         <string name="dlg_msg_downloadNewVersion">Download the new version from Google Play or the GitHub repository</string>
         <string name="dlg_msg_permissionDisplayOver">Need to grant permission in settings to display the panel over other apps</string>
