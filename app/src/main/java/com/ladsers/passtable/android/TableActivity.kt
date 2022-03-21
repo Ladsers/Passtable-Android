@@ -40,6 +40,8 @@ class TableActivity : AppCompatActivity() {
     private lateinit var msgDialog: MsgDialog
     private lateinit var dataPanel: DataPanel
 
+    private lateinit var nothingFoundDelay: Runnable
+
     private var editId = -1
     private val tagFilter = MutableList(6) { false }
     private var searchMode = false
@@ -109,6 +111,9 @@ class TableActivity : AppCompatActivity() {
         )
         setSupportActionBar(binding.toolbar.root)
         binding.toolbar.root.setNavigationOnClickListener { finish() }
+
+        nothingFoundDelay =
+            Runnable { binding.notificationNothingFound.clInfo.visibility = View.VISIBLE }
 
         try {
             val inputStream = contentResolver.openInputStream(mainUri)
@@ -814,11 +819,10 @@ class TableActivity : AppCompatActivity() {
         if (mtList.size == 0) {
             if (tagFilter.any { it } || searchQuery.isNotEmpty()) {
                 binding.notificationEmptyCollection.clInfo.visibility = View.GONE
-                binding.notificationNothingFound.clInfo.postDelayed(
-                    { binding.notificationNothingFound.clInfo.visibility = View.VISIBLE }, 300
-                )
+                binding.notificationNothingFound.clInfo.postDelayed(nothingFoundDelay, 300)
             } else {
                 binding.notificationEmptyCollection.clInfo.visibility = View.VISIBLE
+                binding.notificationNothingFound.clInfo.removeCallbacks(nothingFoundDelay)
                 binding.notificationNothingFound.clInfo.visibility = View.GONE
             }
         } else {
