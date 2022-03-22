@@ -89,7 +89,6 @@ class TableActivity : AppCompatActivity() {
             window
         ) { openFileExplorer() }
         dataPanel = DataPanel(applicationContext, this)
-        turnOnPanel()
 
         var uri = intent.getParcelableExtra<Uri>("fileUri")
         intent.action?.let {
@@ -252,6 +251,7 @@ class TableActivity : AppCompatActivity() {
             { id -> showPassword(id) })
         binding.rvTable.adapter = adapter
         (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        initPanel()
         notifyUser()
     }
 
@@ -519,7 +519,7 @@ class TableActivity : AppCompatActivity() {
         msgDialog.show()
     }
 
-    private fun turnOnPanel() {
+    private fun initPanel() {
         binding.btTagRed.setOnClickListener { v -> searchByTag(1, v as MaterialButton) }
         binding.btTagGreen.setOnClickListener { v -> searchByTag(2, v as MaterialButton) }
         binding.btTagBlue.setOnClickListener { v -> searchByTag(3, v as MaterialButton) }
@@ -808,12 +808,7 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
-    private fun lockFile() {
-        intent.putExtra("fileUri", mainUri)
-        intent.putExtra("newFile", false)
-        finish()
-        startActivity(intent)
-    }
+    private fun lockFile() = recreate()
 
     private fun notifyUser(searchQuery: String = "") {
         if (mtList.size == 0) {
