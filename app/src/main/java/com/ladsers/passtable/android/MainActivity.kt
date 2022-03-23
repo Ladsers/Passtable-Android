@@ -250,29 +250,5 @@ class MainActivity : AppCompatActivity() {
     private fun notifyUser(){
         binding.notificationNoRecentlyOpened.clInfo.visibility =
             if (recentUri.isEmpty()) View.VISIBLE else View.GONE
-        showInfoCloud()
-    }
-
-    private fun showInfoCloud() {
-        val param = Param.INITIAL_INFO_CLOUD
-        if (ParamStorage.getBool(this, param) && recentUri.isNotEmpty()) {
-            val gdrivePattern = "content://com.google.android.apps.docs.storage"
-            if (recentUri[0].toString().startsWith(gdrivePattern)) {
-                ParamStorage.set(this, param, false)
-                return
-            }
-            val infoText = getString(
-                R.string.app_info_cloud,
-                getString(R.string.app_bt_settings),
-                getString(R.string.ui_ct_help),
-                getString(R.string.app_bt_cloudFileSync)
-            )
-            SnackbarManager.showInitInfo(
-                this,
-                binding.root,
-                param,
-                infoText
-            )
-        }
     }
 }

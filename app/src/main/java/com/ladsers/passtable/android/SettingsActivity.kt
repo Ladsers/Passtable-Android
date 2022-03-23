@@ -231,12 +231,6 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun aboutInit() {
-        binding.help.btCloudSync.setOnClickListener {
-            val intent = Intent(this, InfoActivity::class.java)
-            intent.putExtra("title", getString(R.string.app_bt_cloudFileSync))
-            intent.putExtra("info", getString(R.string.app_info_cloudFileSync))
-            startActivity(intent)
-        }
         binding.help.btShortcuts.setOnClickListener {
             val intent = Intent(this, InfoActivity::class.java)
             intent.putExtra("title", getString(R.string.app_bt_keyboardShortcuts))

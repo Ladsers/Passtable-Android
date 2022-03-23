@@ -5,7 +5,6 @@
         <string name="app_info_appName">Passtable</string>
         <string name="app_info_webPage">https://www.ladsers.com/passtable</string>
         <string name="app_info_repo">https://github.com/Ladsers/Passtable-Android</string>
-        <string name="app_info_cloudFileSync">"cloudFileSync" TODO</string> <!-- TODO -->
         <string name="app_info_keyboardShortcuts">&lt;b>%1$s&lt;/b> — %2$s.&lt;br>&lt;br>&lt;b>%3$s&lt;/b> — %4$s.&lt;br>&lt;br>&lt;b>%5$s&lt;/b> — %6$s.</string>
         <string name="app_info_thirdPartyResources">Cryptographic algorithms&lt;br>&lt;big>&lt;b>Bouncy Castle&lt;/b>&lt;/big>&lt;br>Legion of the Bouncy Castle Inc.&lt;br>MIT License&lt;br>https://bouncycastle.org&lt;br>&lt;br>
         Icons&lt;br>&lt;big>&lt;b>Material Design icons&lt;/b>&lt;/big>&lt;br>Google LLC&lt;br>Apache License 2.0&lt;br>https://fonts.google.com/icons&lt;br>&lt;br>
@@ -13,7 +12,6 @@
         Font&lt;br>&lt;big>&lt;b>Overpass Mono&lt;/b>&lt;/big>&lt;br>Delve Withrington, Dave Bailey, Thomas Jockin&lt;br>SIL Open Font License&lt;br>https://overpassfont.org&lt;br></string>
         <string name="app_info_itemMenu">Click on the eye icon to show the password.\n\nClick on the item itself to show the menu for working with it.</string>
         <string name="app_info_pinToScreen">Pin the item to the screen to access it from any app.</string>
-        <string name="app_info_cloud">You can put files in the cloud storage to enable syncing.\n\nLearn More: %1$s → %2$s → %3$s.</string>
         <!-- end! -->
 
         <!-- com (common) -->
@@ -67,7 +65,6 @@
         <string name="app_bt_updateAvailable">Update available</string>
         <string name="app_bt_webPage">Web page</string>
         <string name="app_bt_githubRepo">GitHub repo</string>
-        <string name="app_bt_cloudFileSync">Cloud file sync</string>
         <string name="app_bt_keyboardShortcuts">Keyboard shortcuts</string>
         <string name="app_bt_license">License</string>
         <string name="app_bt_thirdPartyResources">Third party resources</string>
