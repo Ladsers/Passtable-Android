@@ -1,6 +1,7 @@
 package com.ladsers.passtable.android
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -79,10 +80,6 @@ class SettingsActivity : AppCompatActivity() {
             ParamStorage.getBool(this, Param.REMEMBER_RECENT_FILES)
         updateComponentsForRecentFiles(binding.recentFiles.swRememberRecentFiles.isChecked)
 
-        binding.biometricAuth.swCheckboxRememberPasswordByDefault.text = getString(
-            R.string.ui_ct_biometricCheckboxByDefault,
-            getString(R.string.dlg_ct_biometricAuthentication)
-        )
         binding.biometricAuth.swCheckboxRememberPasswordByDefault.isChecked =
             ParamStorage.getBool(this, Param.CHECKBOX_REMEMBER_PASSWORD_BY_DEFAULT)
 
@@ -231,12 +228,10 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun aboutInit() {
-        binding.help.btShortcuts.setOnClickListener {
-            val intent = Intent(this, InfoActivity::class.java)
-            intent.putExtra("title", getString(R.string.app_bt_keyboardShortcuts))
-            intent.putExtra("info", keyboardShortcuts())
-            startActivity(intent)
-        }
+        if (ParamStorage.getBool(this, Param.PHYSICAL_KEYBOARD_DETECTED) ||
+            resources.configuration.keyboard == Configuration.KEYBOARD_QWERTY
+        ) enableHelpShortcuts()
+        else binding.help.root.visibility = View.GONE
 
         binding.web.btWebPage.setOnClickListener {
             val webPage = Uri.parse(getString(R.string.app_info_webPage))
@@ -247,8 +242,6 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(Intent(Intent.ACTION_VIEW, repo))
         }
 
-        binding.about.tvAuthor.text =
-            getString(R.string.ui_ct_createdBy, getString(R.string.app_com_maxKorolev))
         binding.about.btLicense.setOnClickListener {
             val intent = Intent(this, InfoActivity::class.java)
             intent.putExtra("title", getString(R.string.app_bt_license))
@@ -264,15 +257,21 @@ class SettingsActivity : AppCompatActivity() {
         binding.about.tvVersion.text = BuildConfig.VERSION_NAME
     }
 
-    private fun keyboardShortcuts(): String {
-        return getString(
-            R.string.app_info_keyboardShortcuts,
-            getString(R.string.app_sh_addItem),
-            getString(R.string.ui_ct_addItem),
-            getString(R.string.app_sh_search),
-            getString(R.string.ui_ct_searchHint),
-            getString(R.string.app_sh_closeFile),
-            getString(R.string.app_bt_closeFile)
-        )
+    private fun enableHelpShortcuts(){
+        ParamStorage.set(this, Param.PHYSICAL_KEYBOARD_DETECTED, true)
+        binding.help.root.visibility = View.VISIBLE
+        binding.help.btShortcuts.setOnClickListener {
+            val intent = Intent(this, InfoActivity::class.java)
+            intent.putExtra("title", getString(R.string.app_bt_keyboardShortcuts))
+            intent.putExtra("info", getString(R.string.app_info_keyboardShortcuts))
+            startActivity(intent)
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (!ParamStorage.getBool(this, Param.PHYSICAL_KEYBOARD_DETECTED) &&
+            resources.configuration.keyboard == Configuration.KEYBOARD_QWERTY
+        ) enableHelpShortcuts()
     }
 }

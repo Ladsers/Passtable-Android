@@ -3,6 +3,7 @@ package com.ladsers.passtable.android
 import DataItem
 import android.app.Activity
 import android.content.*
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -131,11 +132,8 @@ class TableActivity : AppCompatActivity() {
         if (tagFilter.any { it } || searchMode) openSearchPanel() else {
             if (!escPressed) super.onBackPressed()
             else {
-                val msg = getString(
-                    R.string.ui_msg_closeViaEscape,
-                    getString(R.string.app_sh_closeFile)
-                )
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.ui_msg_closeViaEscape), Toast.LENGTH_SHORT)
+                    .show()
             }
         }
         escPressed = false
@@ -252,6 +250,7 @@ class TableActivity : AppCompatActivity() {
         binding.rvTable.adapter = adapter
         (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         initPanel()
+        showInfoKeyboardShortcuts()
         notifyUser()
     }
 
@@ -822,6 +821,7 @@ class TableActivity : AppCompatActivity() {
             }
         } else {
             binding.notificationEmptyCollection.clInfo.visibility = View.GONE
+            binding.notificationNothingFound.clInfo.removeCallbacks(nothingFoundDelay)
             binding.notificationNothingFound.clInfo.visibility = View.GONE
             showInfoItemMenu()
         }
@@ -846,5 +846,20 @@ class TableActivity : AppCompatActivity() {
             param,
             getString(R.string.app_info_itemMenu)
         )
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        showInfoKeyboardShortcuts()
+    }
+
+    private fun showInfoKeyboardShortcuts() {
+        val param = Param.INITIAL_INFO_KEYBOARD_SHORTCUTS
+        if (ParamStorage.getBool(this, param) &&
+            resources.configuration.keyboard == Configuration.KEYBOARD_QWERTY
+        ) {
+            val info = getString(R.string.app_info_keyboardShortcutsWindow)
+            SnackbarManager.showInitInfo(this, binding.root, param, info)
+        }
     }
 }
