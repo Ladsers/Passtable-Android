@@ -668,7 +668,13 @@ class TableActivity : AppCompatActivity() {
             return@registerForActivityResult
         }
 
-        val tree = result.data?.data ?: return@registerForActivityResult //TODO: err msg
+        if (result.data?.data == null) {
+            Toast.makeText(this, getString(R.string.dlg_err_uriIsNull), Toast.LENGTH_LONG).show()
+            if (!saveAsMode) saving() // return err message again.
+            return@registerForActivityResult
+        }
+
+        val tree = result.data?.data!!
         val perms = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         contentResolver.takePersistableUriPermission(tree, perms)
 

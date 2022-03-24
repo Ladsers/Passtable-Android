@@ -173,7 +173,7 @@
         <!-- end! -->
 
         <!-- err (error) -->
-        <string name="dlg_err_uriIsNull">The file path was not received. Please try to open file again.</string>
+        <string name="dlg_err_uriIsNull">The file path was not received. If you are using a third party file manager, try using the system one.</string>
         <string name="dlg_err_invalidFileVer">This file was created in a later version of the app and cannot be opened. Update the app.</string>
         <string name="dlg_err_damagedFile">The file is damaged.</string>
         <string name="dlg_err_unsupportedFile">This file type is not supported.</string>

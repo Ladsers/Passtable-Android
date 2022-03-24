@@ -171,11 +171,14 @@ class MainActivity : AppCompatActivity() {
             return@registerForActivityResult
         }
 
-        var uri = result.data?.data ?: return@registerForActivityResult //TODO: err msg
-        val perms = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-        contentResolver.takePersistableUriPermission(uri, perms)
+        var uri: Uri? = null
+        result.data?.data?.let {
+            uri = it
+            val perms = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            contentResolver.takePersistableUriPermission(it, perms)
 
-        if (newFile) uri = fileCreator.createFile(uri)
+            if (newFile) uri = fileCreator.createFile(it)
+        }
 
         val intent = Intent(this, TableActivity::class.java)
         intent.putExtra("fileUri", uri)
