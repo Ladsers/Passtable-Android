@@ -41,6 +41,7 @@ class MpRequester(
 
     private var rememberMasterPass = false
     private var rememberingAvailable = true
+    private var rememberingChecked = false
 
     private var passwordIsVisible = false
     private var confirmIsVisible = false
@@ -108,6 +109,7 @@ class MpRequester(
         }
 
         if (incorrectPassword) {
+            binding.cbRememberPass.isChecked = rememberingChecked
             binding.clErr.visibility = View.VISIBLE
             binding.tvErrMsg.text = context.getString(R.string.dlg_ct_incorrectPassword)
         }
@@ -169,6 +171,7 @@ class MpRequester(
             binding.btPositive.setOnClickListener {
                 if (biometricAuthAvailable && rememberingAvailable) rememberMasterPass =
                     binding.cbRememberPass.isChecked
+                rememberingChecked = rememberMasterPass
 
                 val pass = binding.etPassword.text.toString()
                 when (mode) {
@@ -189,6 +192,7 @@ class MpRequester(
 
                             if (biometricAuthAvailable && rememberingAvailable) rememberMasterPass =
                                 binding.cbRememberPass.isChecked
+                            rememberingChecked = rememberMasterPass
 
                             val pass = binding.etPassword.text.toString()
                             completeOpening(pass)
