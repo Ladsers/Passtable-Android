@@ -182,8 +182,8 @@
         <string name="dlg_err_someDataNull">The application could not read the updated data. Please try again.</string>
         <string name="dlg_err_saveEncryptionProblem">This is probably caused by using an unsupported character.</string>
         <string name="dlg_err_saveEncryptionDelete">Try to add another item and then delete both.</string>
-        <string name="dlg_err_saveWriting">The file at the specified path does not exist or the app does not have sufficient permissions to write data to it. You need to save the data to a new file to avoid losing data.</string>
-        <string name="dlg_err_recentFileDoesNotExist">The file at the specified path does not exist and will be removed from the list.</string>
+        <string name="dlg_err_saveWriting">The application does not have sufficient permissions to write data to this file. You need to save the data to a new file to avoid losing data.</string>
+        <string name="dlg_err_recentFileDoesNotExist">The application could not open the file. If the file still exists, open it again.</string>
         <string name="dlg_err_fingerprintSensorNotAvailable">The fingerprint sensor is not available.</string>
         <string name="dlg_err_biometricTokenDamaged">The biometric authentication token is damaged. Please disable authentication for this file.</string>
         <string name="dlg_err_biometricEnableFail">It is not possible to enable biometric authentication at the moment. Try again later.</string>
