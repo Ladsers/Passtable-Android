@@ -20,7 +20,7 @@
         <string name="app_com_login">Username</string>
         <string name="app_com_password">Password</string>
         <string name="app_com_tag">Tag</string>
-        <string name="app_com_fileExtension">.passtable</string>
+        <string name="app_com_fileExtension" translatable="false">.passtable</string>
         <string name="app_com_fileLabel">Passtable File</string>
         <string name="app_com_spaceChar">space</string>
         <string name="app_com_confirm">Confirm</string>
@@ -33,12 +33,9 @@
         <string name="app_bt_cancel">Cancel</string>
         <string name="app_bt_create">Create</string>
         <string name="app_bt_open">Open</string>
-        <string name="app_bt_editItem">Edit item</string>
-        <string name="app_bt_removeItem">Remove item</string>
         <string name="app_bt_addItem">Add item</string>
         <string name="app_bt_saveAs">Save as</string>
         <string name="app_bt_settings">Settings</string>
-        <string name="app_bt_about">About</string>
         <string name="app_bt_save">Save</string>
         <string name="app_bt_removeFromList">Remove from list</string>
         <string name="app_bt_biometricDisable">Disable biometric authentication</string>
@@ -55,7 +52,7 @@
         <string name="app_bt_copyPassword">Copy password</string>
         <string name="app_bt_remove">Remove</string>
         <string name="app_bt_closeFile">Close file</string>
-        <string name="app_bt_closeFileDataLoss">Close file with data loss</string>
+        <string name="app_bt_closeFileDataLoss">Ignore and close file</string>
         <string name="app_bt_tryEditLastItem">Try to edit last item</string>
         <string name="app_bt_createNewFile">Create new file</string>
         <string name="app_bt_enterPassword">Enter password</string>
@@ -70,7 +67,7 @@
         <string name="app_bt_goToSettings">Go to settings</string>
         <string name="app_bt_disable">Disable</string>
         <string name="app_bt_clear">Clear</string>
-        <string name="ui_bt_clearRecentFiles">Clear list of recent files</string>
+        <string name="app_bt_clearRecentFiles">Clear list of recent files</string>
         <!-- end! -->
 
     <!-- END -->
@@ -194,7 +191,6 @@
         <string name="dlg_msg_recentFileClearWithBiometric">This is permanent and cannot be undone. Biometric authentication will be disabled for all files.</string>
         <string name="dlg_msg_disableRememberingRecentFiles">This action will permanently clear the list of recent files</string>
         <string name="dlg_msg_disableRememberingRecentFilesWithBiometric">This action will permanently clear the list of recent files. Biometric authentication will be disabled for all files.</string>
-        <string name="dlg_msg_recentFilesAndPasswordsWillBeCleared">The list of recent files will be cleared and all passwords will be forgotten</string>
         <string name="dlg_msg_biometricInfoReEnable">You will be able to re-enable biometric authentication for required files</string>
         <string name="dlg_msg_unsavedDataWillBeLost">All unsaved data will be lost</string>
         <string name="dlg_msg_downloadNewVersion">Download the new version from Google Play or the GitHub repository</string>
