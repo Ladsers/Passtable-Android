@@ -28,7 +28,7 @@
     <!-- bt (button) -->
     <string name="app_bt_ok">Ладно</string>
     <string name="app_bt_edit">Редактировать</string>
-    <string name="app_bt_undoLastAction">Отменить последнее действие</string> <!-- TODO: check -->
+    <string name="app_bt_undoLastAction">Отменить послед. действие</string>
     <string name="app_bt_cancel">Отмена</string>
     <string name="app_bt_create">Создать</string>
     <string name="app_bt_open">Открыть</string>
@@ -52,7 +52,7 @@
     <string name="app_bt_remove">Удалить</string>
     <string name="app_bt_closeFile">Закрыть файл</string>
     <string name="app_bt_closeFileDataLoss">Игнорировать и закрыть файл</string> <!-- TODO: check -->
-    <string name="app_bt_tryEditLastItem">Редактировать последний элемент</string> <!-- TODO: check -->
+    <string name="app_bt_tryEditLastItem">Редакт. послед. элемент</string>
     <string name="app_bt_createNewFile">Создать новый файл</string>
     <string name="app_bt_enterPassword">Ввести пароль</string>
     <string name="app_bt_disableBiometricAuth">Отключить биометрическую аутентификацию для всех файлов</string>
@@ -130,7 +130,7 @@
     <!-- DLG  -->
 
     <!-- title -->
-    <string name="dlg_title_changesNotSaved">Изменения не будут сохранены</string> <!-- TODO: check -->
+    <string name="dlg_title_changesNotSaved">Изменения не будут сохранены</string>
     <string name="dlg_title_biometricAuthentication">Биометрическая аутентификация</string>
     <string name="dlg_title_biometricEnable">Включить биометрическую аутентификацию</string>
     <string name="dlg_title_closeWithoutSaving">Закрыть без сохранения?</string>
@@ -191,7 +191,7 @@
     <string name="dlg_msg_disableRememberingRecentFiles">Это действие безвозвратно очистит список последних файлов</string>
     <string name="dlg_msg_disableRememberingRecentFilesWithBiometric">Это действие безвозвратно очистит список последних файлов. Биометрическая аутентификация будет отключена для всех файлов.</string>
     <string name="dlg_msg_biometricInfoReEnable">Вы сможете повторно включить биометрическую аутентификацию для необходимых файлов</string>
-    <string name="dlg_msg_unsavedDataWillBeLost">Все несохраненные данные будут потеряны</string> <!-- TODO: check -->
+    <string name="dlg_msg_unsavedDataWillBeLost">Все несохраненные данные будут потеряны</string>
     <string name="dlg_msg_downloadNewVersion">Загрузите новую версию из Google Play или репозитория GitHub</string>
     <string name="dlg_msg_permissionDisplayOver">Необходимо предоставить разрешение в настройках для отображения панели поверх других приложений</string>
     <!-- end! -->
