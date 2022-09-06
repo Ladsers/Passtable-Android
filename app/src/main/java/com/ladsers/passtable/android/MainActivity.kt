@@ -107,6 +107,14 @@ class MainActivity : AppCompatActivity() {
         }.start()
     }
 
+    private fun getNewVersion() {
+        val lastVer = Updater.getLastVer()
+        val urlGitHub = "https://github.com/Ladsers/Passtable-Android/releases/download"
+        val newApp = "Passtable-$lastVer.apk"
+        val url = "$urlGitHub/$lastVer/$newApp"
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         val color = MaterialColors.getColor(window.decorView, R.attr.notificationTint)
@@ -131,6 +139,12 @@ class MainActivity : AppCompatActivity() {
                     getString(R.string.app_bt_ok),
                     R.drawable.ic_accept
                 ) {}
+                msgDialog.addNeutralBtn(
+                    getString(R.string.app_bt_downloadFromGithub),
+                    R.drawable.ic_download
+                ) {
+                    getNewVersion()
+                }
                 msgDialog.show()
                 true
             }

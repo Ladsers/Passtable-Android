@@ -13,6 +13,7 @@
         Font&lt;br>&lt;big>&lt;b>Overpass Mono&lt;/b>&lt;/big>&lt;br>Delve Withrington, Dave Bailey, Thomas Jockin&lt;br>SIL Open Font License&lt;br>https://overpassfont.org&lt;br></string>
         <string name="app_info_itemMenu">Click on the Eye button to show the password.\n\nClick on the item itself to show the menu for working with it.</string>
         <string name="app_info_pinToScreen">Pin the item to the screen to access it from any app.</string>
+        <string name="app_info_license">Licensed under the Apache License, Version 2.0.\n\nSettings → About → License</string>
         <!-- end! -->
 
         <!-- com (common) -->
@@ -50,7 +51,7 @@
         <string name="app_bt_copyNote">Copy note</string>
         <string name="app_bt_copyLogin">Copy username</string>
         <string name="app_bt_copyPassword">Copy password</string>
-        <string name="app_bt_remove">Remove</string>
+        <string name="app_bt_remove">Delete</string>
         <string name="app_bt_closeFile">Close file</string>
         <string name="app_bt_closeFileDataLoss">Ignore and close file</string>
         <string name="app_bt_tryEditLastItem">Try to edit last item</string>
@@ -68,6 +69,7 @@
         <string name="app_bt_disable">Disable</string>
         <string name="app_bt_clear">Clear</string>
         <string name="app_bt_clearRecentFiles">Clear list of recent files</string>
+        <string name="app_bt_downloadFromGithub">Download from GitHub</string>
         <!-- end! -->
 
     <!-- END -->
@@ -84,11 +86,11 @@
         <string name="ui_ct_biometricCheckboxByDefault">The checkbox \"Biometric authentication\" is checked by default in the primary password entry window</string>
         <string name="ui_ct_rememberRecentFiles">Remember recently opened files</string>
         <string name="ui_ct_lockFile">Lock the file</string>
-        <string name="ui_ct_lockTimePeriod">After the specified time period after minimizing the app</string>
+        <string name="ui_ct_lockTimePeriod">When the specified time period after minimizing the app expires</string>
         <string name="ui_ct_lockMinAndLockPhone">When minimizing the app or locking the phone</string>
         <string name="ui_ct_lockAllowWhenEditing">Lock when editing or creating items</string>
         <string name="ui_ct_lockDoNotLock">Do not lock</string>
-        <string name="ui_ct_timePeriodForLocking">Time period for locking in seconds</string>
+        <string name="ui_ct_timePeriodForLocking">Time period in seconds</string>
         <string name="ui_ct_leaveBlankToSkip">Leave blank to skip verification</string>
         <string name="ui_ct_fileNoItems">File contains no items</string>
         <string name="ui_ct_fileNoItemsHint">Click on \"+\" in the top right corner to add a new item</string>
@@ -135,8 +137,8 @@
         <string name="dlg_title_biometricAuthentication">Biometric authentication</string>
         <string name="dlg_title_biometricEnable">Enable biometric authentication</string>
         <string name="dlg_title_closeWithoutSaving">Close without saving?</string>
-        <string name="dlg_title_removeItem">Remove item?</string>
-        <string name="dlg_title_removeItemWithNote">Remove \"%1$s\"?</string>
+        <string name="dlg_title_removeItem">Delete item?</string>
+        <string name="dlg_title_removeItemWithNote">Delete \"%1$s\"?</string>
         <string name="dlg_title_criticalError">Critical error</string>
         <string name="dlg_title_encryptionError">Encryption error</string>
         <string name="dlg_title_writeError">Write error</string>
@@ -180,7 +182,7 @@
         <string name="dlg_err_saveWriting">The application does not have sufficient permissions to write data to this file. You need to save the data to a new file to avoid losing data.</string>
         <string name="dlg_err_recentFileDoesNotExist">The application could not open the file. If the file still exists, open it again.</string>
         <string name="dlg_err_fingerprintSensorNotAvailable">The fingerprint sensor is not available.</string>
-        <string name="dlg_err_biometricTokenDamaged">The biometric authentication token is damaged. Please disable authentication for this file.</string>
+        <string name="dlg_err_biometricTokenDamaged">Biometric authentication failure. Please re-enable biometric authentication for this file.</string>
         <string name="dlg_err_biometricEnableFail">It is not possible to enable biometric authentication at the moment. Try again later.</string>
         <string name="dlg_err_biometricNewFingerprints">New fingerprints were enrolled, which resulted in disabling biometric authentication for all files. Please re-enable biometric authentication for required files.</string>
         <string name="dlg_err_biometricNewFingerprintsEnableFail">New fingerprints were enrolled, which resulted in disabling biometric authentication for all files. Please re-enable biometric authentication for this and other required files.</string>
@@ -191,9 +193,9 @@
         <string name="dlg_msg_recentFileClearWithBiometric">This is permanent and cannot be undone. Biometric authentication will be disabled for all files.</string>
         <string name="dlg_msg_disableRememberingRecentFiles">This action will permanently clear the list of recent files</string>
         <string name="dlg_msg_disableRememberingRecentFilesWithBiometric">This action will permanently clear the list of recent files. Biometric authentication will be disabled for all files.</string>
-        <string name="dlg_msg_biometricInfoReEnable">You will be able to re-enable biometric authentication for required files</string>
+        <string name="dlg_msg_biometricInfoReEnable">To open any file, you will need to enter its primary password</string>
         <string name="dlg_msg_unsavedDataWillBeLost">All unsaved data will be lost</string>
-        <string name="dlg_msg_downloadNewVersion">Download the new version from Google Play or the GitHub repository</string>
+        <string name="dlg_msg_downloadNewVersion">You can download the new version from the application store or the GitHub repository</string>
         <string name="dlg_msg_permissionDisplayOver">Need to grant permission in settings to display the panel over other apps</string>
         <!-- end! -->
 

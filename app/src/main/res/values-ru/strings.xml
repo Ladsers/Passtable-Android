@@ -3,7 +3,7 @@
 
         <!-- info -->
         <string name="app_info_appName">Passtable</string>
-        <string name="app_info_webPage">https://ru.ladsers.com/passtable</string>
+        <string name="app_info_webPage">https://www.ladsers.com/passtable</string>
         <string name="app_info_repo">https://github.com/Ladsers/Passtable-Android</string>
         <string name="app_info_keyboardShortcuts">&lt;b>Ctrl+N&lt;/b> — Добавить элемент.&lt;br>&lt;br>&lt;b>Ctrl+F&lt;/b> — Поиск по заметкам и логинам.&lt;br>&lt;br>&lt;b>Ctrl+Q&lt;/b> — Закрыть файл.</string>
         <string name="app_info_keyboardShortcutsWindow">Ctrl+N — Добавить элемент.\nCtrl+F — Поиск по заметкам и логинам.\nCtrl+Q — Закрыть файл.\n\nНастройки → Помощь → Горячие клавиши</string>
@@ -13,6 +13,7 @@
             Шрифт&lt;br>&lt;big>&lt;b>Overpass Mono&lt;/b>&lt;/big>&lt;br>Delve Withrington, Dave Bailey, Thomas Jockin&lt;br>SIL Open Font License&lt;br>https://overpassfont.org&lt;br></string>
         <string name="app_info_itemMenu">Нажмите на кнопку с изображением глаза, чтобы показать пароль.\n\nНажмите на сам элемент, чтобы открыть меню для работы с ним.</string>
         <string name="app_info_pinToScreen">Закрепите элемент на экране, чтобы получить к нему доступ из любого приложения.</string>
+        <string name="app_info_license">Под лицензией Apache License, версия 2.0.\n\nНастройки → Помощь → Лицензия</string>
         <!-- end! -->
 
         <!-- com (common) -->
@@ -51,7 +52,7 @@
         <string name="app_bt_copyPassword">Копировать пароль</string>
         <string name="app_bt_remove">Удалить</string>
         <string name="app_bt_closeFile">Закрыть файл</string>
-        <string name="app_bt_closeFileDataLoss">Игнорировать и закрыть файл</string> <!-- TODO: check -->
+        <string name="app_bt_closeFileDataLoss">Игнорировать и закрыть файл</string>
         <string name="app_bt_tryEditLastItem">Редакт. послед. элемент</string>
         <string name="app_bt_createNewFile">Создать новый файл</string>
         <string name="app_bt_enterPassword">Ввести пароль</string>
@@ -67,6 +68,7 @@
         <string name="app_bt_disable">Отключить</string>
         <string name="app_bt_clear">Очистить</string>
         <string name="app_bt_clearRecentFiles">Очистить список недавних файлов</string>
+        <string name="app_bt_downloadFromGithub">Скачать с GitHub</string>
         <!-- end! -->
 
     <!-- END -->
@@ -105,7 +107,7 @@
         <string name="ui_ct_webResources">Веб-ресурсы</string>
         <string name="ui_ct_help">Помощь</string>
         <string name="ui_ct_about">О приложении</string>
-        <string name="ui_ct_createdBy">Создано Максимом Королевым</string>
+        <string name="ui_ct_createdBy">Разработал Максим Королев</string>
         <string name="ui_ct_version">Версия</string>
         <!-- end! -->
 
@@ -179,7 +181,7 @@
         <string name="dlg_err_saveWriting">Приложение не имеет достаточных прав для записи данных в этот файл. Вам необходимо сохранить данные в новый файл во избежание потери данных.</string>
         <string name="dlg_err_recentFileDoesNotExist">Приложение не может открыть файл. Если файл всё ещё существует, откройте его снова.</string>
         <string name="dlg_err_fingerprintSensorNotAvailable">Датчик отпечатков пальцев недоступен.</string>
-        <string name="dlg_err_biometricTokenDamaged">Токен биометрической аутентификации повреждён. Пожалуйста, отключите аутентификацию для этого файла.</string>
+        <string name="dlg_err_biometricTokenDamaged">Сбой биометрической аутентификации. Повторно включите биометрическую аутентификацию для этого файла.</string>
         <string name="dlg_err_biometricEnableFail">В настоящее время невозможно включить биометрическую аутентификацию. Попробуйте позже.</string>
         <string name="dlg_err_biometricNewFingerprints">Были зарегистрированы новые отпечатки пальцев, что привело к отключению биометрической аутентификации для всех файлов. Повторно включите биометрическую аутентификацию для необходимых файлов.</string>
         <string name="dlg_err_biometricNewFingerprintsEnableFail">Были зарегистрированы новые отпечатки пальцев, что привело к отключению биометрической аутентификации для всех файлов. Повторно включите биометрическую аутентификацию для этого и других необходимых файлов.</string>
@@ -190,9 +192,9 @@
         <string name="dlg_msg_recentFileClearWithBiometric">Это действие не может быть отменено. Биометрическая аутентификация будет отключена для всех файлов.</string>
         <string name="dlg_msg_disableRememberingRecentFiles">Это действие безвозвратно очистит список последних файлов</string>
         <string name="dlg_msg_disableRememberingRecentFilesWithBiometric">Это действие безвозвратно очистит список последних файлов. Биометрическая аутентификация будет отключена для всех файлов.</string>
-        <string name="dlg_msg_biometricInfoReEnable">Вы сможете повторно включить биометрическую аутентификацию для необходимых файлов</string>
+        <string name="dlg_msg_biometricInfoReEnable">Для открытия любого файла потребуется ввод его основного пароля</string>
         <string name="dlg_msg_unsavedDataWillBeLost">Все несохраненные данные будут потеряны</string>
-        <string name="dlg_msg_downloadNewVersion">Загрузите новую версию из Google Play или репозитория GitHub</string>
+        <string name="dlg_msg_downloadNewVersion">Вы можете скачать новую версию из магазина приложений или репозитория GitHub</string>
         <string name="dlg_msg_permissionDisplayOver">Необходимо предоставить разрешение в настройках для отображения панели поверх других приложений</string>
         <!-- end! -->
 
