@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import com.ladsers.passtable.android.databinding.ActivitySettingsBinding
-import licenseText
+import com.ladsers.passtable.lib.licenseText
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySettingsBinding

@@ -1,6 +1,5 @@
 package com.ladsers.passtable.android
 
-import Verifier
 import android.app.AlertDialog
 import android.content.ContentResolver
 import android.content.Context
@@ -12,7 +11,7 @@ import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import com.ladsers.passtable.android.databinding.DialogEnterdataBinding
-import java.util.*
+import com.ladsers.passtable.lib.Verifier
 
 
 class FileCreator(

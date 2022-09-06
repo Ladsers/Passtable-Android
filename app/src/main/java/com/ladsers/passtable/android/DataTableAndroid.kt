@@ -1,8 +1,8 @@
 package com.ladsers.passtable.android
 
-import DataTable
 import android.content.ContentResolver
 import androidx.core.net.toUri
+import com.ladsers.passtable.lib.DataTable
 import java.io.BufferedWriter
 import java.io.OutputStreamWriter
 

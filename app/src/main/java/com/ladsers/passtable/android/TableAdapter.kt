@@ -1,6 +1,5 @@
 package com.ladsers.passtable.android
 
-import DataItem
 import android.content.Context
 import android.os.Build
 import android.text.SpannableString
@@ -16,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.color.MaterialColors
 import com.ladsers.passtable.android.databinding.ItemCollectionBinding
 import android.text.style.ForegroundColorSpan
+import com.ladsers.passtable.lib.DataItem
 
 class TableAdapter(
     private val dataList: MutableList<DataItem>,
@@ -54,7 +54,7 @@ class TableAdapter(
                 }
 
                 binding.tvNote.text = note
-                binding.tvLogin.text = login
+                binding.tvLogin.text = username
                 binding.tvPassword.text = password
 
                 binding.tvNote.visibility =

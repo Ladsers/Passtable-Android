@@ -1,7 +1,7 @@
 package com.ladsers.passtable.android
 
-import DataItem
 import androidx.recyclerview.widget.DiffUtil
+import com.ladsers.passtable.lib.DataItem
 
 class SearchDiffCallback(
     private val oldList: List<DataItem>,

@@ -1,6 +1,5 @@
 package com.ladsers.passtable.android
 
-import Verifier
 import android.app.Activity
 import android.content.ContentResolver
 import android.content.Context
@@ -24,6 +23,7 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doBeforeTextChanged
 import com.google.android.material.button.MaterialButton
 import com.ladsers.passtable.android.databinding.DialogEnterdataBinding
+import com.ladsers.passtable.lib.Verifier
 import java.util.*
 
 
@@ -144,14 +144,14 @@ class MpRequester(
                 binding.cbRememberPass.visibility =
                     if (!binding.btNeutral.isEnabled && biometricAuthActive) View.VISIBLE else View.GONE
 
-                errCode = Verifier.verifyMp(x.toString())
+                errCode = Verifier.verifyPrimary(x.toString())
                 binding.btPositive.isEnabled = errCode == 0
                 binding.clErr.visibility = if (errCode == 0) View.GONE else View.VISIBLE
                 val errMsg = when (errCode) {
                     1 -> context.getString(R.string.dlg_ct_primaryEmpty)
                     2 -> context.getString(
                         R.string.dlg_ct_primaryInvalidChars,
-                        Verifier.getMpAllowedChars(context.getString(R.string.app_com_spaceChar))
+                        Verifier.getPrimaryAllowedChars(context.getString(R.string.app_com_spaceChar))
                     )
                     3 -> context.getString(R.string.dlg_ct_primarySlashChar)
                     else -> ""

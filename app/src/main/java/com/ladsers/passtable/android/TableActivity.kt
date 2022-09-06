@@ -1,6 +1,5 @@
 package com.ladsers.passtable.android
 
-import DataItem
 import android.app.Activity
 import android.content.*
 import android.content.res.Configuration
@@ -21,6 +20,7 @@ import androidx.recyclerview.widget.*
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
+import com.ladsers.passtable.lib.DataItem
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.*
@@ -260,7 +260,7 @@ class TableActivity : AppCompatActivity() {
             1 -> { // show note
                 msgDialog.quickDialog(
                     getString(R.string.app_com_note),
-                    table.getData(tableId, "n"),
+                    table.getNote(tableId),
                     { toClipboard(id, "n") },
                     posText = getString(R.string.app_bt_copy),
                     negText = getString(R.string.app_bt_close),
@@ -270,7 +270,7 @@ class TableActivity : AppCompatActivity() {
             2 -> { // show login
                 msgDialog.quickDialog(
                     getString(R.string.app_com_login),
-                    table.getData(tableId, "l"),
+                    table.getUsername(tableId),
                     { toClipboard(id, "l") },
                     posText = getString(R.string.app_bt_copy),
                     negText = getString(R.string.app_bt_close),
@@ -280,7 +280,7 @@ class TableActivity : AppCompatActivity() {
             3 -> { // show password
                 msgDialog.quickDialog(
                     getString(R.string.app_com_password),
-                    table.getData(tableId, "p"),
+                    table.getPassword(tableId),
                     { toClipboard(id, "p") },
                     posText = getString(R.string.app_bt_copy),
                     negText = getString(R.string.app_bt_close),
@@ -294,14 +294,14 @@ class TableActivity : AppCompatActivity() {
                 editId = id
                 editItem()
             }
-            8 -> removeItem(id, table.getData(tableId, "n")) // remove
-            9 -> dataPanel.show(table.getData(tableId, "l"), table.getData(tableId, "p"))
+            8 -> removeItem(id, table.getNote(tableId)) // remove
+            9 -> dataPanel.show(table.getUsername(tableId), table.getPassword(tableId))
         }
     }
 
     private fun showPassword(id: Int) {
         val tableId = if (mtList[id].id == -1) id else mtList[id].id
-        mtList[id].password = if (mtList[id].password == "/yes") table.getData(tableId, "p")
+        mtList[id].password = if (mtList[id].password == "/yes") table.getPassword(tableId)
         else "/yes"
         adapter.notifyItemChanged(id)
         if (id == mtList.lastIndex) binding.rvTable.scrollToPosition(mtList.lastIndex)
@@ -310,7 +310,15 @@ class TableActivity : AppCompatActivity() {
     private fun toClipboard(id: Int, key: String) {
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val tableId = if (mtList[id].id == -1) id else mtList[id].id
-        val clip = ClipData.newPlainText(key, table.getData(tableId, key))
+
+        val data = when (key) { // TODO: refactor this
+            "n" -> table.getNote(tableId)
+            "l" -> table.getUsername(tableId)
+            "p" -> table.getPassword(tableId)
+            else -> return
+        }
+
+        val clip = ClipData.newPlainText(key, data)
         clipboard.setPrimaryClip(clip)
 
         val msg = when (key) {
@@ -353,10 +361,10 @@ class TableActivity : AppCompatActivity() {
     private fun editItem(blockClosing: Boolean = false) {
         val tableId = if (mtList[editId].id == -1) editId else mtList[editId].id
         val intent = Intent(this, EditActivity::class.java)
-        intent.putExtra("dataTag", table.getData(tableId, "t"))
-        intent.putExtra("dataNote", table.getData(tableId, "n"))
-        intent.putExtra("dataLogin", table.getData(tableId, "l"))
-        intent.putExtra("dataPassword", table.getData(tableId, "p"))
+        intent.putExtra("dataTag", table.getTag(tableId))
+        intent.putExtra("dataNote", table.getNote(tableId))
+        intent.putExtra("dataLogin", table.getUsername(tableId))
+        intent.putExtra("dataPassword", table.getPassword(tableId))
 
         intent.putExtra("modeEdit", true)
         intent.putExtra("blockClosing", blockClosing)
@@ -388,7 +396,7 @@ class TableActivity : AppCompatActivity() {
         if (!tagFilter.any { it } || tagFilter[data[0].toInt()]) {
             mtList[editId].tag = data[0]
             mtList[editId].note = data[1]
-            mtList[editId].login = data[2]
+            mtList[editId].username = data[2]
             mtList[editId].password = if (data[3].isNotEmpty()) "/yes" else "/no"
 
             (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = true
@@ -493,13 +501,13 @@ class TableActivity : AppCompatActivity() {
             R.drawable.ic_delete
         ) {
             val tableId = if (mtList[id].id == -1) id else mtList[id].id
-            table.remove(tableId)
+            table.delete(tableId)
 
             if (mtList[id].id != -1) { // id correction for search result
                 val tl = mtList.toList()
                 for (i in id + 1..tl.lastIndex) {
                     mtList[i] =
-                        DataItem(tl[i].tag, tl[i].note, tl[i].login, tl[i].password, tl[i].id - 1)
+                        DataItem(tl[i].tag, tl[i].note, tl[i].username, tl[i].password, tl[i].id - 1)
                 }
             }
 

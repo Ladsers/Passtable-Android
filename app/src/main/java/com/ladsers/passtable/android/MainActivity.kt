@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.color.MaterialColors
 import com.ladsers.passtable.android.databinding.ActivityMainBinding
+import com.ladsers.passtable.lib.Updater
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
