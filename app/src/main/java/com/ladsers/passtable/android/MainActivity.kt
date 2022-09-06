@@ -78,13 +78,15 @@ class MainActivity : AppCompatActivity() {
         recentDate = mutableListOf()
         recentMps = mutableListOf()
         adapter = RecentAdapter(
-                recentUri,
-                recentDate,
-                recentMps,
-                this,
-                { id, flag -> openRecentFile(id, flag) },
-                { id, resCode -> popupAction(id, resCode) })
+            recentUri,
+            recentDate,
+            recentMps,
+            this,
+            { id, flag -> openRecentFile(id, flag) },
+            { id, resCode -> popupAction(id, resCode) })
         binding.rvRecent.adapter = adapter
+
+        showInfoLicense()
     }
 
     override fun onResume() {
@@ -94,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         else refreshRecentList()
     }
 
-    private fun checkUpdate(menu: Menu){
+    private fun checkUpdate(menu: Menu) {
         Thread {
             try {
                 val res = Updater.check("apk", BuildConfig.VERSION_NAME)
@@ -103,7 +105,8 @@ class MainActivity : AppCompatActivity() {
                     button.isVisible = res == 1
                     button.isEnabled = res == 1
                 }
-            } catch (e: Exception) { }
+            } catch (e: Exception) {
+            }
         }.start()
     }
 
@@ -188,7 +191,8 @@ class MainActivity : AppCompatActivity() {
         var uri: Uri? = null
         result.data?.data?.let {
             uri = it
-            val perms = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            val perms =
+                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
             contentResolver.takePersistableUriPermission(it, perms)
 
             if (newFile) uri = fileCreator.createFile(it)
@@ -229,8 +233,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun popupAction(id: Int, resCode: Int){
-        when (resCode){
+    private fun popupAction(id: Int, resCode: Int) {
+        when (resCode) {
             1 -> { // remove from list
                 removeFromRecentList(id)
             }
@@ -243,7 +247,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun refreshRecentList(){
+    private fun refreshRecentList() {
         recentUri.clear()
         recentUri.addAll(RecentFiles.loadUri(this))
         recentDate.clear()
@@ -254,7 +258,7 @@ class MainActivity : AppCompatActivity() {
         notifyUser()
     }
 
-    private fun removeFromRecentList(id: Int){
+    private fun removeFromRecentList(id: Int) {
         RecentFiles.remove(this, recentUri[id])
         recentUri.removeAt(id)
         recentDate.removeAt(id)
@@ -264,8 +268,15 @@ class MainActivity : AppCompatActivity() {
         notifyUser()
     }
 
-    private fun notifyUser(){
+    private fun notifyUser() {
         binding.notificationNoRecentlyOpened.clInfo.visibility =
             if (recentUri.isEmpty()) View.VISIBLE else View.GONE
+    }
+
+    private fun showInfoLicense() {
+        val param = Param.INITIAL_INFO_LICENSE
+        if (!ParamStorage.getBool(this, param)) return
+        val info = getString(R.string.app_info_license)
+        SnackbarManager.showInitInfo(this, binding.root, param, info, 4000)
     }
 }

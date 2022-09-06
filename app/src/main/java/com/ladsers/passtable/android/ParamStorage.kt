@@ -11,6 +11,7 @@ enum class Param(
     INITIAL_INFO_ITEM_MENU("initialInfoItemMenu", defBool = true),
     INITIAL_INFO_PIN_TO_SCREEN("initialInfoPinToScreen", defBool = true),
     INITIAL_INFO_KEYBOARD_SHORTCUTS("initialInfoKeyboardShortcuts", defBool = true),
+    INITIAL_INFO_LICENSE("initialInfoLicense", defBool = true),
 
     PHYSICAL_KEYBOARD_DETECTED("physicalKeyboardDetected", defBool = false),
 
