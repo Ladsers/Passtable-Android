@@ -16,6 +16,7 @@ import androidx.core.widget.doBeforeTextChanged
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
 import com.ladsers.passtable.android.databinding.ActivityEditBinding
+import com.ladsers.passtable.lib.Verifier
 import java.util.*
 
 
@@ -184,16 +185,23 @@ class EditActivity : AppCompatActivity() {
     }
 
     private fun canBeSavedCheck(show: Boolean = true): Int {
-        return if (binding.etNote.text.isBlank() &&
-            (binding.etLogin.text.isBlank() || binding.etPassword.text.isEmpty())
+        val note = binding.etNote.text.toString()
+        val username = binding.etLogin.text.toString()
+        val password = binding.etPassword.text.toString()
+        val confirm = binding.etConfirm.text.toString()
+
+        return if (!Verifier.verifyData(note, username, password)
+        ) {
+            disableBtSave()
+            if (show) showError(3)
+            3
+        } else if (!Verifier.verifyItem(note, username, password)
         ) {
             disableBtSave()
             if (show) showError(1)
             1
         } else {
-            if (binding.etConfirm.text.isNotEmpty() &&
-                binding.etPassword.text.toString() != binding.etConfirm.text.toString()
-            ) {
+            if (confirm.isNotEmpty() && password != confirm) {
                 disableBtSave()
                 if (show) showError(2)
                 2
@@ -214,6 +222,10 @@ class EditActivity : AppCompatActivity() {
             }
             2 -> {
                 binding.tvErrMsg.text = getString(R.string.dlg_ct_passwordsDoNotMatch)
+                binding.clErr.visibility = View.VISIBLE
+            }
+            3 -> {
+                binding.tvErrMsg.text = getString(R.string.ui_ct_editItemInvalidChars)
                 binding.clErr.visibility = View.VISIBLE
             }
         }

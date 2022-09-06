@@ -79,6 +79,7 @@
         <!-- ct (content) -->
         <string name="ui_ct_home">Home</string>
         <string name="ui_ct_editItemErr">Item must contain note or username with password</string>
+        <string name="ui_ct_editItemInvalidChars">Some data contains invalid characters</string>
         <string name="ui_ct_editItem">Edit item</string>
         <string name="ui_ct_addItem">Add item</string>
         <string name="ui_ct_settings">Settings</string>

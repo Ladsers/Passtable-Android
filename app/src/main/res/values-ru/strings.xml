@@ -78,6 +78,7 @@
         <!-- ct (content) -->
         <string name="ui_ct_home">Главная</string>
         <string name="ui_ct_editItemErr">Элемент должен содержать заметку или логин с паролем</string>
+        <string name="ui_ct_editItemInvalidChars">Некоторые данные содержат недопустимые символы</string>
         <string name="ui_ct_editItem">Редактировать элемент</string>
         <string name="ui_ct_addItem">Добавить элемент</string>
         <string name="ui_ct_settings">Настройки</string>
