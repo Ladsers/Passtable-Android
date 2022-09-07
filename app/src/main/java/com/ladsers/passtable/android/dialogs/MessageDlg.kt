@@ -11,7 +11,7 @@ import android.view.Window
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.ladsers.passtable.android.R
-import com.ladsers.passtable.android.databinding.DialogMsgBinding
+import com.ladsers.passtable.android.databinding.DialogMessageBinding
 import java.util.*
 
 class MessageDlg(
@@ -89,7 +89,7 @@ class MessageDlg(
         if (!isCreated || !isAddedPositive) return
         isCreated = false
 
-        val binding: DialogMsgBinding = DialogMsgBinding.inflate(window.layoutInflater)
+        val binding: DialogMessageBinding = DialogMessageBinding.inflate(window.layoutInflater)
         val builder = AlertDialog.Builder(context)
         builder.setView(binding.root)
         builder.setCancelable(isCancelable)

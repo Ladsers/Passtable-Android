@@ -18,7 +18,7 @@ import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.components.SnackbarManager
 import com.ladsers.passtable.android.containers.Param
 import com.ladsers.passtable.android.containers.ParamStorage
-import com.ladsers.passtable.android.databinding.ItemCollectionBinding
+import com.ladsers.passtable.android.databinding.ItemDataTableBinding
 import com.ladsers.passtable.lib.DataItem
 
 class TableAdapter(
@@ -27,12 +27,12 @@ class TableAdapter(
     private val showPassword: (Int) -> Unit
 ) : RecyclerView.Adapter<TableAdapter.ItemViewHolder>() {
 
-    class ItemViewHolder(val binding: ItemCollectionBinding) :
+    class ItemViewHolder(val binding: ItemDataTableBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val binding =
-            ItemCollectionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemDataTableBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ItemViewHolder(binding)
     }
 
@@ -88,7 +88,7 @@ class TableAdapter(
         return dataList.size
     }
 
-    private fun showPopupMenu(binding: ItemCollectionBinding, view: View, position: Int): Boolean {
+    private fun showPopupMenu(binding: ItemDataTableBinding, view: View, position: Int): Boolean {
         val pop = PopupMenu(binding.root.context, view, Gravity.CENTER, 0,
             R.style.PopupMenuCustomPosTable
         )

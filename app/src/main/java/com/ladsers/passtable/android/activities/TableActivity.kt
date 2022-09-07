@@ -556,7 +556,7 @@ class TableActivity : AppCompatActivity() {
         binding.etSearch.doAfterTextChanged { text ->
             binding.etSearch.removeCallbacks(searchWithDelay)
             query = text.toString()
-            if (query.isNotEmpty()) binding.etSearch.postDelayed(searchWithDelay, 300)
+            if (query.isNotEmpty()) binding.etSearch.postDelayed(searchWithDelay, 500)
             else searchByData(query)
         }
 

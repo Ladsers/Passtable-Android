@@ -26,7 +26,7 @@ import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.components.BiometricAuth
 import com.ladsers.passtable.android.containers.Param
 import com.ladsers.passtable.android.containers.ParamStorage
-import com.ladsers.passtable.android.databinding.DialogEnterdataBinding
+import com.ladsers.passtable.android.databinding.DialogDataEntryBinding
 import com.ladsers.passtable.lib.Verifier
 
 
@@ -58,7 +58,7 @@ class PrimaryPasswordDlg(
         canRememberPass: Boolean = true
     ) {
         val builder = AlertDialog.Builder(context)
-        val binding = DialogEnterdataBinding.inflate(window.layoutInflater)
+        val binding = DialogDataEntryBinding.inflate(window.layoutInflater)
         builder.setView(binding.root)
 
         rememberMasterPass = false

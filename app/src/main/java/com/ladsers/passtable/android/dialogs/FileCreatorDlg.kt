@@ -11,7 +11,7 @@ import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import com.ladsers.passtable.android.R
-import com.ladsers.passtable.android.databinding.DialogEnterdataBinding
+import com.ladsers.passtable.android.databinding.DialogDataEntryBinding
 import com.ladsers.passtable.lib.Verifier
 
 
@@ -26,7 +26,7 @@ class FileCreatorDlg(
     fun askName(oldName: String? = null, isCancelable: Boolean = true, btView: View? = null) {
         fileName = ""
 
-        val binding: DialogEnterdataBinding = DialogEnterdataBinding.inflate(window.layoutInflater)
+        val binding: DialogDataEntryBinding = DialogDataEntryBinding.inflate(window.layoutInflater)
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
         builder.setView(binding.root)
         builder.setCancelable(isCancelable)

@@ -10,7 +10,7 @@ import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ladsers.passtable.android.R
-import com.ladsers.passtable.android.databinding.ItemRecentBinding
+import com.ladsers.passtable.android.databinding.ItemRecentFileBinding
 import com.ladsers.passtable.android.extensions.getFileName
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -28,12 +28,12 @@ class RecentAdapter(
     private val popupAction: (Int, Int) -> Unit,
 ) : RecyclerView.Adapter<RecentAdapter.ItemViewHolder>() {
 
-    class ItemViewHolder(val binding: ItemRecentBinding) :
+    class ItemViewHolder(val binding: ItemRecentFileBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val binding =
-            ItemRecentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemRecentFileBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ItemViewHolder(binding)
     }
 
