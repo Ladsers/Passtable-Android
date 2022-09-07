@@ -1,4 +1,4 @@
-package com.ladsers.passtable.android
+package com.ladsers.passtable.android.components
 
 import android.annotation.SuppressLint
 import android.content.ClipData
@@ -17,7 +17,10 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import com.ladsers.passtable.android.R
+import com.ladsers.passtable.android.activities.TableActivity
 import com.ladsers.passtable.android.databinding.PanelDataBinding
+import com.ladsers.passtable.android.dialogs.MsgDialog
 
 class DataPanel(
     private val context: Context,

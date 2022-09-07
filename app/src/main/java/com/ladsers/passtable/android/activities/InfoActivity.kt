@@ -1,9 +1,10 @@
-package com.ladsers.passtable.android
+package com.ladsers.passtable.android.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Html
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.databinding.ActivityInfoBinding
 
 class InfoActivity : AppCompatActivity() {

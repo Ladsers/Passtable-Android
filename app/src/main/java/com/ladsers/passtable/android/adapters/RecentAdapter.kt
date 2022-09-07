@@ -1,4 +1,4 @@
-package com.ladsers.passtable.android
+package com.ladsers.passtable.android.adapters
 
 import android.content.Context
 import android.net.Uri
@@ -9,8 +9,9 @@ import android.view.*
 import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.databinding.ItemRecentBinding
-import java.lang.Exception
+import com.ladsers.passtable.android.extensions.getFileName
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -99,7 +100,9 @@ class RecentAdapter(
     }
 
     private fun showPopupMenu(view: View, position: Int): Boolean {
-        val pop = PopupMenu(contextActivity, view, Gravity.CENTER, 0, R.style.PopupMenuCustomPosRecent)
+        val pop = PopupMenu(contextActivity, view, Gravity.CENTER, 0,
+            R.style.PopupMenuCustomPosRecent
+        )
         pop.inflate(R.menu.menu_recentfiles)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) pop.setForceShowIcon(true)
 

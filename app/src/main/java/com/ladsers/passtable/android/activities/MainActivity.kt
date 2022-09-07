@@ -1,11 +1,10 @@
-package com.ladsers.passtable.android
+package com.ladsers.passtable.android.activities
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.DocumentsContract
 import android.view.Menu
@@ -13,13 +12,23 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.color.MaterialColors
+import com.ladsers.passtable.android.BuildConfig
+import com.ladsers.passtable.android.R
+import com.ladsers.passtable.android.adapters.RecentAdapter
+import com.ladsers.passtable.android.components.SnackbarManager
+import com.ladsers.passtable.android.containers.Param
+import com.ladsers.passtable.android.containers.ParamStorage
+import com.ladsers.passtable.android.containers.RecentFiles
 import com.ladsers.passtable.android.databinding.ActivityMainBinding
+import com.ladsers.passtable.android.dialogs.FileCreator
+import com.ladsers.passtable.android.dialogs.MsgDialog
 import com.ladsers.passtable.lib.Updater
 
 class MainActivity : AppCompatActivity() {

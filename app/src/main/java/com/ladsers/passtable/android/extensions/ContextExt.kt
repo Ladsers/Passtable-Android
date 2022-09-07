@@ -1,10 +1,12 @@
-package com.ladsers.passtable.android
+package com.ladsers.passtable.android.extensions
 
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
 
+@SuppressLint("Range")
 fun Context.getFileNameWithExt(uri: Uri): String?{
     if (uri.scheme != ContentResolver.SCHEME_CONTENT) return null
     return try {

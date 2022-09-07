@@ -1,10 +1,12 @@
-package com.ladsers.passtable.android
+package com.ladsers.passtable.android.widgets
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import com.ladsers.passtable.android.containers.Param
+import com.ladsers.passtable.android.containers.ParamStorage
 
 class EditTextLockSecs : androidx.appcompat.widget.AppCompatEditText {
     constructor(context: Context) : super(context)

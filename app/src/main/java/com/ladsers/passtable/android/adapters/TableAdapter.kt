@@ -1,8 +1,9 @@
-package com.ladsers.passtable.android
+package com.ladsers.passtable.android.adapters
 
 import android.content.Context
 import android.os.Build
 import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -13,8 +14,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.color.MaterialColors
+import com.ladsers.passtable.android.R
+import com.ladsers.passtable.android.components.SnackbarManager
+import com.ladsers.passtable.android.containers.Param
+import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.databinding.ItemCollectionBinding
-import android.text.style.ForegroundColorSpan
 import com.ladsers.passtable.lib.DataItem
 
 class TableAdapter(
@@ -85,7 +89,9 @@ class TableAdapter(
     }
 
     private fun showPopupMenu(binding: ItemCollectionBinding, view: View, position: Int): Boolean {
-        val pop = PopupMenu(binding.root.context, view, Gravity.CENTER, 0, R.style.PopupMenuCustomPosTable)
+        val pop = PopupMenu(binding.root.context, view, Gravity.CENTER, 0,
+            R.style.PopupMenuCustomPosTable
+        )
         pop.inflate(R.menu.menu_item)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) pop.setForceShowIcon(true)
 

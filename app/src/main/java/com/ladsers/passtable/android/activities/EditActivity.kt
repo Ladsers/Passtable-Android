@@ -1,4 +1,4 @@
-package com.ladsers.passtable.android
+package com.ladsers.passtable.android.activities
 
 import android.content.Intent
 import android.content.res.Configuration
@@ -15,7 +15,12 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doBeforeTextChanged
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
+import com.ladsers.passtable.android.R
+import com.ladsers.passtable.android.containers.Param
+import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.databinding.ActivityEditBinding
+import com.ladsers.passtable.android.dialogs.MpRequester
+import com.ladsers.passtable.android.dialogs.MsgDialog
 import com.ladsers.passtable.lib.Verifier
 import java.util.*
 
@@ -104,13 +109,23 @@ class EditActivity : AppCompatActivity() {
 
         binding.btShowPass.setOnClickListener {
             passwordIsVisible =
-                MpRequester.showHidePassword(this, binding.etPassword, binding.btShowPass, passwordIsVisible)
+                MpRequester.showHidePassword(
+                    this,
+                    binding.etPassword,
+                    binding.btShowPass,
+                    passwordIsVisible
+                )
         }
 
         binding.btShowConfirm.setOnClickListener {
             btConfirmClicked = true
             confirmIsVisible =
-                MpRequester.showHidePassword(this, binding.etConfirm, binding.btShowConfirm, confirmIsVisible)
+                MpRequester.showHidePassword(
+                    this,
+                    binding.etConfirm,
+                    binding.btShowConfirm,
+                    confirmIsVisible
+                )
         }
 
         passwordsMatchCheck()
@@ -144,7 +159,13 @@ class EditActivity : AppCompatActivity() {
     private fun passwordsMatchCheck(){
         binding.etPassword.doAfterTextChanged { x ->
             passwordIsVisible =
-                MpRequester.widgetBehavior(this, x, binding.etPassword, binding.btShowPass, passwordIsVisible)
+                MpRequester.widgetBehavior(
+                    this,
+                    x,
+                    binding.etPassword,
+                    binding.btShowPass,
+                    passwordIsVisible
+                )
             if ((editMode && x.toString() != originalPassword) ||
                 (!editMode && x.toString().isNotEmpty())
             ) {
@@ -170,7 +191,13 @@ class EditActivity : AppCompatActivity() {
 
         binding.etConfirm.doAfterTextChanged { x ->
             confirmIsVisible =
-                MpRequester.widgetBehavior(this, x, binding.etConfirm, binding.btShowConfirm, confirmIsVisible)
+                MpRequester.widgetBehavior(
+                    this,
+                    x,
+                    binding.etConfirm,
+                    binding.btShowConfirm,
+                    confirmIsVisible
+                )
 
             if (canBeSavedCheck(false) != 1 &&
                 x.toString().isNotEmpty() &&

@@ -126,7 +126,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.ladsers.passtable.android.EditTextLockSecs
+        <com.ladsers.passtable.android.widgets.EditTextLockSecs
             android:id="@+id/etLockSecs"
             android:layout_width="45dp"
             android:layout_height="wrap_content"

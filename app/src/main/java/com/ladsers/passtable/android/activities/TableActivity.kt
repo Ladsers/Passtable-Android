@@ -1,4 +1,4 @@
-package com.ladsers.passtable.android
+package com.ladsers.passtable.android.activities
 
 import android.app.Activity
 import android.content.*
@@ -16,10 +16,28 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.widget.doAfterTextChanged
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
+import com.ladsers.passtable.android.R
+import com.ladsers.passtable.android.adapters.TableAdapter
+import com.ladsers.passtable.android.callbacks.SearchDiffCallback
+import com.ladsers.passtable.android.components.BiometricAuth
+import com.ladsers.passtable.android.components.DataPanel
+import com.ladsers.passtable.android.components.SnackbarManager
+import com.ladsers.passtable.android.containers.DataTableAndroid
+import com.ladsers.passtable.android.containers.Param
+import com.ladsers.passtable.android.containers.ParamStorage
+import com.ladsers.passtable.android.containers.RecentFiles
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
+import com.ladsers.passtable.android.dialogs.FileCreator
+import com.ladsers.passtable.android.dialogs.MpRequester
+import com.ladsers.passtable.android.dialogs.MsgDialog
+import com.ladsers.passtable.android.extensions.getFileName
+import com.ladsers.passtable.android.extensions.getFileNameWithExt
 import com.ladsers.passtable.lib.DataItem
 import java.io.BufferedReader
 import java.io.InputStreamReader

@@ -1,4 +1,4 @@
-package com.ladsers.passtable.android
+package com.ladsers.passtable.android.containers
 
 import android.content.ContentResolver
 import androidx.core.net.toUri

@@ -1,4 +1,4 @@
-package com.ladsers.passtable.android
+package com.ladsers.passtable.android.dialogs
 
 import android.content.Context
 import android.content.res.Resources
@@ -10,6 +10,7 @@ import android.view.View
 import android.view.Window
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.databinding.DialogMsgBinding
 import java.util.*
 

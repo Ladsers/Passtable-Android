@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context=".SettingsActivity">
+    tools:context=".activities.SettingsActivity">
 
     <include
         android:id="@+id/toolbar"

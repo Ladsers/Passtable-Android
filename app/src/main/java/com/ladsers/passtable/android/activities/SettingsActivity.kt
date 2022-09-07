@@ -1,18 +1,25 @@
-package com.ladsers.passtable.android
+package com.ladsers.passtable.android.activities
 
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
+import com.ladsers.passtable.android.BuildConfig
+import com.ladsers.passtable.android.R
+import com.ladsers.passtable.android.components.BiometricAuth
+import com.ladsers.passtable.android.containers.Param
+import com.ladsers.passtable.android.containers.ParamStorage
+import com.ladsers.passtable.android.containers.RecentFiles
 import com.ladsers.passtable.android.databinding.ActivitySettingsBinding
+import com.ladsers.passtable.android.dialogs.MsgDialog
 import com.ladsers.passtable.lib.licenseText
 
 class SettingsActivity : AppCompatActivity() {
@@ -124,7 +131,7 @@ class SettingsActivity : AppCompatActivity() {
            binding.lockFile.etLockSecs.setText(ParamStorage.getInt(this, Param.LOCK_SECS).toString())
         }
        binding.lockFile.swLockAllowWhenEditing.setOnCheckedChangeListener { _, isChecked ->
-            ParamStorage.set(this, Param.LOCK_ALLOW_WHEN_EDITING, isChecked)
+           ParamStorage.set(this, Param.LOCK_ALLOW_WHEN_EDITING, isChecked)
         }
         binding.lockFile.clLockSecs.setOnClickListener {
             binding.lockFile.etLockSecs.requestFocus()

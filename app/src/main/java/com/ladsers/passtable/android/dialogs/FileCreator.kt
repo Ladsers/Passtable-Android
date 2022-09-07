@@ -1,4 +1,4 @@
-package com.ladsers.passtable.android
+package com.ladsers.passtable.android.dialogs
 
 import android.app.AlertDialog
 import android.content.ContentResolver
@@ -10,6 +10,7 @@ import android.provider.DocumentsContract
 import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
+import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.databinding.DialogEnterdataBinding
 import com.ladsers.passtable.lib.Verifier
 

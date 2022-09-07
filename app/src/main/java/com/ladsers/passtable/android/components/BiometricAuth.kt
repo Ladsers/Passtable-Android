@@ -1,4 +1,4 @@
-package com.ladsers.passtable.android
+package com.ladsers.passtable.android.components
 
 import android.content.Context
 import android.security.keystore.KeyGenParameterSpec
@@ -8,8 +8,10 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import com.ladsers.passtable.android.R
+import com.ladsers.passtable.android.containers.RecentFiles
+import com.ladsers.passtable.android.dialogs.MsgDialog
 import org.bouncycastle.util.encoders.Base64
-import java.lang.Exception
 import java.nio.charset.StandardCharsets
 import java.security.KeyStore
 import javax.crypto.Cipher

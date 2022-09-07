@@ -1,4 +1,4 @@
-package com.ladsers.passtable.android
+package com.ladsers.passtable.android.dialogs
 
 import android.app.Activity
 import android.content.ContentResolver
@@ -22,6 +22,10 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doBeforeTextChanged
 import com.google.android.material.button.MaterialButton
+import com.ladsers.passtable.android.R
+import com.ladsers.passtable.android.components.BiometricAuth
+import com.ladsers.passtable.android.containers.Param
+import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.databinding.DialogEnterdataBinding
 import com.ladsers.passtable.lib.Verifier
 

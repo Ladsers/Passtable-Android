@@ -1,4 +1,4 @@
-package com.ladsers.passtable.android
+package com.ladsers.passtable.android.callbacks
 
 import androidx.recyclerview.widget.DiffUtil
 import com.ladsers.passtable.lib.DataItem
