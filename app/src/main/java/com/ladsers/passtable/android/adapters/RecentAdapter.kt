@@ -103,7 +103,7 @@ class RecentAdapter(
         val pop = PopupMenu(contextActivity, view, Gravity.CENTER, 0,
             R.style.PopupMenuCustomPosRecent
         )
-        pop.inflate(R.menu.menu_recentfiles)
+        pop.inflate(R.menu.menu_recent_files)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) pop.setForceShowIcon(true)
 
         val btForgetPassword = pop.menu.findItem(R.id.btForgetPassword)

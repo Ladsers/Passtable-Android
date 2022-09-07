@@ -33,9 +33,9 @@ import com.ladsers.passtable.android.containers.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.containers.RecentFiles
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
-import com.ladsers.passtable.android.dialogs.FileCreator
-import com.ladsers.passtable.android.dialogs.MpRequester
-import com.ladsers.passtable.android.dialogs.MsgDialog
+import com.ladsers.passtable.android.dialogs.FileCreatorDlg
+import com.ladsers.passtable.android.dialogs.PrimaryPasswordDlg
+import com.ladsers.passtable.android.dialogs.MessageDlg
 import com.ladsers.passtable.android.extensions.getFileName
 import com.ladsers.passtable.android.extensions.getFileNameWithExt
 import com.ladsers.passtable.lib.DataItem
@@ -54,9 +54,9 @@ class TableActivity : AppCompatActivity() {
     private lateinit var adapter: TableAdapter
     private lateinit var mtList: MutableList<DataItem>
     private lateinit var biometricAuth: BiometricAuth
-    private lateinit var mpRequester: MpRequester
-    private lateinit var fileCreator: FileCreator
-    private lateinit var msgDialog: MsgDialog
+    private lateinit var primaryPasswordDlg: PrimaryPasswordDlg
+    private lateinit var fileCreatorDlg: FileCreatorDlg
+    private lateinit var messageDlg: MessageDlg
     private lateinit var dataPanel: DataPanel
 
     private lateinit var nothingFoundDelay: Runnable
@@ -85,14 +85,14 @@ class TableActivity : AppCompatActivity() {
         }
         binding = ActivityTableBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        msgDialog = MsgDialog(this, window)
+        messageDlg = MessageDlg(this, window)
         biometricAuth = BiometricAuth(
             this,
             this,
             { loginSucceeded() },
             { mp -> openProcess(mp) },
-            { mpRequester.start(MpRequester.Mode.OPEN, canRememberPass = false) })
-        mpRequester = MpRequester(
+            { primaryPasswordDlg.start(PrimaryPasswordDlg.Mode.OPEN, canRememberPass = false) })
+        primaryPasswordDlg = PrimaryPasswordDlg(
             this,
             contentResolver,
             this,
@@ -102,7 +102,7 @@ class TableActivity : AppCompatActivity() {
             { password -> openProcess(password) },
             { newPath, newPass -> saveToOtherFileProcess(newPath, newPass) }
         )
-        fileCreator = FileCreator(
+        fileCreatorDlg = FileCreatorDlg(
             this,
             contentResolver,
             window
@@ -143,7 +143,7 @@ class TableActivity : AppCompatActivity() {
         }
 
         val newFile = intent.getBooleanExtra("newFile", false)
-        if (newFile) mpRequester.start(MpRequester.Mode.NEW, mainUri) else checkFileProcess()
+        if (newFile) primaryPasswordDlg.start(PrimaryPasswordDlg.Mode.NEW, mainUri) else checkFileProcess()
     }
 
     override fun onBackPressed() {
@@ -171,7 +171,7 @@ class TableActivity : AppCompatActivity() {
             R.id.btSaveAs -> {
                 disableLockFileSystem = true
                 saveAsMode = true
-                fileCreator.askName(getFileName(mainUri))
+                fileCreatorDlg.askName(getFileName(mainUri))
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -182,7 +182,7 @@ class TableActivity : AppCompatActivity() {
         RecentFiles.add(this, mainUri)
         table = DataTableAndroid(mainUri.toString(), masterPass, cryptData, contentResolver)
         if (!saving(firstSave = true)) return
-        if (mpRequester.isNeedToRemember()) biometricAuth.activateAuth(masterPass)
+        if (primaryPasswordDlg.isNeedToRemember()) biometricAuth.activateAuth(masterPass)
         else loginSucceeded()
     }
 
@@ -190,10 +190,10 @@ class TableActivity : AppCompatActivity() {
         table = DataTableAndroid(mainUri.toString(), masterPass, cryptData, contentResolver)
         when (table.fill()) {
             0 -> {
-                if (mpRequester.isNeedToRemember()) biometricAuth.activateAuth(masterPass)
+                if (primaryPasswordDlg.isNeedToRemember()) biometricAuth.activateAuth(masterPass)
                 else loginSucceeded()
             }
-            3 -> mpRequester.start(MpRequester.Mode.OPEN, incorrectPassword = true)
+            3 -> primaryPasswordDlg.start(PrimaryPasswordDlg.Mode.OPEN, incorrectPassword = true)
         }
     }
 
@@ -218,30 +218,30 @@ class TableActivity : AppCompatActivity() {
                 if (!quickView && ParamStorage.getBool(this, Param.REMEMBER_RECENT_FILES)) {
                     RecentFiles.add(this, mainUri)
                     val mpEncrypted = RecentFiles.getLastMpEncrypted(this)
-                    if (mpEncrypted.isNullOrBlank()) mpRequester.start(MpRequester.Mode.OPEN)
+                    if (mpEncrypted.isNullOrBlank()) primaryPasswordDlg.start(PrimaryPasswordDlg.Mode.OPEN)
                     else biometricAuth.startAuth(mpEncrypted)
-                } else mpRequester.start(MpRequester.Mode.OPEN, canRememberPass = false)
+                } else primaryPasswordDlg.start(PrimaryPasswordDlg.Mode.OPEN, canRememberPass = false)
             }
         }
     }
 
     private fun showError(error: String, reason: String) {
-        msgDialog.create(error, reason)
-        msgDialog.addPositiveBtn(
+        messageDlg.create(error, reason)
+        messageDlg.addPositiveBtn(
             getString(R.string.app_bt_ok),
             R.drawable.ic_accept
         ) {}
-        msgDialog.show()
+        messageDlg.show()
     }
 
     private fun showCriticalError(reason: String) {
-        msgDialog.create(getString(R.string.dlg_title_criticalError), reason)
-        msgDialog.addPositiveBtn(
+        messageDlg.create(getString(R.string.dlg_title_criticalError), reason)
+        messageDlg.addPositiveBtn(
             getString(R.string.app_bt_closeFile),
             R.drawable.ic_exit
         ) { finish() }
-        msgDialog.disableSkip()
-        msgDialog.show()
+        messageDlg.disableSkip()
+        messageDlg.show()
     }
 
     private fun loginSucceeded() {
@@ -276,7 +276,7 @@ class TableActivity : AppCompatActivity() {
         val tableId = if (mtList[id].id == -1) id else mtList[id].id
         when (resCode){
             1 -> { // show note
-                msgDialog.quickDialog(
+                messageDlg.quickDialog(
                     getString(R.string.app_com_note),
                     table.getNote(tableId),
                     { toClipboard(id, "n") },
@@ -286,7 +286,7 @@ class TableActivity : AppCompatActivity() {
                 )
             }
             2 -> { // show login
-                msgDialog.quickDialog(
+                messageDlg.quickDialog(
                     getString(R.string.app_com_username),
                     table.getUsername(tableId),
                     { toClipboard(id, "l") },
@@ -296,7 +296,7 @@ class TableActivity : AppCompatActivity() {
                 )
             }
             3 -> { // show password
-                msgDialog.quickDialog(
+                messageDlg.quickDialog(
                     getString(R.string.app_com_password),
                     table.getPassword(tableId),
                     { toClipboard(id, "p") },
@@ -513,8 +513,8 @@ class TableActivity : AppCompatActivity() {
             else -> getString(R.string.dlg_title_deleteItemFormat, note)
         }
 
-        msgDialog.create(title, getString(R.string.dlg_msg_permanentAction))
-        msgDialog.addPositiveBtn(
+        messageDlg.create(title, getString(R.string.dlg_msg_permanentAction))
+        messageDlg.addPositiveBtn(
             getString(R.string.app_bt_delete),
             R.drawable.ic_delete
         ) {
@@ -537,11 +537,11 @@ class TableActivity : AppCompatActivity() {
             afterRemoval = true
             saving()
         }
-        msgDialog.addNegativeBtn(
+        messageDlg.addNegativeBtn(
             getString(R.string.app_bt_cancel),
             R.drawable.ic_close
         ) {}
-        msgDialog.show()
+        messageDlg.show()
     }
 
     private fun initPanel() {
@@ -704,10 +704,10 @@ class TableActivity : AppCompatActivity() {
         val perms = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         contentResolver.takePersistableUriPermission(tree, perms)
 
-        val file = fileCreator.createFile(tree)
+        val file = fileCreatorDlg.createFile(tree)
 
-        if (saveAsMode) mpRequester.start(
-            MpRequester.Mode.SAVEAS,
+        if (saveAsMode) primaryPasswordDlg.start(
+            PrimaryPasswordDlg.Mode.SAVEAS,
             file
         ) else saveToOtherFileProcess(file, null)
     }
@@ -717,7 +717,7 @@ class TableActivity : AppCompatActivity() {
         mainUri = newPath
         RecentFiles.add(this, mainUri)
         this.binding.toolbar.root.title = getFileName(mainUri)
-        if (newPassword != null && mpRequester.isNeedToRemember()) {
+        if (newPassword != null && primaryPasswordDlg.isNeedToRemember()) {
             BiometricAuth(this, this, { disableLockFileSystem = false }, { }, { }).activateAuth(
                 newPassword
             )
@@ -734,25 +734,25 @@ class TableActivity : AppCompatActivity() {
         if (tagFilter.any { it } || searchMode) openSearchPanel()
 
         if (!afterRemoval) {
-            msgDialog.create(getString(R.string.dlg_title_encryptionError), getString(R.string.dlg_err_unsupportedChar))
-            msgDialog.addPositiveBtn(
+            messageDlg.create(getString(R.string.dlg_title_encryptionError), getString(R.string.dlg_err_unsupportedChar))
+            messageDlg.addPositiveBtn(
                 getString(R.string.app_bt_tryEditLastItem),
                 R.drawable.ic_edit
             ) { editItem(blockClosing = true) }
-            msgDialog.addNegativeBtn(
+            messageDlg.addNegativeBtn(
                 getString(R.string.app_bt_undoLastAction),
                 R.drawable.ic_undo
             ) { fixSaveErrEncryptionUndo() }
-            msgDialog.disableSkip()
-            msgDialog.show()
+            messageDlg.disableSkip()
+            messageDlg.show()
         } else {
-            msgDialog.create(getString(R.string.dlg_title_encryptionError), getString(R.string.dlg_err_tryAddDelete))
-            msgDialog.addPositiveBtn(
+            messageDlg.create(getString(R.string.dlg_title_encryptionError), getString(R.string.dlg_err_tryAddDelete))
+            messageDlg.addPositiveBtn(
                 getString(R.string.app_bt_undoLastAction),
                 R.drawable.ic_undo
             ) { fixSaveErrEncryptionUndo() }
-            msgDialog.disableSkip()
-            msgDialog.show()
+            messageDlg.disableSkip()
+            messageDlg.show()
         }
     }
 
@@ -769,23 +769,23 @@ class TableActivity : AppCompatActivity() {
     private fun fixSaveErrWrite() {
         disableLockFileSystem = true
 
-        msgDialog.create(
+        messageDlg.create(
             getString(R.string.dlg_title_writeError),
             getString(R.string.dlg_err_noPermissionsToWriteFile)
         )
-        msgDialog.addPositiveBtn(
+        messageDlg.addPositiveBtn(
             getString(R.string.app_bt_createNewFile),
             R.drawable.ic_new_file
         ) {
             saveAsMode = false
-            fileCreator.askName(getFileName(mainUri), false)
+            fileCreatorDlg.askName(getFileName(mainUri), false)
         }
-        msgDialog.addNegativeBtn(
+        messageDlg.addNegativeBtn(
             getString(R.string.app_bt_ignoreAndCloseFile),
             R.drawable.ic_exit
         ) { finish() }
-        msgDialog.disableSkip()
-        msgDialog.show()
+        messageDlg.disableSkip()
+        messageDlg.show()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

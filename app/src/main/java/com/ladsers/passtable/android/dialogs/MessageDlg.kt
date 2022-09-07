@@ -14,7 +14,7 @@ import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.databinding.DialogMsgBinding
 import java.util.*
 
-class MsgDialog(
+class MessageDlg(
     private val context: Context,
     private val window: Window
 ) {

@@ -19,8 +19,8 @@ import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.containers.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.databinding.ActivityEditBinding
-import com.ladsers.passtable.android.dialogs.MpRequester
-import com.ladsers.passtable.android.dialogs.MsgDialog
+import com.ladsers.passtable.android.dialogs.PrimaryPasswordDlg
+import com.ladsers.passtable.android.dialogs.MessageDlg
 import com.ladsers.passtable.lib.Verifier
 import java.util.*
 
@@ -109,7 +109,7 @@ class EditActivity : AppCompatActivity() {
 
         binding.btShowPass.setOnClickListener {
             passwordIsVisible =
-                MpRequester.showHidePassword(
+                PrimaryPasswordDlg.showHidePassword(
                     this,
                     binding.etPassword,
                     binding.btShowPass,
@@ -120,7 +120,7 @@ class EditActivity : AppCompatActivity() {
         binding.btShowConfirm.setOnClickListener {
             btConfirmClicked = true
             confirmIsVisible =
-                MpRequester.showHidePassword(
+                PrimaryPasswordDlg.showHidePassword(
                     this,
                     binding.etConfirm,
                     binding.btShowConfirm,
@@ -159,7 +159,7 @@ class EditActivity : AppCompatActivity() {
     private fun passwordsMatchCheck(){
         binding.etPassword.doAfterTextChanged { x ->
             passwordIsVisible =
-                MpRequester.widgetBehavior(
+                PrimaryPasswordDlg.widgetBehavior(
                     this,
                     x,
                     binding.etPassword,
@@ -191,7 +191,7 @@ class EditActivity : AppCompatActivity() {
 
         binding.etConfirm.doAfterTextChanged { x ->
             confirmIsVisible =
-                MpRequester.widgetBehavior(
+                PrimaryPasswordDlg.widgetBehavior(
                     this,
                     x,
                     binding.etConfirm,
@@ -334,7 +334,7 @@ class EditActivity : AppCompatActivity() {
             binding.etLogin.text.toString() != originalLogin ||
             binding.etPassword.text.toString() != originalPassword
         ) {
-            MsgDialog(this, window).quickDialog(
+            MessageDlg(this, window).quickDialog(
                 getString(R.string.dlg_title_closeWithoutSaving),
                 getString(R.string.dlg_msg_unsavedDataWillBeLost),
                 { finish() },

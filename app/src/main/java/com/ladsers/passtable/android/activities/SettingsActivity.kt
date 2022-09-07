@@ -19,20 +19,20 @@ import com.ladsers.passtable.android.containers.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.containers.RecentFiles
 import com.ladsers.passtable.android.databinding.ActivitySettingsBinding
-import com.ladsers.passtable.android.dialogs.MsgDialog
+import com.ladsers.passtable.android.dialogs.MessageDlg
 import com.ladsers.passtable.lib.licenseText
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySettingsBinding
 
     private var biometricAuthIsAvailable = false
-    private lateinit var msgDialog: MsgDialog
+    private lateinit var messageDlg: MessageDlg
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        msgDialog = MsgDialog(this, window)
+        messageDlg = MessageDlg(this, window)
 
         binding.toolbar.root.title = getString(R.string.ui_ct_settings)
         binding.toolbar.root.navigationIcon =
@@ -150,17 +150,17 @@ class SettingsActivity : AppCompatActivity() {
                     if (biometricAuthIsAvailable) getString(R.string.dlg_msg_actionWillClearRecentFilesWithBiometric)
                     else getString(R.string.dlg_msg_actionWillClearRecentFiles)
 
-                msgDialog.create(getString(R.string.dlg_title_disable), msg)
-                msgDialog.addPositiveBtn(
+                messageDlg.create(getString(R.string.dlg_title_disable), msg)
+                messageDlg.addPositiveBtn(
                     getString(R.string.app_bt_disable),
                     R.drawable.ic_accept
                 ) { changeRememberingRecentFiles(false) }
-                msgDialog.addNegativeBtn(
+                messageDlg.addNegativeBtn(
                     getString(R.string.app_bt_cancel),
                     R.drawable.ic_close
                 ) {binding.recentFiles.swRememberRecentFiles.isChecked = true }
-                msgDialog.addSkipAction {binding.recentFiles.swRememberRecentFiles.isChecked = true }
-                msgDialog.show(it)
+                messageDlg.addSkipAction {binding.recentFiles.swRememberRecentFiles.isChecked = true }
+                messageDlg.show(it)
             } else changeRememberingRecentFiles(binding.recentFiles.swRememberRecentFiles.isChecked)
         }
 
@@ -169,7 +169,7 @@ class SettingsActivity : AppCompatActivity() {
                 if (biometricAuthIsAvailable) getString(R.string.dlg_msg_clearRecentFilesWithBiometric)
                 else getString(R.string.dlg_msg_permanentAction)
 
-            msgDialog.quickDialog(getString(R.string.dlg_title_clearList), msg, {
+            messageDlg.quickDialog(getString(R.string.dlg_title_clearList), msg, {
                 RecentFiles.clear(this)
                 Toast.makeText(
                     this, getString(R.string.ui_msg_done), Toast.LENGTH_SHORT
@@ -183,7 +183,7 @@ class SettingsActivity : AppCompatActivity() {
 
 
         binding.biometricAuth.btForgetPasswords.setOnClickListener {
-            msgDialog.quickDialog(
+            messageDlg.quickDialog(
                 getString(R.string.dlg_title_disable),
                 getString(R.string.dlg_msg_needToEnterPrimaryPasswordForAny), {
                     BiometricAuth(this, this, {}, {}, {}).resetAuth()

@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.containers.RecentFiles
-import com.ladsers.passtable.android.dialogs.MsgDialog
+import com.ladsers.passtable.android.dialogs.MessageDlg
 import org.bouncycastle.util.encoders.Base64
 import java.nio.charset.StandardCharsets
 import java.security.KeyStore
@@ -220,7 +220,7 @@ class BiometricAuth(
         })
 
     private fun showActivateError(reason: String) {
-        val msgDialog = MsgDialog(context, activity.window)
+        val msgDialog = MessageDlg(context, activity.window)
         msgDialog.create(context.getString(R.string.dlg_title_operationCanceled), reason)
         msgDialog.addPositiveBtn(
             context.getString(R.string.app_bt_ok),
@@ -230,7 +230,7 @@ class BiometricAuth(
     }
 
     private fun showAuthError(reason: String) {
-        val msgDialog = MsgDialog(context, activity.window)
+        val msgDialog = MessageDlg(context, activity.window)
         msgDialog.create(context.getString(R.string.dlg_title_authenticationError), reason)
         msgDialog.addPositiveBtn(
             context.getString(R.string.app_bt_enterPassword),

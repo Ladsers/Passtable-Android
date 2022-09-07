@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="215dp"
     android:layout_height="50dp"
-    android:background="@drawable/background_panel_data"
+    android:background="@drawable/background_component_panel"
     android:elevation="2dp">
 
     <ImageView

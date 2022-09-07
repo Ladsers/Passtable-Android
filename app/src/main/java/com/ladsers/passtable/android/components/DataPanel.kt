@@ -20,7 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.activities.TableActivity
 import com.ladsers.passtable.android.databinding.PanelDataBinding
-import com.ladsers.passtable.android.dialogs.MsgDialog
+import com.ladsers.passtable.android.dialogs.MessageDlg
 
 class DataPanel(
     private val context: Context,
@@ -62,7 +62,7 @@ class DataPanel(
         this.password = password
         if (Settings.canDrawOverlays(context)) createPanel()
         else {
-            MsgDialog(activity, activity.window).quickDialog(
+            MessageDlg(activity, activity.window).quickDialog(
                 activity.getString(R.string.dlg_title_permissionRequired),
                 activity.getString(R.string.dlg_msg_grantPermissionToDisplayOver),
                 { requestPermission() },

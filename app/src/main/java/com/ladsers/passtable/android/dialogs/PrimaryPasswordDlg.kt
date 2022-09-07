@@ -30,7 +30,7 @@ import com.ladsers.passtable.android.databinding.DialogEnterdataBinding
 import com.ladsers.passtable.lib.Verifier
 
 
-class MpRequester(
+class PrimaryPasswordDlg(
     private val context: Context,
     private val contentResolver: ContentResolver,
     private val activity: Activity,

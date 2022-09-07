@@ -27,8 +27,8 @@ import com.ladsers.passtable.android.containers.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.containers.RecentFiles
 import com.ladsers.passtable.android.databinding.ActivityMainBinding
-import com.ladsers.passtable.android.dialogs.FileCreator
-import com.ladsers.passtable.android.dialogs.MsgDialog
+import com.ladsers.passtable.android.dialogs.FileCreatorDlg
+import com.ladsers.passtable.android.dialogs.MessageDlg
 import com.ladsers.passtable.lib.Updater
 
 class MainActivity : AppCompatActivity() {
@@ -41,8 +41,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recentDate: MutableList<String>
     private lateinit var recentMps: MutableList<Boolean>
     private lateinit var adapter: RecentAdapter
-    private lateinit var fileCreator: FileCreator
-    private lateinit var msgDialog: MsgDialog
+    private lateinit var fileCreatorDlg: FileCreatorDlg
+    private lateinit var messageDlg: MessageDlg
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         )
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        msgDialog = MsgDialog(this, window)
+        messageDlg = MessageDlg(this, window)
 
         binding.toolbar.root.title = getString(R.string.ui_ct_home)
         binding.toolbar.root.navigationIcon = ContextCompat.getDrawable(
@@ -66,11 +66,11 @@ class MainActivity : AppCompatActivity() {
         binding.toolbar.root.navigationContentDescription = getString(R.string.app_info_appName)
         setSupportActionBar(binding.toolbar.root)
 
-        fileCreator =
-            FileCreator(this, contentResolver, window) { openFileExplorer(true) }
+        fileCreatorDlg =
+            FileCreatorDlg(this, contentResolver, window) { openFileExplorer(true) }
 
         binding.btOpenFile.setOnClickListener { openFileExplorer(false) }
-        binding.btNewFile.setOnClickListener { v -> fileCreator.askName(btView = v) }
+        binding.btNewFile.setOnClickListener { v -> fileCreatorDlg.askName(btView = v) }
 
         binding.rvRecent.layoutManager = LinearLayoutManager(
             this,
@@ -144,21 +144,21 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.btUpdate -> {
-                msgDialog.create(
+                messageDlg.create(
                     getString(R.string.dlg_title_updateAvailable),
                     getString(R.string.dlg_msg_downloadNewVersion)
                 )
-                msgDialog.addPositiveBtn(
+                messageDlg.addPositiveBtn(
                     getString(R.string.app_bt_ok),
                     R.drawable.ic_accept
                 ) {}
-                msgDialog.addNeutralBtn(
+                messageDlg.addNeutralBtn(
                     getString(R.string.app_bt_downloadFromGithub),
                     R.drawable.ic_download
                 ) {
                     getNewVersion()
                 }
-                msgDialog.show()
+                messageDlg.show()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -205,7 +205,7 @@ class MainActivity : AppCompatActivity() {
                 Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
             contentResolver.takePersistableUriPermission(it, perms)
 
-            if (newFile) uri = fileCreator.createFile(it)
+            if (newFile) uri = fileCreatorDlg.createFile(it)
         }
 
         val intent = Intent(this, TableActivity::class.java)
@@ -229,16 +229,16 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
             2 -> { // local file is lost
-                msgDialog.create(
+                messageDlg.create(
                     getString(R.string.dlg_title_cannotBeOpened),
                     getString(R.string.dlg_err_couldNotOpenRecentFile)
                 )
-                msgDialog.addPositiveBtn(
+                messageDlg.addPositiveBtn(
                     getString(R.string.app_bt_ok),
                     R.drawable.ic_accept
                 ) { removeFromRecentList(id) }
-                msgDialog.addSkipAction { removeFromRecentList(id) }
-                msgDialog.show()
+                messageDlg.addSkipAction { removeFromRecentList(id) }
+                messageDlg.show()
             }
         }
     }
