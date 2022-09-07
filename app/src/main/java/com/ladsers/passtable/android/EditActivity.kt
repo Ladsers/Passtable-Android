@@ -217,15 +217,15 @@ class EditActivity : AppCompatActivity() {
         when (code) {
             0 -> binding.clErr.visibility = View.GONE
             1 -> {
-                binding.tvErrMsg.text = getString(R.string.ui_ct_editItemErr)
+                binding.tvErrMsg.text = getString(R.string.ui_ct_itemMustContain)
                 binding.clErr.visibility = View.VISIBLE
             }
             2 -> {
-                binding.tvErrMsg.text = getString(R.string.dlg_ct_passwordsDoNotMatch)
+                binding.tvErrMsg.text = getString(R.string.ui_ct_passwordsDoNotMatch)
                 binding.clErr.visibility = View.VISIBLE
             }
             3 -> {
-                binding.tvErrMsg.text = getString(R.string.ui_ct_editItemInvalidChars)
+                binding.tvErrMsg.text = getString(R.string.ui_ct_dataInvalidChars)
                 binding.clErr.visibility = View.VISIBLE
             }
         }

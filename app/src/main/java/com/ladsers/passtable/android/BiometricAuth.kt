@@ -38,7 +38,7 @@ class BiometricAuth(
             return
         }
         if (masterPassEncrypted.isBlank() || masterPassEncrypted == "@") {
-            showAuthError(context.getString(R.string.dlg_err_biometricTokenDamaged))
+            showAuthError(context.getString(R.string.dlg_err_biometricFailure))
             return
         }
         isActivation = false

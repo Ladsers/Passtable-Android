@@ -61,7 +61,7 @@ class DataPanel(
         else {
             MsgDialog(activity, activity.window).quickDialog(
                 activity.getString(R.string.dlg_title_permissionRequired),
-                activity.getString(R.string.dlg_msg_permissionDisplayOver),
+                activity.getString(R.string.dlg_msg_grantPermissionToDisplayOver),
                 { requestPermission() },
                 posText = activity.getString(R.string.app_bt_goToSettings),
                 posIcon = R.drawable.ic_next_arrow
@@ -156,7 +156,7 @@ class DataPanel(
         }
 
         val msg = when (key) {
-            "l" -> context.getString(R.string.ui_msg_loginCopied)
+            "l" -> context.getString(R.string.ui_msg_usernameCopied)
             "p" -> context.getString(R.string.ui_msg_passwordCopied)
             else -> context.getString(R.string.ui_msg_clipboardCleared)
         }

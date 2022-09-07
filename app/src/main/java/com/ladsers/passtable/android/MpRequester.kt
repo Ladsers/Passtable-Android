@@ -24,7 +24,6 @@ import androidx.core.widget.doBeforeTextChanged
 import com.google.android.material.button.MaterialButton
 import com.ladsers.passtable.android.databinding.DialogEnterdataBinding
 import com.ladsers.passtable.lib.Verifier
-import java.util.*
 
 
 class MpRequester(
@@ -65,7 +64,7 @@ class MpRequester(
 
         binding.tvTitle.text = context.getString(
             when (mode) {
-                Mode.OPEN -> R.string.dlg_title_openTheFile
+                Mode.OPEN -> R.string.dlg_title_openFile
                 Mode.NEW -> R.string.dlg_title_createNewFile
                 Mode.SAVEAS -> R.string.dlg_title_saveAs
             }
@@ -87,7 +86,7 @@ class MpRequester(
 
         if (mode == Mode.SAVEAS) {
             binding.btNeutral.visibility = View.VISIBLE
-            binding.btNeutral.text = context.getString(R.string.app_bt_saveWithCurrent)
+            binding.btNeutral.text = context.getString(R.string.app_bt_saveWithCurrentPassword)
             binding.btNeutral.icon = ContextCompat.getDrawable(context, R.drawable.ic_save)
         }
 

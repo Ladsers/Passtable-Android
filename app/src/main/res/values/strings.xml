@@ -5,8 +5,8 @@
         <string name="app_info_appName">Passtable</string>
         <string name="app_info_webPage">https://www.ladsers.com/passtable</string>
         <string name="app_info_repo">https://github.com/Ladsers/Passtable-Android</string>
-        <string name="app_info_keyboardShortcuts">&lt;b>Ctrl+N&lt;/b> — Add item.&lt;br>&lt;br>&lt;b>Ctrl+F&lt;/b> — Search by notes and usernames.&lt;br>&lt;br>&lt;b>Ctrl+Q&lt;/b> — Close file.</string>
-        <string name="app_info_keyboardShortcutsWindow">Ctrl+N — Add item.\nCtrl+F — Search by notes and usernames.\nCtrl+Q — Close file.\n\nSettings → Help → Keyboard shortcuts</string>
+        <string name="app_info_keyboardShortcutsHelp">&lt;b>Ctrl+N&lt;/b> — Add item.&lt;br>&lt;br>&lt;b>Ctrl+F&lt;/b> — Search by notes and usernames.&lt;br>&lt;br>&lt;b>Ctrl+Q&lt;/b> — Close file.</string>
+        <string name="app_info_keyboardShortcuts">Ctrl+N — Add item.\nCtrl+F — Search by notes and usernames.\nCtrl+Q — Close file.\n\nSettings → Help → Keyboard shortcuts</string>
         <string name="app_info_thirdPartyResources">Cryptographic algorithms&lt;br>&lt;big>&lt;b>Bouncy Castle&lt;/b>&lt;/big>&lt;br>Legion of the Bouncy Castle Inc.&lt;br>MIT License&lt;br>https://bouncycastle.org&lt;br>&lt;br>
         Icons&lt;br>&lt;big>&lt;b>Material Design icons&lt;/b>&lt;/big>&lt;br>Google LLC&lt;br>Apache License 2.0&lt;br>https://fonts.google.com/icons&lt;br>&lt;br>
         Font&lt;br>&lt;big>&lt;b>Manrope&lt;/b>&lt;/big>&lt;br>Mikhail Sharanda&lt;br>SIL Open Font License&lt;br>https://manropefont.com&lt;br>&lt;br>
@@ -18,7 +18,7 @@
 
         <!-- com (common) -->
         <string name="app_com_note">Note</string>
-        <string name="app_com_login">Username</string>
+        <string name="app_com_username">Username</string>
         <string name="app_com_password">Password</string>
         <string name="app_com_tag">Tag</string>
         <string name="app_com_fileExtension" translatable="false">.passtable</string>
@@ -39,25 +39,25 @@
         <string name="app_bt_settings">Settings</string>
         <string name="app_bt_save">Save</string>
         <string name="app_bt_removeFromList">Remove from list</string>
-        <string name="app_bt_biometricDisable">Disable biometric authentication</string>
+        <string name="app_bt_disableBiometricForOne">Disable biometric authentication</string>
         <string name="app_bt_selectFolder">Select folder</string>
         <string name="app_bt_enter">Enter</string>
-        <string name="app_bt_saveWithCurrent">Save with current password</string>
+        <string name="app_bt_saveWithCurrentPassword">Save with current password</string>
         <string name="app_bt_close">Close</string>
         <string name="app_bt_showNote">Show note</string>
-        <string name="app_bt_showLogin">Show username</string>
+        <string name="app_bt_showUsername">Show username</string>
         <string name="app_bt_showPassword">Show password</string>
         <string name="app_bt_copy">Copy</string>
         <string name="app_bt_copyNote">Copy note</string>
-        <string name="app_bt_copyLogin">Copy username</string>
+        <string name="app_bt_copyUsername">Copy username</string>
         <string name="app_bt_copyPassword">Copy password</string>
-        <string name="app_bt_remove">Delete</string>
+        <string name="app_bt_delete">Delete</string>
         <string name="app_bt_closeFile">Close file</string>
-        <string name="app_bt_closeFileDataLoss">Ignore and close file</string>
+        <string name="app_bt_ignoreAndCloseFile">Ignore and close file</string>
         <string name="app_bt_tryEditLastItem">Try to edit last item</string>
         <string name="app_bt_createNewFile">Create new file</string>
         <string name="app_bt_enterPassword">Enter password</string>
-        <string name="app_bt_disableBiometricAuth">Disable biometric authentication for all files</string>
+        <string name="app_bt_disableBiometricForAll">Disable biometric authentication for all files</string>
         <string name="app_bt_updateAvailable">Update available</string>
         <string name="app_bt_webPage">Web page</string>
         <string name="app_bt_githubRepo">GitHub repo</string>
@@ -78,27 +78,28 @@
 
         <!-- ct (content) -->
         <string name="ui_ct_home">Home</string>
-        <string name="ui_ct_editItemErr">Item must contain note or username with password</string>
-        <string name="ui_ct_editItemInvalidChars">Some data contains invalid characters</string>
+        <string name="ui_ct_itemMustContain">Item must contain note or username with password</string>
+        <string name="ui_ct_dataInvalidChars">Some data contains invalid characters</string>
+        <string name="ui_ct_passwordsDoNotMatch">Passwords don\'t match</string>
         <string name="ui_ct_editItem">Edit item</string>
         <string name="ui_ct_addItem">Add item</string>
         <string name="ui_ct_settings">Settings</string>
-        <string name="ui_ct_searchHint">Search by notes and usernames</string>
+        <string name="ui_ct_searchByNotesUsernames">Search by notes and usernames</string>
         <string name="ui_ct_biometricCheckboxByDefault">The checkbox \"Biometric authentication\" is checked by default in the primary password entry window</string>
         <string name="ui_ct_rememberRecentFiles">Remember recently opened files</string>
         <string name="ui_ct_lockFile">Lock the file</string>
         <string name="ui_ct_lockTimePeriod">When the specified time period after minimizing the app expires</string>
-        <string name="ui_ct_lockMinAndLockPhone">When minimizing the app or locking the phone</string>
-        <string name="ui_ct_lockAllowWhenEditing">Lock when editing or creating items</string>
-        <string name="ui_ct_lockDoNotLock">Do not lock</string>
-        <string name="ui_ct_timePeriodForLocking">Time period in seconds</string>
+        <string name="ui_ct_lockMinOrLockPhone">When minimizing the app or locking the phone</string>
+        <string name="ui_ct_lockWhenEditing">Lock when editing or creating items</string>
+        <string name="ui_ct_doNotLock">Do not lock</string>
+        <string name="ui_ct_timePeriodInSecs">Time period in seconds</string>
         <string name="ui_ct_leaveBlankToSkip">Leave blank to skip verification</string>
         <string name="ui_ct_fileNoItems">File contains no items</string>
-        <string name="ui_ct_fileNoItemsHint">Click on \"+\" in the top right corner to add a new item</string>
+        <string name="ui_ct_plusToAddNew">Click on \"+\" in the top right corner to add a new item</string>
         <string name="ui_ct_nothingFound">Nothing found</string>
         <string name="ui_ct_noRecentlyOpenedFiles">No recently opened files</string>
-        <string name="ui_ct_noRecentlyOpenedFilesHint">Open an existing file or create a new one</string>
-        <string name="ui_ct_biometricAuth">Biometric authentication</string>
+        <string name="ui_ct_openOrCreateFile">Open an existing file or create a new one</string>
+        <string name="ui_ct_biometricAuthentication">Biometric authentication</string>
         <string name="ui_ct_recentFiles">Recent files</string>
         <string name="ui_ct_theme">Theme</string>
         <string name="ui_ct_systemDefault">System default</string>
@@ -115,7 +116,7 @@
 
         <!-- msg (message) -->
         <string name="ui_msg_noteCopied">Note copied to clipboard</string>
-        <string name="ui_msg_loginCopied">Username copied to clipboard</string>
+        <string name="ui_msg_usernameCopied">Username copied to clipboard</string>
         <string name="ui_msg_passwordCopied">Password copied to clipboard</string>
         <string name="ui_msg_clipboardCleared">Clipboard cleared</string>
         <string name="ui_msg_saved">Saved</string>
@@ -125,7 +126,7 @@
         <string name="ui_msg_biometricEnabled">Biometric authentication is enabled for this file</string>
         <string name="ui_msg_recentFilesUpdated">The list of recent files has been updated</string>
         <string name="ui_msg_done">Done</string>
-        <string name="ui_msg_closeViaEscape">Press Ctrl+Q to close file</string>
+        <string name="ui_msg_ctrlQToClose">Press Ctrl+Q to close file</string>
         <string name="ui_msg_permissionNotGranted">Permission not granted</string>
         <!-- end! -->
 
@@ -138,8 +139,8 @@
         <string name="dlg_title_biometricAuthentication">Biometric authentication</string>
         <string name="dlg_title_biometricEnable">Enable biometric authentication</string>
         <string name="dlg_title_closeWithoutSaving">Close without saving?</string>
-        <string name="dlg_title_removeItem">Delete item?</string>
-        <string name="dlg_title_removeItemWithNote">Delete \"%1$s\"?</string>
+        <string name="dlg_title_deleteItem">Delete item?</string>
+        <string name="dlg_title_deleteItemFormat">Delete \"%1$s\"?</string>
         <string name="dlg_title_criticalError">Critical error</string>
         <string name="dlg_title_encryptionError">Encryption error</string>
         <string name="dlg_title_writeError">Write error</string>
@@ -148,7 +149,7 @@
         <string name="dlg_title_authenticationError">Authentication error</string>
         <string name="dlg_title_createNewFile">Create new file</string>
         <string name="dlg_title_saveAs">Save as</string>
-        <string name="dlg_title_openTheFile">Open file</string>
+        <string name="dlg_title_openFile">Open file</string>
         <string name="dlg_title_updateAvailable">Update available</string>
         <string name="dlg_title_permissionRequired">Permission required</string>
         <string name="dlg_title_disable">Disable?</string>
@@ -158,46 +159,45 @@
         <!-- ct (content) -->
         <string name="dlg_ct_biometricAuthentication">Biometric authentication</string>
         <string name="dlg_ct_fileName">File name</string>
-        <string name="dlg_ct_password">Primary password</string>
+        <string name="dlg_ct_primaryPassword">Primary password</string>
         <string name="dlg_ct_incorrectPassword">Incorrect password</string>
         <string name="dlg_ct_passwordsDoNotMatch">Passwords don\'t match</string>
-        <string name="dlg_ct_fileNameBlank">File name cannot be empty</string>
+        <string name="dlg_ct_fileNameEmpty">File name cannot be empty</string>
         <string name="dlg_ct_fileNameInvalidChars">File name contains invalid characters: %1$s</string>
-        <string name="dlg_ct_fileNameWhitespaceChar">File name cannot start with a space character</string>
-        <string name="dlg_ct_fileNameInvalidForWindows">File name is invalid word for Windows.\nInvalid words: %1$s</string>
+        <string name="dlg_ct_fileNameSpaceChar">File name cannot start with a space character</string>
+        <string name="dlg_ct_fileNameInvalidWord">File name is invalid word for Windows.\nInvalid words: %1$s</string>
         <string name="dlg_ct_primaryEmpty">Primary password cannot be empty</string>
         <string name="dlg_ct_primaryInvalidChars">Primary password contains invalid characters.\nAllowed characters: %1$s</string>
         <string name="dlg_ct_primarySlashChar">Primary password cannot start with a forward slash</string>
         <!-- end! -->
 
         <!-- err (error) -->
-        <string name="dlg_err_uriIsNull">The file path was not received. If you are using a third party file manager, try using the system one.</string>
-        <string name="dlg_err_invalidFileVer">This file was created in a later version of the app and cannot be opened. Update the app.</string>
-        <string name="dlg_err_damagedFile">The file is damaged.</string>
-        <string name="dlg_err_unsupportedFile">This file type is not supported.</string>
+        <string name="dlg_err_filePathNotReceived">The file path was not received. If you are using a third party file manager, try using the system one.</string>
+        <string name="dlg_err_needAppUpdate">This file was created in a later version of the app and cannot be opened. Update the app.</string>
+        <string name="dlg_err_fileDamaged">The file is damaged.</string>
+        <string name="dlg_err_fileTypeUnsupported">This file type is not supported.</string>
         <string name="dlg_err_unableToOpenFile">The file at the specified path does not exist or the app does not have sufficient permissions to open it.</string>
-        <string name="dlg_err_noDataReceived">The application could not read the updated data. Please try again.</string>
-        <string name="dlg_err_someDataNull">The application could not read the updated data. Please try again.</string>
-        <string name="dlg_err_saveEncryptionProblem">This is probably caused by using an unsupported character.</string>
-        <string name="dlg_err_saveEncryptionDelete">Try to add another item and then delete both.</string>
-        <string name="dlg_err_saveWriting">The application does not have sufficient permissions to write data to this file. You need to save the data to a new file to avoid losing data.</string>
-        <string name="dlg_err_recentFileDoesNotExist">The application could not open the file. If the file still exists, open it again.</string>
+        <string name="dlg_err_couldNotReadData">The application could not read the updated data. Please try again.</string>
+        <string name="dlg_err_unsupportedChar">This is probably caused by using an unsupported character.</string>
+        <string name="dlg_err_tryAddDelete">Try to add another item and then delete both.</string>
+        <string name="dlg_err_noPermissionsToWriteFile">The application does not have sufficient permissions to write data to this file. You need to save the data to a new file to avoid losing data.</string>
+        <string name="dlg_err_couldNotOpenRecentFile">The application could not open the file. If the file still exists, open it again.</string>
         <string name="dlg_err_fingerprintSensorNotAvailable">The fingerprint sensor is not available.</string>
-        <string name="dlg_err_biometricTokenDamaged">Biometric authentication failure. Please re-enable biometric authentication for this file.</string>
+        <string name="dlg_err_biometricFailure">Biometric authentication failure. Please re-enable biometric authentication for this file.</string>
         <string name="dlg_err_biometricEnableFail">It is not possible to enable biometric authentication at the moment. Try again later.</string>
         <string name="dlg_err_biometricNewFingerprints">New fingerprints were enrolled, which resulted in disabling biometric authentication for all files. Please re-enable biometric authentication for required files.</string>
         <string name="dlg_err_biometricNewFingerprintsEnableFail">New fingerprints were enrolled, which resulted in disabling biometric authentication for all files. Please re-enable biometric authentication for this and other required files.</string>
         <!-- end! -->
 
         <!-- msg (message) -->
-        <string name="dlg_msg_permanentRemoval">This is permanent and cannot be undone</string>
-        <string name="dlg_msg_recentFileClearWithBiometric">This is permanent and cannot be undone. Biometric authentication will be disabled for all files.</string>
-        <string name="dlg_msg_disableRememberingRecentFiles">This action will permanently clear the list of recent files</string>
-        <string name="dlg_msg_disableRememberingRecentFilesWithBiometric">This action will permanently clear the list of recent files. Biometric authentication will be disabled for all files.</string>
-        <string name="dlg_msg_biometricInfoReEnable">To open any file, you will need to enter its primary password</string>
+        <string name="dlg_msg_permanentAction">This is permanent and cannot be undone</string>
+        <string name="dlg_msg_clearRecentFilesWithBiometric">This is permanent and cannot be undone. Biometric authentication will be disabled for all files.</string>
+        <string name="dlg_msg_actionWillClearRecentFiles">This action will permanently clear the list of recent files</string>
+        <string name="dlg_msg_actionWillClearRecentFilesWithBiometric">This action will permanently clear the list of recent files. Biometric authentication will be disabled for all files.</string>
+        <string name="dlg_msg_needToEnterPrimaryPasswordForAny">To open any file, you will need to enter its primary password</string>
         <string name="dlg_msg_unsavedDataWillBeLost">All unsaved data will be lost</string>
         <string name="dlg_msg_downloadNewVersion">You can download the new version from the application store or the GitHub repository</string>
-        <string name="dlg_msg_permissionDisplayOver">Need to grant permission in settings to display the panel over other apps</string>
+        <string name="dlg_msg_grantPermissionToDisplayOver">Need to grant permission in settings to display the panel over other apps</string>
         <!-- end! -->
 
     <!-- END -->

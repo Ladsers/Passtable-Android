@@ -140,8 +140,8 @@ class SettingsActivity : AppCompatActivity() {
        binding.recentFiles.swRememberRecentFiles.setOnClickListener {
             if (RecentFiles.isNotEmpty(this)) {
                 val msg =
-                    if (biometricAuthIsAvailable) getString(R.string.dlg_msg_disableRememberingRecentFilesWithBiometric)
-                    else getString(R.string.dlg_msg_disableRememberingRecentFiles)
+                    if (biometricAuthIsAvailable) getString(R.string.dlg_msg_actionWillClearRecentFilesWithBiometric)
+                    else getString(R.string.dlg_msg_actionWillClearRecentFiles)
 
                 msgDialog.create(getString(R.string.dlg_title_disable), msg)
                 msgDialog.addPositiveBtn(
@@ -159,8 +159,8 @@ class SettingsActivity : AppCompatActivity() {
 
        binding.recentFiles.btClearRecentFiles.setOnClickListener {
             val msg =
-                if (biometricAuthIsAvailable) getString(R.string.dlg_msg_recentFileClearWithBiometric)
-                else getString(R.string.dlg_msg_permanentRemoval)
+                if (biometricAuthIsAvailable) getString(R.string.dlg_msg_clearRecentFilesWithBiometric)
+                else getString(R.string.dlg_msg_permanentAction)
 
             msgDialog.quickDialog(getString(R.string.dlg_title_clearList), msg, {
                 RecentFiles.clear(this)
@@ -178,7 +178,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.biometricAuth.btForgetPasswords.setOnClickListener {
             msgDialog.quickDialog(
                 getString(R.string.dlg_title_disable),
-                getString(R.string.dlg_msg_biometricInfoReEnable), {
+                getString(R.string.dlg_msg_needToEnterPrimaryPasswordForAny), {
                     BiometricAuth(this, this, {}, {}, {}).resetAuth()
                     Toast.makeText(
                         this, getString(R.string.ui_msg_done), Toast.LENGTH_SHORT
@@ -263,7 +263,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.help.btShortcuts.setOnClickListener {
             val intent = Intent(this, InfoActivity::class.java)
             intent.putExtra("title", getString(R.string.app_bt_keyboardShortcuts))
-            intent.putExtra("info", getString(R.string.app_info_keyboardShortcuts))
+            intent.putExtra("info", getString(R.string.app_info_keyboardShortcutsHelp))
             startActivity(intent)
         }
     }

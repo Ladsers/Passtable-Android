@@ -222,7 +222,7 @@ class MainActivity : AppCompatActivity() {
             2 -> { // local file is lost
                 msgDialog.create(
                     getString(R.string.dlg_title_cannotBeOpened),
-                    getString(R.string.dlg_err_recentFileDoesNotExist)
+                    getString(R.string.dlg_err_couldNotOpenRecentFile)
                 )
                 msgDialog.addPositiveBtn(
                     getString(R.string.app_bt_ok),

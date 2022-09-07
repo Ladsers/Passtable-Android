@@ -99,7 +99,7 @@ class TableActivity : AppCompatActivity() {
             }
         }
         if (uri == null) {
-            showCriticalError(getString(R.string.dlg_err_uriIsNull))
+            showCriticalError(getString(R.string.dlg_err_filePathNotReceived))
             return
         }
 
@@ -132,7 +132,7 @@ class TableActivity : AppCompatActivity() {
         if (tagFilter.any { it } || searchMode) openSearchPanel() else {
             if (!escPressed) super.onBackPressed()
             else {
-                Toast.makeText(this, getString(R.string.ui_msg_closeViaEscape), Toast.LENGTH_SHORT)
+                Toast.makeText(this, getString(R.string.ui_msg_ctrlQToClose), Toast.LENGTH_SHORT)
                     .show()
             }
         }
@@ -184,17 +184,17 @@ class TableActivity : AppCompatActivity() {
         val fileExtension = getString(R.string.app_com_fileExtension)
         getFileNameWithExt(mainUri)?.let { it ->
             if (!it.endsWith(fileExtension)) {
-                showCriticalError(getString(R.string.dlg_err_unsupportedFile))
+                showCriticalError(getString(R.string.dlg_err_fileTypeUnsupported))
                 return
             }
         }
 
         table = DataTableAndroid(mainUri.toString(), "/test", cryptData, contentResolver)
         when (table.fill()) {
-            2 -> showCriticalError(getString(R.string.dlg_err_invalidFileVer))
+            2 -> showCriticalError(getString(R.string.dlg_err_needAppUpdate))
             -2 -> {
                 RecentFiles.remove(this, mainUri)
-                showCriticalError(getString(R.string.dlg_err_damagedFile))
+                showCriticalError(getString(R.string.dlg_err_fileDamaged))
             }
             else -> {
                 if (!quickView && ParamStorage.getBool(this, Param.REMEMBER_RECENT_FILES)) {
@@ -269,7 +269,7 @@ class TableActivity : AppCompatActivity() {
             }
             2 -> { // show login
                 msgDialog.quickDialog(
-                    getString(R.string.app_com_login),
+                    getString(R.string.app_com_username),
                     table.getUsername(tableId),
                     { toClipboard(id, "l") },
                     posText = getString(R.string.app_bt_copy),
@@ -323,7 +323,7 @@ class TableActivity : AppCompatActivity() {
 
         val msg = when (key) {
             "n" -> getString(R.string.ui_msg_noteCopied)
-            "l" -> getString(R.string.ui_msg_loginCopied)
+            "l" -> getString(R.string.ui_msg_usernameCopied)
             "p" -> getString(R.string.ui_msg_passwordCopied)
             else -> return
         }
@@ -334,7 +334,7 @@ class TableActivity : AppCompatActivity() {
         return if (data == null) {
             showError(
                 getString(R.string.dlg_title_changesNotSaved),
-                getString(R.string.dlg_err_noDataReceived)
+                getString(R.string.dlg_err_couldNotReadData)
             )
             null
         } else {
@@ -347,7 +347,7 @@ class TableActivity : AppCompatActivity() {
             else {
                 showError(
                     getString(R.string.dlg_title_changesNotSaved),
-                    getString(R.string.dlg_err_someDataNull)
+                    getString(R.string.dlg_err_couldNotReadData)
                 )
                 null
             }
@@ -490,14 +490,14 @@ class TableActivity : AppCompatActivity() {
     private fun removeItem(id: Int, note: String) {
         val maxChars = 12
         val title = when (true) {
-            note.length > maxChars -> getString(R.string.dlg_title_removeItemWithNote, note.take(maxChars - 1) + "…")
-            note.isBlank() -> getString(R.string.dlg_title_removeItem)
-            else -> getString(R.string.dlg_title_removeItemWithNote, note)
+            note.length > maxChars -> getString(R.string.dlg_title_deleteItemFormat, note.take(maxChars - 1) + "…")
+            note.isBlank() -> getString(R.string.dlg_title_deleteItem)
+            else -> getString(R.string.dlg_title_deleteItemFormat, note)
         }
 
-        msgDialog.create(title, getString(R.string.dlg_msg_permanentRemoval))
+        msgDialog.create(title, getString(R.string.dlg_msg_permanentAction))
         msgDialog.addPositiveBtn(
-            getString(R.string.app_bt_remove),
+            getString(R.string.app_bt_delete),
             R.drawable.ic_delete
         ) {
             val tableId = if (mtList[id].id == -1) id else mtList[id].id
@@ -677,7 +677,7 @@ class TableActivity : AppCompatActivity() {
         }
 
         if (result.data?.data == null) {
-            Toast.makeText(this, getString(R.string.dlg_err_uriIsNull), Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.dlg_err_filePathNotReceived), Toast.LENGTH_LONG).show()
             if (!saveAsMode) saving() // return err message again.
             return@registerForActivityResult
         }
@@ -716,7 +716,7 @@ class TableActivity : AppCompatActivity() {
         if (tagFilter.any { it } || searchMode) openSearchPanel()
 
         if (!afterRemoval) {
-            msgDialog.create(getString(R.string.dlg_title_encryptionError), getString(R.string.dlg_err_saveEncryptionProblem))
+            msgDialog.create(getString(R.string.dlg_title_encryptionError), getString(R.string.dlg_err_unsupportedChar))
             msgDialog.addPositiveBtn(
                 getString(R.string.app_bt_tryEditLastItem),
                 R.drawable.ic_edit
@@ -728,7 +728,7 @@ class TableActivity : AppCompatActivity() {
             msgDialog.disableSkip()
             msgDialog.show()
         } else {
-            msgDialog.create(getString(R.string.dlg_title_encryptionError), getString(R.string.dlg_err_saveEncryptionDelete))
+            msgDialog.create(getString(R.string.dlg_title_encryptionError), getString(R.string.dlg_err_tryAddDelete))
             msgDialog.addPositiveBtn(
                 getString(R.string.app_bt_undoLastAction),
                 R.drawable.ic_undo
@@ -753,7 +753,7 @@ class TableActivity : AppCompatActivity() {
 
         msgDialog.create(
             getString(R.string.dlg_title_writeError),
-            getString(R.string.dlg_err_saveWriting)
+            getString(R.string.dlg_err_noPermissionsToWriteFile)
         )
         msgDialog.addPositiveBtn(
             getString(R.string.app_bt_createNewFile),
@@ -763,7 +763,7 @@ class TableActivity : AppCompatActivity() {
             fileCreator.askName(getFileName(mainUri), false)
         }
         msgDialog.addNegativeBtn(
-            getString(R.string.app_bt_closeFileDataLoss),
+            getString(R.string.app_bt_ignoreAndCloseFile),
             R.drawable.ic_exit
         ) { finish() }
         msgDialog.disableSkip()
@@ -872,7 +872,7 @@ class TableActivity : AppCompatActivity() {
         if (ParamStorage.getBool(this, param) &&
             resources.configuration.keyboard == Configuration.KEYBOARD_QWERTY
         ) {
-            val info = getString(R.string.app_info_keyboardShortcutsWindow)
+            val info = getString(R.string.app_info_keyboardShortcuts)
             SnackbarManager.showInitInfo(this, binding.root, param, info)
         }
     }

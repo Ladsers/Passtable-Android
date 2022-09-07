@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="26dp"
         android:fontFamily="@font/manrope_bold"
-        android:text="@string/ui_ct_biometricAuth"
+        android:text="@string/ui_ct_biometricAuthentication"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -62,7 +62,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="@string/app_bt_disableBiometricAuth"
+            android:text="@string/app_bt_disableBiometricForAll"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

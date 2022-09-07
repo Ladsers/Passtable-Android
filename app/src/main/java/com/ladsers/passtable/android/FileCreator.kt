@@ -71,10 +71,10 @@ class FileCreator(
                 binding.btPositive.isEnabled = res == 0
                 binding.clErr.visibility = if (res == 0) View.GONE else View.VISIBLE
                 val errMsg = when (res) {
-                    1 -> context.getString(R.string.dlg_ct_fileNameBlank)
+                    1 -> context.getString(R.string.dlg_ct_fileNameEmpty)
                     2 -> context.getString(R.string.dlg_ct_fileNameInvalidChars, Verifier.fileNameInvalidChars)
-                    3 -> context.getString(R.string.dlg_ct_fileNameWhitespaceChar)
-                    4 -> context.getString(R.string.dlg_ct_fileNameInvalidForWindows, Verifier.fileNameInvalidWinWords)
+                    3 -> context.getString(R.string.dlg_ct_fileNameSpaceChar)
+                    4 -> context.getString(R.string.dlg_ct_fileNameInvalidWord, Verifier.fileNameInvalidWinWords)
                     else -> ""
                 }
                 binding.tvErrMsg.text = errMsg

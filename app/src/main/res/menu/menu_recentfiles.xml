@@ -6,7 +6,7 @@
     <item
         android:id="@+id/btForgetPassword"
         android:icon="@drawable/ic_lock"
-        android:title="@string/app_bt_biometricDisable" />
+        android:title="@string/app_bt_disableBiometricForOne" />
 
     <item
         android:id="@+id/btRemoveFromList"

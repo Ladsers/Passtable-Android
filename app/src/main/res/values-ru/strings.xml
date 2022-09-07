@@ -5,8 +5,8 @@
         <string name="app_info_appName">Passtable</string>
         <string name="app_info_webPage">https://www.ladsers.com/passtable</string>
         <string name="app_info_repo">https://github.com/Ladsers/Passtable-Android</string>
-        <string name="app_info_keyboardShortcuts">&lt;b>Ctrl+N&lt;/b> — Добавить элемент.&lt;br>&lt;br>&lt;b>Ctrl+F&lt;/b> — Поиск по заметкам и логинам.&lt;br>&lt;br>&lt;b>Ctrl+Q&lt;/b> — Закрыть файл.</string>
-        <string name="app_info_keyboardShortcutsWindow">Ctrl+N — Добавить элемент.\nCtrl+F — Поиск по заметкам и логинам.\nCtrl+Q — Закрыть файл.\n\nНастройки → Помощь → Горячие клавиши</string>
+        <string name="app_info_keyboardShortcutsHelp">&lt;b>Ctrl+N&lt;/b> — Добавить элемент.&lt;br>&lt;br>&lt;b>Ctrl+F&lt;/b> — Поиск по заметкам и логинам.&lt;br>&lt;br>&lt;b>Ctrl+Q&lt;/b> — Закрыть файл.</string>
+        <string name="app_info_keyboardShortcuts">Ctrl+N — Добавить элемент.\nCtrl+F — Поиск по заметкам и логинам.\nCtrl+Q — Закрыть файл.\n\nНастройки → Помощь → Горячие клавиши</string>
         <string name="app_info_thirdPartyResources">Криптографические алгоритмы&lt;br>&lt;big>&lt;b>Bouncy Castle&lt;/b>&lt;/big>&lt;br>Legion of the Bouncy Castle Inc.&lt;br>MIT License&lt;br>https://bouncycastle.org&lt;br>&lt;br>
             Иконки&lt;br>&lt;big>&lt;b>Material Design icons&lt;/b>&lt;/big>&lt;br>Google LLC&lt;br>Apache License 2.0&lt;br>https://fonts.google.com/icons&lt;br>&lt;br>
             Шрифт&lt;br>&lt;big>&lt;b>Manrope&lt;/b>&lt;/big>&lt;br>Mikhail Sharanda&lt;br>SIL Open Font License&lt;br>https://manropefont.com&lt;br>&lt;br>
@@ -18,7 +18,7 @@
 
         <!-- com (common) -->
         <string name="app_com_note">Заметка</string>
-        <string name="app_com_login">Логин</string>
+        <string name="app_com_username">Логин</string>
         <string name="app_com_password">Пароль</string>
         <string name="app_com_tag">Метка</string>
         <string name="app_com_fileLabel">Файл Passtable</string>
@@ -38,25 +38,25 @@
         <string name="app_bt_settings">Настройки</string>
         <string name="app_bt_save">Сохранить</string>
         <string name="app_bt_removeFromList">Убрать из списка</string>
-        <string name="app_bt_biometricDisable">Откл. биометр. аутентификацию</string>
+        <string name="app_bt_disableBiometricForOne">Откл. биометр. аутентификацию</string>
         <string name="app_bt_selectFolder">Выбрать папку</string>
         <string name="app_bt_enter">Ввод</string>
-        <string name="app_bt_saveWithCurrent">Сохр. с текущим паролем</string>
+        <string name="app_bt_saveWithCurrentPassword">Сохр. с текущим паролем</string>
         <string name="app_bt_close">Закрыть</string>
         <string name="app_bt_showNote">Показать заметку</string>
-        <string name="app_bt_showLogin">Показать логин</string>
+        <string name="app_bt_showUsername">Показать логин</string>
         <string name="app_bt_showPassword">Показать пароль</string>
         <string name="app_bt_copy">Копировать</string>
         <string name="app_bt_copyNote">Копировать заметку</string>
-        <string name="app_bt_copyLogin">Копировать логин</string>
+        <string name="app_bt_copyUsername">Копировать логин</string>
         <string name="app_bt_copyPassword">Копировать пароль</string>
-        <string name="app_bt_remove">Удалить</string>
+        <string name="app_bt_delete">Удалить</string>
         <string name="app_bt_closeFile">Закрыть файл</string>
-        <string name="app_bt_closeFileDataLoss">Игнорировать и закрыть файл</string>
+        <string name="app_bt_ignoreAndCloseFile">Игнорировать и закрыть файл</string>
         <string name="app_bt_tryEditLastItem">Редакт. послед. элемент</string>
         <string name="app_bt_createNewFile">Создать новый файл</string>
         <string name="app_bt_enterPassword">Ввести пароль</string>
-        <string name="app_bt_disableBiometricAuth">Отключить биометрическую аутентификацию для всех файлов</string>
+        <string name="app_bt_disableBiometricForAll">Отключить биометрическую аутентификацию для всех файлов</string>
         <string name="app_bt_updateAvailable">Доступно обновление</string>
         <string name="app_bt_webPage">Веб-страница</string>
         <string name="app_bt_githubRepo">Репозиторий на GitHub</string>
@@ -77,27 +77,28 @@
 
         <!-- ct (content) -->
         <string name="ui_ct_home">Главная</string>
-        <string name="ui_ct_editItemErr">Элемент должен содержать заметку или логин с паролем</string>
-        <string name="ui_ct_editItemInvalidChars">Некоторые данные содержат недопустимые символы</string>
+        <string name="ui_ct_itemMustContain">Элемент должен содержать заметку или логин с паролем</string>
+        <string name="ui_ct_dataInvalidChars">Некоторые данные содержат недопустимые символы</string>
+        <string name="ui_ct_passwordsDoNotMatch">Пароли не совпадают</string>
         <string name="ui_ct_editItem">Редактировать элемент</string>
         <string name="ui_ct_addItem">Добавить элемент</string>
         <string name="ui_ct_settings">Настройки</string>
-        <string name="ui_ct_searchHint">Поиск по заметкам и логинам</string>
+        <string name="ui_ct_searchByNotesUsernames">Поиск по заметкам и логинам</string>
         <string name="ui_ct_biometricCheckboxByDefault">Флажок \"Биометрическая аутентификация\" отмечен по умолчанию в окне ввода основного пароля</string>
         <string name="ui_ct_rememberRecentFiles">Запоминать недавно открытые файлы</string>
         <string name="ui_ct_lockFile">Заблокировать файл</string>
         <string name="ui_ct_lockTimePeriod">По истечении указанного периода времени после сворачивания приложения</string>
-        <string name="ui_ct_lockMinAndLockPhone">При сворачивании приложения или блокировке телефона</string>
-        <string name="ui_ct_lockAllowWhenEditing">Блокировать во время редактирования или создания элементов</string>
-        <string name="ui_ct_lockDoNotLock">Не блокировать</string>
-        <string name="ui_ct_timePeriodForLocking">Период времени в секундах</string>
+        <string name="ui_ct_lockMinOrLockPhone">При сворачивании приложения или блокировке телефона</string>
+        <string name="ui_ct_lockWhenEditing">Блокировать во время редактирования или создания элементов</string>
+        <string name="ui_ct_doNotLock">Не блокировать</string>
+        <string name="ui_ct_timePeriodInSecs">Период времени в секундах</string>
         <string name="ui_ct_leaveBlankToSkip">Оставьте пустым, чтобы пропустить проверку</string>
         <string name="ui_ct_fileNoItems">Файл не содержит элементов</string>
-        <string name="ui_ct_fileNoItemsHint">Нажмите на \"+\" в правом верхнем углу для добавления нового элемента</string>
+        <string name="ui_ct_plusToAddNew">Нажмите на \"+\" в правом верхнем углу для добавления нового элемента</string>
         <string name="ui_ct_nothingFound">Ничего не найдено</string>
         <string name="ui_ct_noRecentlyOpenedFiles">Нет недавно открытых файлов</string>
-        <string name="ui_ct_noRecentlyOpenedFilesHint">Откройте существующий файл или создайте новый</string>
-        <string name="ui_ct_biometricAuth">Биометрическая аутентификация</string>
+        <string name="ui_ct_openOrCreateFile">Откройте существующий файл или создайте новый</string>
+        <string name="ui_ct_biometricAuthentication">Биометрическая аутентификация</string>
         <string name="ui_ct_recentFiles">Недавние файлы</string>
         <string name="ui_ct_theme">Тема</string>
         <string name="ui_ct_systemDefault">Как в системе</string>
@@ -114,7 +115,7 @@
 
         <!-- msg (message) -->
         <string name="ui_msg_noteCopied">Заметка скопирована в буфер обмена</string>
-        <string name="ui_msg_loginCopied">Логин скопирован в буфер обмена</string>
+        <string name="ui_msg_usernameCopied">Логин скопирован в буфер обмена</string>
         <string name="ui_msg_passwordCopied">Пароль скопирован в буфер обмена</string>
         <string name="ui_msg_clipboardCleared">Буфер обмена очищен</string>
         <string name="ui_msg_saved">Сохранено</string>
@@ -124,7 +125,7 @@
         <string name="ui_msg_biometricEnabled">Для этого файла включена биометрическая аутентификация</string>
         <string name="ui_msg_recentFilesUpdated">Список последних файлов обновлён</string>
         <string name="ui_msg_done">Выполнено</string>
-        <string name="ui_msg_closeViaEscape">Нажмите Ctrl+Q, чтобы закрыть файл</string>
+        <string name="ui_msg_ctrlQToClose">Нажмите Ctrl+Q, чтобы закрыть файл</string>
         <string name="ui_msg_permissionNotGranted">Разрешение не предоставлено</string>
         <!-- end! -->
 
@@ -137,8 +138,8 @@
         <string name="dlg_title_biometricAuthentication">Биометрическая аутентификация</string>
         <string name="dlg_title_biometricEnable">Включить биометрическую аутентификацию</string>
         <string name="dlg_title_closeWithoutSaving">Закрыть без сохранения?</string>
-        <string name="dlg_title_removeItem">Удалить элемент?</string>
-        <string name="dlg_title_removeItemWithNote">Удалить \"%1$s\"?</string>
+        <string name="dlg_title_deleteItem">Удалить элемент?</string>
+        <string name="dlg_title_deleteItemFormat">Удалить \"%1$s\"?</string>
         <string name="dlg_title_criticalError">Критическая ошибка</string>
         <string name="dlg_title_encryptionError">Ошибка шифрования</string>
         <string name="dlg_title_writeError">Ошибка записи</string>
@@ -147,7 +148,7 @@
         <string name="dlg_title_authenticationError">Ошибка аутентификации</string>
         <string name="dlg_title_createNewFile">Создать новый файл</string>
         <string name="dlg_title_saveAs">Сохранить как</string>
-        <string name="dlg_title_openTheFile">Открыть файл</string>
+        <string name="dlg_title_openFile">Открыть файл</string>
         <string name="dlg_title_updateAvailable">Доступно обновление</string>
         <string name="dlg_title_permissionRequired">Требуется разрешение</string>
         <string name="dlg_title_disable">Отключить?</string>
@@ -157,46 +158,45 @@
         <!-- ct (content) -->
         <string name="dlg_ct_biometricAuthentication">Биометрическая аутентификация</string>
         <string name="dlg_ct_fileName">Имя файла</string>
-        <string name="dlg_ct_password">Основной пароль</string>
+        <string name="dlg_ct_primaryPassword">Основной пароль</string>
         <string name="dlg_ct_incorrectPassword">Неверный пароль</string>
         <string name="dlg_ct_passwordsDoNotMatch">Пароли не совпадают</string>
-        <string name="dlg_ct_fileNameBlank">Имя файла не может быть пустым</string>
+        <string name="dlg_ct_fileNameEmpty">Имя файла не может быть пустым</string>
         <string name="dlg_ct_fileNameInvalidChars">Имя файла содержит недопустимые символы: %1$s</string>
-        <string name="dlg_ct_fileNameWhitespaceChar">Имя файла не может начинаться с пробела</string>
-        <string name="dlg_ct_fileNameInvalidForWindows">Имя файла является недопустимым словом для Windows.\nНедопустимые слова: %1$s</string>
+        <string name="dlg_ct_fileNameSpaceChar">Имя файла не может начинаться с пробела</string>
+        <string name="dlg_ct_fileNameInvalidWord">Имя файла является недопустимым словом для Windows.\nНедопустимые слова: %1$s</string>
         <string name="dlg_ct_primaryEmpty">Основной пароль не может быть пустым</string>
         <string name="dlg_ct_primaryInvalidChars">Основной пароль содержит недопустимые символы.\nРазрешенные символы: %1$s</string>
         <string name="dlg_ct_primarySlashChar">Основной пароль не может начинаться с косой черты</string>
         <!-- end! -->
 
         <!-- err (error) -->
-        <string name="dlg_err_uriIsNull">Путь к файлу не получен. Если вы используете сторонний файловый менеджер, попробуйте использовать системный.</string>
-        <string name="dlg_err_invalidFileVer">Этот файл был создан в более поздней версии приложения и не может быть открыт. Обновите приложение.</string>
-        <string name="dlg_err_damagedFile">Файл повреждён.</string>
-        <string name="dlg_err_unsupportedFile">Этот тип файла не поддерживается.</string>
+        <string name="dlg_err_filePathNotReceived">Путь к файлу не получен. Если вы используете сторонний файловый менеджер, попробуйте использовать системный.</string>
+        <string name="dlg_err_needAppUpdate">Этот файл был создан в более поздней версии приложения и не может быть открыт. Обновите приложение.</string>
+        <string name="dlg_err_fileDamaged">Файл повреждён.</string>
+        <string name="dlg_err_fileTypeUnsupported">Этот тип файла не поддерживается.</string>
         <string name="dlg_err_unableToOpenFile">Файл по указанному пути не существует или у приложения недостаточно прав для его открытия.</string>
-        <string name="dlg_err_noDataReceived">Приложению не удалось прочитать обновлённые данные. Пожалуйста, попробуйте ещё раз.</string>
-        <string name="dlg_err_someDataNull">Приложению не удалось прочитать обновлённые данные. Пожалуйста, попробуйте ещё раз.</string>
-        <string name="dlg_err_saveEncryptionProblem">Вероятно, это вызвано использованием неподдерживаемого символа.</string>
-        <string name="dlg_err_saveEncryptionDelete">Попробуйте добавить ещё один элемент, а затем удалить оба.</string>
-        <string name="dlg_err_saveWriting">Приложение не имеет достаточных прав для записи данных в этот файл. Вам необходимо сохранить данные в новый файл во избежание потери данных.</string>
-        <string name="dlg_err_recentFileDoesNotExist">Приложение не может открыть файл. Если файл всё ещё существует, откройте его снова.</string>
+        <string name="dlg_err_couldNotReadData">Приложению не удалось прочитать обновлённые данные. Пожалуйста, попробуйте ещё раз.</string>
+        <string name="dlg_err_unsupportedChar">Вероятно, это вызвано использованием неподдерживаемого символа.</string>
+        <string name="dlg_err_tryAddDelete">Попробуйте добавить ещё один элемент, а затем удалить оба.</string>
+        <string name="dlg_err_noPermissionsToWriteFile">Приложение не имеет достаточных прав для записи данных в этот файл. Вам необходимо сохранить данные в новый файл во избежание потери данных.</string>
+        <string name="dlg_err_couldNotOpenRecentFile">Приложение не может открыть файл. Если файл всё ещё существует, откройте его снова.</string>
         <string name="dlg_err_fingerprintSensorNotAvailable">Датчик отпечатков пальцев недоступен.</string>
-        <string name="dlg_err_biometricTokenDamaged">Сбой биометрической аутентификации. Повторно включите биометрическую аутентификацию для этого файла.</string>
+        <string name="dlg_err_biometricFailure">Сбой биометрической аутентификации. Повторно включите биометрическую аутентификацию для этого файла.</string>
         <string name="dlg_err_biometricEnableFail">В настоящее время невозможно включить биометрическую аутентификацию. Попробуйте позже.</string>
         <string name="dlg_err_biometricNewFingerprints">Были зарегистрированы новые отпечатки пальцев, что привело к отключению биометрической аутентификации для всех файлов. Повторно включите биометрическую аутентификацию для необходимых файлов.</string>
         <string name="dlg_err_biometricNewFingerprintsEnableFail">Были зарегистрированы новые отпечатки пальцев, что привело к отключению биометрической аутентификации для всех файлов. Повторно включите биометрическую аутентификацию для этого и других необходимых файлов.</string>
         <!-- end! -->
 
         <!-- msg (message) -->
-        <string name="dlg_msg_permanentRemoval">Это действие не может быть отменено</string>
-        <string name="dlg_msg_recentFileClearWithBiometric">Это действие не может быть отменено. Биометрическая аутентификация будет отключена для всех файлов.</string>
-        <string name="dlg_msg_disableRememberingRecentFiles">Это действие безвозвратно очистит список последних файлов</string>
-        <string name="dlg_msg_disableRememberingRecentFilesWithBiometric">Это действие безвозвратно очистит список последних файлов. Биометрическая аутентификация будет отключена для всех файлов.</string>
-        <string name="dlg_msg_biometricInfoReEnable">Для открытия любого файла потребуется ввод его основного пароля</string>
+        <string name="dlg_msg_permanentAction">Это действие не может быть отменено</string>
+        <string name="dlg_msg_clearRecentFilesWithBiometric">Это действие не может быть отменено. Биометрическая аутентификация будет отключена для всех файлов.</string>
+        <string name="dlg_msg_actionWillClearRecentFiles">Это действие безвозвратно очистит список последних файлов</string>
+        <string name="dlg_msg_actionWillClearRecentFilesWithBiometric">Это действие безвозвратно очистит список последних файлов. Биометрическая аутентификация будет отключена для всех файлов.</string>
+        <string name="dlg_msg_needToEnterPrimaryPasswordForAny">Для открытия любого файла потребуется ввод его основного пароля</string>
         <string name="dlg_msg_unsavedDataWillBeLost">Все несохраненные данные будут потеряны</string>
         <string name="dlg_msg_downloadNewVersion">Вы можете скачать новую версию из магазина приложений или репозитория GitHub</string>
-        <string name="dlg_msg_permissionDisplayOver">Необходимо предоставить разрешение в настройках для отображения панели поверх других приложений</string>
+        <string name="dlg_msg_grantPermissionToDisplayOver">Необходимо предоставить разрешение в настройках для отображения панели поверх других приложений</string>
         <!-- end! -->
 
     <!-- END -->
