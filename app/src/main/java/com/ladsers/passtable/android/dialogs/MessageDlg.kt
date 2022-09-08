@@ -10,6 +10,7 @@ import android.view.View
 import android.view.Window
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import com.google.android.material.button.MaterialButton
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.databinding.DialogMessageBinding
 import java.util.*
@@ -98,20 +99,9 @@ class MessageDlg(
         binding.tvMessage.movementMethod = ScrollingMovementMethod()
         binding.tvMessage.text = message
 
-        binding.btPositive.text = textPositive
-        binding.btPositive.icon = ContextCompat.getDrawable(context, iconPositive)
-
-        if (isAddedNegative) {
-            binding.btNegative.visibility = View.VISIBLE
-            binding.btNegative.text = textNegative
-            binding.btNegative.icon = ContextCompat.getDrawable(context, iconNegative)
-        } else binding.btNegative.visibility = View.GONE
-
-        if (isAddedNeutral) {
-            binding.btNeutral.visibility = View.VISIBLE
-            binding.btNeutral.text = textNeutral
-            binding.btNeutral.icon = ContextCompat.getDrawable(context, iconNeutral)
-        } else binding.btNeutral.visibility = View.GONE
+        configureBtn(binding.btPositive, true, textPositive, iconPositive)
+        configureBtn(binding.btNegative, isAddedNegative, textNegative, iconNegative)
+        configureBtn(binding.btNeutral, isAddedNeutral, textNeutral, iconNeutral)
 
         var doSkip = true
         builder.setOnDismissListener { if (doSkip) actionDismiss() }
@@ -153,6 +143,16 @@ class MessageDlg(
             it.isClickable = false
             it.postDelayed({ it.isClickable = true }, 200)
         }
+    }
+
+    private fun configureBtn(btn: MaterialButton, isEnabled: Boolean, text: String, icon: Int) {
+        if (!isEnabled) {
+            btn.visibility = View.GONE
+            return
+        }
+        btn.visibility = View.VISIBLE
+        btn.text = text
+        btn.icon = ContextCompat.getDrawable(context, icon)
     }
 
     fun quickDialog(

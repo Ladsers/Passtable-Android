@@ -14,7 +14,6 @@ import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.databinding.DialogDataEntryBinding
 import com.ladsers.passtable.lib.Verifier
 
-
 class FileCreatorDlg(
     private val context: Context,
     private val contentResolver: ContentResolver,
@@ -73,9 +72,15 @@ class FileCreatorDlg(
                 binding.clErr.visibility = if (res == 0) View.GONE else View.VISIBLE
                 val errMsg = when (res) {
                     1 -> context.getString(R.string.dlg_ct_fileNameEmpty)
-                    2 -> context.getString(R.string.dlg_ct_fileNameInvalidChars, Verifier.fileNameInvalidChars)
+                    2 -> context.getString(
+                        R.string.dlg_ct_fileNameInvalidChars,
+                        Verifier.fileNameInvalidChars
+                    )
                     3 -> context.getString(R.string.dlg_ct_fileNameSpaceChar)
-                    4 -> context.getString(R.string.dlg_ct_fileNameInvalidWord, Verifier.fileNameInvalidWinWords)
+                    4 -> context.getString(
+                        R.string.dlg_ct_fileNameInvalidWord,
+                        Verifier.fileNameInvalidWinWords
+                    )
                     else -> ""
                 }
                 binding.tvErrMsg.text = errMsg
@@ -112,9 +117,7 @@ class FileCreatorDlg(
                 }
             })
 
-            binding.btNegative.setOnClickListener {
-                this.dismiss()
-            }
+            binding.btNegative.setOnClickListener { this.dismiss() }
         }
 
         // Protection against two copies of the same dialog.
