@@ -358,7 +358,7 @@ class TableActivity : AppCompatActivity() {
         } else {
             val newTag = data.getStringExtra("newDataTag")
             val newNote = data.getStringExtra("newDataNote")
-            val newLogin = data.getStringExtra("newDataLogin")
+            val newLogin = data.getStringExtra("newDataUsername")
             val newPassword = data.getStringExtra("newDataPassword")
             if (newTag != null && newNote != null && newLogin != null && newPassword != null)
                 listOf(newTag, newNote, newLogin, newPassword)
@@ -381,7 +381,7 @@ class TableActivity : AppCompatActivity() {
         val intent = Intent(this, EditActivity::class.java)
         intent.putExtra("dataTag", table.getTag(tableId))
         intent.putExtra("dataNote", table.getNote(tableId))
-        intent.putExtra("dataLogin", table.getUsername(tableId))
+        intent.putExtra("dataUsername", table.getUsername(tableId))
         intent.putExtra("dataPassword", table.getPassword(tableId))
 
         intent.putExtra("modeEdit", true)

@@ -183,7 +183,7 @@
                 tools:visibility="visible" />
 
             <EditText
-                android:id="@+id/etLogin"
+                android:id="@+id/et_username"
                 style="@style/EditData"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
@@ -193,12 +193,12 @@
                 android:hint="@string/app_com_username"
                 android:importantForAutofill="no"
                 android:inputType="textPersonName"
-                app:layout_constraintEnd_toStartOf="@+id/btUndoLogin"
+                app:layout_constraintEnd_toStartOf="@+id/bt_undo_username"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/etNote" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btUndoLogin"
+                android:id="@+id/bt_undo_username"
                 style="@style/IconButton"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
@@ -208,9 +208,9 @@
                 android:visibility="gone"
                 app:icon="@drawable/ic_undo"
                 app:iconTint="@color/selector_icon_tint"
-                app:layout_constraintBottom_toBottomOf="@+id/etLogin"
+                app:layout_constraintBottom_toBottomOf="@+id/et_username"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/etLogin"
+                app:layout_constraintTop_toTopOf="@+id/et_username"
                 app:strokeColor="@color/selector_icon_tint"
                 app:strokeWidth="2dp"
                 tools:visibility="visible" />
@@ -225,7 +225,7 @@
                 android:background="@drawable/background_edittext"
                 app:layout_constraintEnd_toStartOf="@+id/btUndoPassword"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etLogin">
+                app:layout_constraintTop_toBottomOf="@+id/et_username">
 
                 <EditText
                     android:id="@+id/etPassword"

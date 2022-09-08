@@ -60,7 +60,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun componentValInit() {
-        when (ParamStorage.getInt(this, Param.THEME)){
+        when (ParamStorage.getInt(this, Param.THEME)) {
             0 -> binding.theme.rbThemeDefault.isChecked = true
             1 -> binding.theme.rbThemeLight.isChecked = true
             2 -> binding.theme.rbThemeDark.isChecked = true
@@ -110,28 +110,32 @@ class SettingsActivity : AppCompatActivity() {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
 
-       binding.lockFile.rbLockModeTimePeriod.setOnClickListener {
+        binding.lockFile.rbLockModeTimePeriod.setOnClickListener {
             if (ParamStorage.getInt(this, Param.LOCK_MODE) != 0) {
                 ParamStorage.set(this, Param.LOCK_MODE, 0)
-               binding.lockFile.swLockAllowWhenEditing.isEnabled = true
-               binding.lockFile.etLockSecs.isEnabled = true
-               binding.lockFile.etLockSecs.clearFocus()
+                binding.lockFile.swLockAllowWhenEditing.isEnabled = true
+                binding.lockFile.etLockSecs.isEnabled = true
+                binding.lockFile.etLockSecs.clearFocus()
             }
         }
-       binding.lockFile.rbLockModeAlways.setOnClickListener {
+        binding.lockFile.rbLockModeAlways.setOnClickListener {
             ParamStorage.set(this, Param.LOCK_MODE, 1)
-           binding.lockFile.swLockAllowWhenEditing.isEnabled = true
-           binding.lockFile.etLockSecs.isEnabled = false
-           binding.lockFile.etLockSecs.setText(ParamStorage.getInt(this, Param.LOCK_SECS).toString())
+            binding.lockFile.swLockAllowWhenEditing.isEnabled = true
+            binding.lockFile.etLockSecs.isEnabled = false
+            binding.lockFile.etLockSecs.setText(
+                ParamStorage.getInt(this, Param.LOCK_SECS).toString()
+            )
         }
-       binding.lockFile.rbLockModeNever.setOnClickListener {
+        binding.lockFile.rbLockModeNever.setOnClickListener {
             ParamStorage.set(this, Param.LOCK_MODE, 2)
-           binding.lockFile.swLockAllowWhenEditing.isEnabled = false
-           binding.lockFile.etLockSecs.isEnabled = false
-           binding.lockFile.etLockSecs.setText(ParamStorage.getInt(this, Param.LOCK_SECS).toString())
+            binding.lockFile.swLockAllowWhenEditing.isEnabled = false
+            binding.lockFile.etLockSecs.isEnabled = false
+            binding.lockFile.etLockSecs.setText(
+                ParamStorage.getInt(this, Param.LOCK_SECS).toString()
+            )
         }
-       binding.lockFile.swLockAllowWhenEditing.setOnCheckedChangeListener { _, isChecked ->
-           ParamStorage.set(this, Param.LOCK_ALLOW_WHEN_EDITING, isChecked)
+        binding.lockFile.swLockAllowWhenEditing.setOnCheckedChangeListener { _, isChecked ->
+            ParamStorage.set(this, Param.LOCK_ALLOW_WHEN_EDITING, isChecked)
         }
         binding.lockFile.clLockSecs.setOnClickListener {
             binding.lockFile.etLockSecs.requestFocus()
@@ -144,7 +148,7 @@ class SettingsActivity : AppCompatActivity() {
             ParamStorage.set(this, Param.PREVENT_SCREEN_CAPTURE, isChecked)
         }
 
-       binding.recentFiles.swRememberRecentFiles.setOnClickListener {
+        binding.recentFiles.swRememberRecentFiles.setOnClickListener {
             if (RecentFiles.isNotEmpty(this)) {
                 val msg =
                     if (biometricAuthIsAvailable) getString(R.string.dlg_msg_actionWillClearRecentFilesWithBiometric)
@@ -158,13 +162,15 @@ class SettingsActivity : AppCompatActivity() {
                 messageDlg.addNegativeBtn(
                     getString(R.string.app_bt_cancel),
                     R.drawable.ic_close
-                ) {binding.recentFiles.swRememberRecentFiles.isChecked = true }
-                messageDlg.addSkipAction {binding.recentFiles.swRememberRecentFiles.isChecked = true }
+                ) { binding.recentFiles.swRememberRecentFiles.isChecked = true }
+                messageDlg.addSkipAction {
+                    binding.recentFiles.swRememberRecentFiles.isChecked = true
+                }
                 messageDlg.show(it)
             } else changeRememberingRecentFiles(binding.recentFiles.swRememberRecentFiles.isChecked)
         }
 
-       binding.recentFiles.btClearRecentFiles.setOnClickListener {
+        binding.recentFiles.btClearRecentFiles.setOnClickListener {
             val msg =
                 if (biometricAuthIsAvailable) getString(R.string.dlg_msg_clearRecentFilesWithBiometric)
                 else getString(R.string.dlg_msg_permanentAction)
@@ -182,7 +188,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
 
-        binding.biometricAuth.btForgetPasswords.setOnClickListener {
+        binding.biometricAuth.btDisableBiometric.setOnClickListener {
             messageDlg.quickDialog(
                 getString(R.string.dlg_title_disable),
                 getString(R.string.dlg_msg_needToEnterPrimaryPasswordForAny), {
@@ -223,9 +229,9 @@ class SettingsActivity : AppCompatActivity() {
     private fun updateComponentsForRecentFiles(isEnabled: Boolean) {
         binding.biometricAuth.swCheckboxRememberPasswordByDefault.isEnabled = isEnabled
         binding.recentFiles.btClearRecentFiles.isEnabled = isEnabled
-        binding.biometricAuth.btForgetPasswords.isEnabled = isEnabled
+        binding.biometricAuth.btDisableBiometric.isEnabled = isEnabled
         binding.recentFiles.btClearRecentFiles.alpha = if (isEnabled) 1.0f else 0.5f
-        binding.biometricAuth.btForgetPasswords.alpha = if (isEnabled) 1.0f else 0.5f
+        binding.biometricAuth.btDisableBiometric.alpha = if (isEnabled) 1.0f else 0.5f
     }
 
     private fun changeRememberingRecentFiles(isEnabled: Boolean) {
@@ -264,7 +270,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.about.tvVersion.text = BuildConfig.VERSION_NAME
     }
 
-    private fun enableHelpShortcuts(){
+    private fun enableHelpShortcuts() {
         ParamStorage.set(this, Param.PHYSICAL_KEYBOARD_DETECTED, true)
         binding.help.root.visibility = View.VISIBLE
         binding.help.btShortcuts.setOnClickListener {

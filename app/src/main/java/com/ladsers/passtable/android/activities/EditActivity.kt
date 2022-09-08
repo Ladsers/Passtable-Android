@@ -20,11 +20,9 @@ import com.ladsers.passtable.android.components.PasswordInput
 import com.ladsers.passtable.android.containers.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.databinding.ActivityEditBinding
-import com.ladsers.passtable.android.dialogs.PrimaryPasswordDlg
 import com.ladsers.passtable.android.dialogs.MessageDlg
 import com.ladsers.passtable.lib.Verifier
 import java.util.*
-
 
 class EditActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditBinding
@@ -34,7 +32,7 @@ class EditActivity : AppCompatActivity() {
 
     private lateinit var originalTag: String
     private lateinit var originalNote: String
-    private lateinit var originalLogin: String
+    private lateinit var originalUsername: String
     private lateinit var originalPassword: String
 
     private var isBackgrounded = false
@@ -58,7 +56,7 @@ class EditActivity : AppCompatActivity() {
 
         originalTag = intent.getStringExtra("dataTag") ?: "0"
         originalNote = intent.getStringExtra("dataNote") ?: ""
-        originalLogin = intent.getStringExtra("dataLogin") ?: ""
+        originalUsername = intent.getStringExtra("dataUsername") ?: ""
         originalPassword = intent.getStringExtra("dataPassword") ?: ""
 
         editMode = intent.getBooleanExtra("modeEdit", false)
@@ -69,7 +67,7 @@ class EditActivity : AppCompatActivity() {
         } else {
             binding.toolbar.root.title = getString(R.string.ui_ct_editItem)
             binding.btUndoNote.visibility = View.VISIBLE
-            binding.btUndoLogin.visibility = View.VISIBLE
+            binding.btUndoUsername.visibility = View.VISIBLE
             binding.btUndoPassword.visibility = View.VISIBLE
         }
 
@@ -103,7 +101,7 @@ class EditActivity : AppCompatActivity() {
         }
 
         editTextBehavior(binding.etNote, binding.btUndoNote, originalNote)
-        editTextBehavior(binding.etLogin, binding.btUndoLogin, originalLogin)
+        editTextBehavior(binding.etUsername, binding.btUndoUsername, originalUsername)
         editTextBehavior(binding.etPassword, binding.btUndoPassword, originalPassword)
 
         if (resources.configuration.keyboard == Configuration.KEYBOARD_QWERTY) binding.etNote.requestFocus()
@@ -129,10 +127,9 @@ class EditActivity : AppCompatActivity() {
                 )
         }
 
-        passwordsMatchCheck()
-
         binding.btSave.setOnClickListener { returnNewData() }
 
+        passwordsMatchCheck()
         canBeSavedCheck()
     }
 
@@ -157,7 +154,7 @@ class EditActivity : AppCompatActivity() {
         }
     }
 
-    private fun passwordsMatchCheck(){
+    private fun passwordsMatchCheck() {
         binding.etPassword.doAfterTextChanged { x ->
             passwordIsVisible =
                 PasswordInput.widgetBehavior(
@@ -214,31 +211,15 @@ class EditActivity : AppCompatActivity() {
 
     private fun canBeSavedCheck(show: Boolean = true): Int {
         val note = binding.etNote.text.toString()
-        val username = binding.etLogin.text.toString()
+        val username = binding.etUsername.text.toString()
         val password = binding.etPassword.text.toString()
         val confirm = binding.etConfirm.text.toString()
 
-        return if (!Verifier.verifyData(note, username, password)
-        ) {
-            disableBtSave()
-            if (show) showError(3)
-            3
-        } else if (!Verifier.verifyItem(note, username, password)
-        ) {
-            disableBtSave()
-            if (show) showError(1)
-            1
-        } else {
-            if (confirm.isNotEmpty() && password != confirm) {
-                disableBtSave()
-                if (show) showError(2)
-                2
-            } else {
-                enableBtSave()
-                if (show) showError(0)
-                0
-            }
-        }
+        if (!Verifier.verifyData(note, username, password)) return showErrAndDisableSave(3, show)
+        if (!Verifier.verifyItem(note, username, password)) return showErrAndDisableSave(1, show)
+        if (confirm.isNotEmpty() && password != confirm) return showErrAndDisableSave(2, show)
+
+        return enableSave(show)
     }
 
     private fun showError(code: Int) {
@@ -259,25 +240,30 @@ class EditActivity : AppCompatActivity() {
         }
     }
 
-    private fun enableBtSave() {
+    private fun enableSave(needShow: Boolean): Int {
         binding.btSave.isEnabled = true
         binding.btSave.elevation = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             2.0F,
             resources.displayMetrics
         )
+        if (needShow) showError(0)
+        return 0
     }
-
-    private fun disableBtSave() {
+    
+    private fun showErrAndDisableSave(resCode: Int, needShow: Boolean): Int {
         binding.btSave.isEnabled = false
         binding.btSave.elevation = 0.0F
+        
+        if (needShow) showError(resCode)
+        return resCode
     }
 
     private fun returnNewData() {
         val intent = Intent()
         intent.putExtra("newDataTag", selectedTag)
         intent.putExtra("newDataNote", binding.etNote.text.toString())
-        intent.putExtra("newDataLogin", binding.etLogin.text.toString())
+        intent.putExtra("newDataUsername", binding.etUsername.text.toString())
         intent.putExtra("newDataPassword", binding.etPassword.text.toString())
 
         setResult(RESULT_OK, intent)
@@ -297,7 +283,7 @@ class EditActivity : AppCompatActivity() {
         }
     }
 
-    private fun preselectTag(){
+    private fun preselectTag() {
         resetAllTags()
         updateTag(
             when (selectedTag) {
@@ -311,7 +297,7 @@ class EditActivity : AppCompatActivity() {
         )
     }
 
-    private fun resetAllTags(){
+    private fun resetAllTags() {
         updateTag(binding.btTagNone, false)
         updateTag(binding.btTagRed, false)
         updateTag(binding.btTagGreen, false)
@@ -329,10 +315,10 @@ class EditActivity : AppCompatActivity() {
         )
     }
 
-    private fun unsavedChangesCheck(){
+    private fun unsavedChangesCheck() {
         if (selectedTag != originalTag ||
             binding.etNote.text.toString() != originalNote ||
-            binding.etLogin.text.toString() != originalLogin ||
+            binding.etUsername.text.toString() != originalUsername ||
             binding.etPassword.text.toString() != originalPassword
         ) {
             MessageDlg(this, window).quickDialog(
@@ -342,8 +328,7 @@ class EditActivity : AppCompatActivity() {
                 posIcon = R.drawable.ic_exit,
                 posText = getString(R.string.app_bt_close)
             )
-        }
-        else finish()
+        } else finish()
     }
 
     override fun onBackPressed() {
@@ -353,6 +338,7 @@ class EditActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
 
+        /* Lock the file system */
         if (!blockClosing && ParamStorage.getBool(this, Param.LOCK_ALLOW_WHEN_EDITING)) {
             isBackgrounded = true
             backgroundSecs = Date().time / 1000
@@ -362,6 +348,7 @@ class EditActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        /* Lock the file system */
         if (isBackgrounded) {
             isBackgrounded = false
 

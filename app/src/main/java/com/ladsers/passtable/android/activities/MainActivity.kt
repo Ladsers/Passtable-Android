@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var recentUri: MutableList<Uri>
     private lateinit var recentDate: MutableList<String>
-    private lateinit var recentMps: MutableList<Boolean>
+    private lateinit var recentPasswords: MutableList<Boolean> // having encrypted primary passwords?
     private lateinit var adapter: RecentAdapter
     private lateinit var fileCreatorDlg: FileCreatorDlg
     private lateinit var messageDlg: MessageDlg
@@ -55,7 +55,6 @@ class MainActivity : AppCompatActivity() {
         )
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        messageDlg = MessageDlg(this, window)
 
         binding.toolbar.root.title = getString(R.string.ui_ct_home)
         binding.toolbar.root.navigationIcon = ContextCompat.getDrawable(
@@ -66,11 +65,12 @@ class MainActivity : AppCompatActivity() {
         binding.toolbar.root.navigationContentDescription = getString(R.string.app_info_appName)
         setSupportActionBar(binding.toolbar.root)
 
-        fileCreatorDlg =
-            FileCreatorDlg(this, contentResolver, window) { openFileExplorer(true) }
-
         binding.btOpenFile.setOnClickListener { openFileExplorer(false) }
         binding.btNewFile.setOnClickListener { v -> fileCreatorDlg.askName(btView = v) }
+
+        messageDlg = MessageDlg(this, window)
+        fileCreatorDlg =
+            FileCreatorDlg(this, contentResolver, window) { openFileExplorer(true) }
 
         binding.rvRecent.layoutManager = LinearLayoutManager(
             this,
@@ -86,11 +86,11 @@ class MainActivity : AppCompatActivity() {
         })
         recentUri = mutableListOf()
         recentDate = mutableListOf()
-        recentMps = mutableListOf()
+        recentPasswords = mutableListOf()
         adapter = RecentAdapter(
             recentUri,
             recentDate,
-            recentMps,
+            recentPasswords,
             this,
             { id, flag -> openRecentFile(id, flag) },
             { id, resCode -> popupAction(id, resCode) })
@@ -107,17 +107,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkUpdate(menu: Menu) {
-        Thread {
-            try {
+        try {
+            Thread {
                 val res = Updater.check("apk", BuildConfig.VERSION_NAME)
                 window.decorView.post {
                     val button = menu.findItem(R.id.btUpdate)
                     button.isVisible = res == 1
                     button.isEnabled = res == 1
                 }
-            } catch (e: Exception) {
-            }
-        }.start()
+            }.start()
+        } catch (e: Exception) { /* do nothing */
+        }
     }
 
     private fun getNewVersion() {
@@ -222,7 +222,7 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra("newFile", false)
                 startActivity(intent)
             }
-            1 -> { // file from gdisk is lost
+            1 -> { // file from google disk is lost / not available
                 refreshRecentList()
                 Toast.makeText(
                     this, getString(R.string.ui_msg_recentFilesUpdated), Toast.LENGTH_SHORT
@@ -250,7 +250,7 @@ class MainActivity : AppCompatActivity() {
             }
             2 -> { // forget password
                 RecentFiles.forgetPasswordEncrypted(this, recentUri[id])
-                recentMps[id] = false
+                recentPasswords[id] = false
                 adapter.notifyItemChanged(id)
             }
         }
@@ -262,8 +262,8 @@ class MainActivity : AppCompatActivity() {
         recentUri.addAll(RecentFiles.loadUri(this))
         recentDate.clear()
         recentDate.addAll(RecentFiles.loadDate(this))
-        recentMps.clear()
-        recentMps.addAll(RecentFiles.loadPasswordsEncrypted(this))
+        recentPasswords.clear()
+        recentPasswords.addAll(RecentFiles.loadPasswordsEncrypted(this))
         adapter.notifyDataSetChanged()
         notifyUser()
     }
@@ -272,7 +272,7 @@ class MainActivity : AppCompatActivity() {
         RecentFiles.remove(this, recentUri[id])
         recentUri.removeAt(id)
         recentDate.removeAt(id)
-        recentMps.removeAt(id)
+        recentPasswords.removeAt(id)
         adapter.notifyItemRemoved(id)
         adapter.notifyItemRangeChanged(id, adapter.itemCount)
         notifyUser()
