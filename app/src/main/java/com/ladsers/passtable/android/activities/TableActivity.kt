@@ -91,7 +91,7 @@ class TableActivity : AppCompatActivity() {
             this,
             { loginSucceeded() },
             { mp -> openProcess(mp) },
-            { primaryPasswordDlg.start(PrimaryPasswordDlg.Mode.OPEN, canRememberPass = false) })
+            { primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN, canRememberPass = false) })
         primaryPasswordDlg = PrimaryPasswordDlg(
             this,
             contentResolver,
@@ -143,7 +143,7 @@ class TableActivity : AppCompatActivity() {
         }
 
         val newFile = intent.getBooleanExtra("newFile", false)
-        if (newFile) primaryPasswordDlg.start(PrimaryPasswordDlg.Mode.NEW, mainUri) else checkFileProcess()
+        if (newFile) primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.NEW, mainUri) else checkFileProcess()
     }
 
     override fun onBackPressed() {
@@ -182,7 +182,7 @@ class TableActivity : AppCompatActivity() {
         RecentFiles.add(this, mainUri)
         table = DataTableAndroid(mainUri.toString(), masterPass, cryptData, contentResolver)
         if (!saving(firstSave = true)) return
-        if (primaryPasswordDlg.isNeedToRemember()) biometricAuth.activateAuth(masterPass)
+        if (primaryPasswordDlg.isNeedRememberPassword) biometricAuth.activateAuth(masterPass)
         else loginSucceeded()
     }
 
@@ -190,10 +190,10 @@ class TableActivity : AppCompatActivity() {
         table = DataTableAndroid(mainUri.toString(), masterPass, cryptData, contentResolver)
         when (table.fill()) {
             0 -> {
-                if (primaryPasswordDlg.isNeedToRemember()) biometricAuth.activateAuth(masterPass)
+                if (primaryPasswordDlg.isNeedRememberPassword) biometricAuth.activateAuth(masterPass)
                 else loginSucceeded()
             }
-            3 -> primaryPasswordDlg.start(PrimaryPasswordDlg.Mode.OPEN, incorrectPassword = true)
+            3 -> primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN, incorrectPassword = true)
         }
     }
 
@@ -218,9 +218,9 @@ class TableActivity : AppCompatActivity() {
                 if (!quickView && ParamStorage.getBool(this, Param.REMEMBER_RECENT_FILES)) {
                     RecentFiles.add(this, mainUri)
                     val mpEncrypted = RecentFiles.getLastMpEncrypted(this)
-                    if (mpEncrypted.isNullOrBlank()) primaryPasswordDlg.start(PrimaryPasswordDlg.Mode.OPEN)
+                    if (mpEncrypted.isNullOrBlank()) primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN)
                     else biometricAuth.startAuth(mpEncrypted)
-                } else primaryPasswordDlg.start(PrimaryPasswordDlg.Mode.OPEN, canRememberPass = false)
+                } else primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN, canRememberPass = false)
             }
         }
     }
@@ -706,8 +706,8 @@ class TableActivity : AppCompatActivity() {
 
         val file = fileCreatorDlg.createFile(tree)
 
-        if (saveAsMode) primaryPasswordDlg.start(
-            PrimaryPasswordDlg.Mode.SAVEAS,
+        if (saveAsMode) primaryPasswordDlg.show(
+            PrimaryPasswordDlg.Mode.SAVE_AS,
             file
         ) else saveToOtherFileProcess(file, null)
     }
@@ -717,7 +717,7 @@ class TableActivity : AppCompatActivity() {
         mainUri = newPath
         RecentFiles.add(this, mainUri)
         this.binding.toolbar.root.title = getFileName(mainUri)
-        if (newPassword != null && primaryPasswordDlg.isNeedToRemember()) {
+        if (newPassword != null && primaryPasswordDlg.isNeedRememberPassword) {
             BiometricAuth(this, this, { disableLockFileSystem = false }, { }, { }).activateAuth(
                 newPassword
             )

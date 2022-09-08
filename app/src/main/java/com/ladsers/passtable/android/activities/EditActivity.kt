@@ -16,6 +16,7 @@ import androidx.core.widget.doBeforeTextChanged
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
 import com.ladsers.passtable.android.R
+import com.ladsers.passtable.android.components.PasswordInput
 import com.ladsers.passtable.android.containers.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.databinding.ActivityEditBinding
@@ -109,7 +110,7 @@ class EditActivity : AppCompatActivity() {
 
         binding.btShowPass.setOnClickListener {
             passwordIsVisible =
-                PrimaryPasswordDlg.showHidePassword(
+                PasswordInput.showHidePassword(
                     this,
                     binding.etPassword,
                     binding.btShowPass,
@@ -120,7 +121,7 @@ class EditActivity : AppCompatActivity() {
         binding.btShowConfirm.setOnClickListener {
             btConfirmClicked = true
             confirmIsVisible =
-                PrimaryPasswordDlg.showHidePassword(
+                PasswordInput.showHidePassword(
                     this,
                     binding.etConfirm,
                     binding.btShowConfirm,
@@ -159,7 +160,7 @@ class EditActivity : AppCompatActivity() {
     private fun passwordsMatchCheck(){
         binding.etPassword.doAfterTextChanged { x ->
             passwordIsVisible =
-                PrimaryPasswordDlg.widgetBehavior(
+                PasswordInput.widgetBehavior(
                     this,
                     x,
                     binding.etPassword,
@@ -191,7 +192,7 @@ class EditActivity : AppCompatActivity() {
 
         binding.etConfirm.doAfterTextChanged { x ->
             confirmIsVisible =
-                PrimaryPasswordDlg.widgetBehavior(
+                PasswordInput.widgetBehavior(
                     this,
                     x,
                     binding.etConfirm,

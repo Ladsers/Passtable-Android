@@ -7,28 +7,22 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.provider.DocumentsContract
-import android.text.Editable
-import android.text.method.HideReturnsTransformationMethod
-import android.text.method.PasswordTransformationMethod
 import android.view.KeyEvent
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doBeforeTextChanged
-import com.google.android.material.button.MaterialButton
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.components.BiometricAuth
+import com.ladsers.passtable.android.components.PasswordInput
 import com.ladsers.passtable.android.containers.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.databinding.DialogDataEntryBinding
 import com.ladsers.passtable.lib.Verifier
-
 
 class PrimaryPasswordDlg(
     private val context: Context,
@@ -40,18 +34,19 @@ class PrimaryPasswordDlg(
     private val completeOpening: (password: String) -> Unit,
     private val completeSavingAs: (newPath: Uri, newPass: String?) -> Unit
 ) {
-    enum class Mode { OPEN, NEW, SAVEAS }
+    enum class Mode { OPEN, NEW, SAVE_AS }
 
-    private var rememberMasterPass = false
+    var isNeedRememberPassword = false
+        private set
+
     private var rememberingAvailable = true
-    private var rememberingChecked = false
+    private var checkboxInitState = false
+    private var isNeedSkipTextChangedCheck = false
 
     private var passwordIsVisible = false
     private var confirmIsVisible = false
 
-    private var btConfirmClicked = false
-
-    fun start(
+    fun show(
         mode: Mode,
         uri: Uri? = null,
         incorrectPassword: Boolean = false,
@@ -61,61 +56,30 @@ class PrimaryPasswordDlg(
         val binding = DialogDataEntryBinding.inflate(window.layoutInflater)
         builder.setView(binding.root)
 
-        rememberMasterPass = false
+        isNeedRememberPassword = false
         val biometricAuthAvailable = biometricAuth.checkAvailability()
-        if (!canRememberPass) rememberingAvailable = false
+        if (!canRememberPass) rememberingAvailable = false // disable remembering
+        val biometricAuthActive = biometricAuthAvailable && rememberingAvailable
         var closedViaButton = false
 
-        binding.tvTitle.text = context.getString(
-            when (mode) {
-                Mode.OPEN -> R.string.dlg_title_openFile
-                Mode.NEW -> R.string.dlg_title_createNewFile
-                Mode.SAVEAS -> R.string.dlg_title_saveAs
-            }
-        )
+        binding.tvTitle.text = getTitle(mode)
         binding.clPassword.visibility = View.VISIBLE
-
-        binding.cbRememberPass.isChecked =
-            ParamStorage.getBool(context, Param.CHECKBOX_REMEMBER_PASSWORD_BY_DEFAULT)
-        val biometricAuthActive = biometricAuthAvailable && rememberingAvailable
-        binding.cbRememberPass.visibility =
-            if (mode != Mode.SAVEAS && biometricAuthActive) View.VISIBLE else View.GONE
-
-        binding.btPositive.text =
-            context.getString(if (mode == Mode.OPEN) R.string.app_bt_enter else R.string.app_bt_save)
-        binding.btPositive.icon = ContextCompat.getDrawable(
-            context,
-            if (mode == Mode.OPEN) R.drawable.ic_enter else R.drawable.ic_save
-        )
-
-        if (mode == Mode.SAVEAS) {
-            binding.btNeutral.visibility = View.VISIBLE
-            binding.btNeutral.text = context.getString(R.string.app_bt_saveWithCurrentPassword)
-            binding.btNeutral.icon = ContextCompat.getDrawable(context, R.drawable.ic_save)
-        }
-
-        binding.btNegative.text = context.getString(R.string.app_bt_cancel)
-        binding.btNegative.icon = ContextCompat.getDrawable(context, R.drawable.ic_close)
-
         binding.btShowPass.setOnClickListener {
             passwordIsVisible =
-                showHidePassword(context, binding.etPassword, binding.btShowPass, passwordIsVisible)
+                PasswordInput.showHidePassword(
+                    context,
+                    binding.etPassword,
+                    binding.btShowPass,
+                    passwordIsVisible
+                )
         }
+        configureMainButtons(binding, mode)
 
-        if (mode != Mode.OPEN) {
-            binding.clConfirm.visibility = View.VISIBLE
-            binding.btShowConfirm.setOnClickListener {
-                btConfirmClicked = true
-                confirmIsVisible =
-                    showHidePassword(context, binding.etConfirm, binding.btShowConfirm, confirmIsVisible)
-            }
-        }
+        configureRememberingCheckbox(binding, mode, biometricAuthActive)
+        configureConfirmWidget(binding, mode)
+        configureNeutralBtn(binding, mode)
 
-        if (incorrectPassword) {
-            binding.cbRememberPass.isChecked = rememberingChecked
-            binding.clErr.visibility = View.VISIBLE
-            binding.tvErrMsg.text = context.getString(R.string.dlg_ct_incorrectPassword)
-        }
+        handleIncorrectPassword(binding, incorrectPassword)
 
         builder.setOnDismissListener {
             if (!closedViaButton) {
@@ -125,7 +89,7 @@ class PrimaryPasswordDlg(
                         context, context.getString(R.string.ui_msg_canceled), Toast.LENGTH_SHORT
                     ).show()
                 }
-                if (mode != Mode.SAVEAS) activity.finish()
+                if (mode != Mode.SAVE_AS) activity.finish()
             }
         }
 
@@ -141,7 +105,13 @@ class PrimaryPasswordDlg(
 
             binding.etPassword.doAfterTextChanged { x ->
                 passwordIsVisible =
-                    widgetBehavior(context, x, binding.etPassword, binding.btShowPass, passwordIsVisible)
+                    PasswordInput.widgetBehavior(
+                        context,
+                        x,
+                        binding.etPassword,
+                        binding.btShowPass,
+                        passwordIsVisible
+                    )
                 binding.btNeutral.isEnabled =
                     x.toString().isEmpty() && binding.etConfirm.text.toString().isEmpty()
                 binding.cbRememberPass.visibility =
@@ -172,15 +142,15 @@ class PrimaryPasswordDlg(
             }
 
             binding.btPositive.setOnClickListener {
-                if (biometricAuthAvailable && rememberingAvailable) rememberMasterPass =
+                if (biometricAuthAvailable && rememberingAvailable) isNeedRememberPassword =
                     binding.cbRememberPass.isChecked
-                rememberingChecked = rememberMasterPass
+                checkboxInitState = isNeedRememberPassword
 
                 val pass = binding.etPassword.text.toString()
                 when (mode) {
                     Mode.OPEN -> completeOpening(pass)
                     Mode.NEW -> completeCreation(pass)
-                    Mode.SAVEAS -> completeSavingAs(uri!!, pass)
+                    Mode.SAVE_AS -> completeSavingAs(uri!!, pass)
                 }
                 closedViaButton = true
                 this.dismiss()
@@ -193,9 +163,9 @@ class PrimaryPasswordDlg(
                         if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                             if (!binding.btPositive.isEnabled) return true
 
-                            if (biometricAuthAvailable && rememberingAvailable) rememberMasterPass =
+                            if (biometricAuthAvailable && rememberingAvailable) isNeedRememberPassword =
                                 binding.cbRememberPass.isChecked
-                            rememberingChecked = rememberMasterPass
+                            checkboxInitState = isNeedRememberPassword
 
                             val pass = binding.etPassword.text.toString()
                             completeOpening(pass)
@@ -208,7 +178,7 @@ class PrimaryPasswordDlg(
                 })
             }
 
-            if (mode == Mode.SAVEAS) {
+            if (mode == Mode.SAVE_AS) {
                 binding.btNeutral.setOnClickListener {
                     completeSavingAs(uri!!, null)
                     closedViaButton = true
@@ -226,8 +196,9 @@ class PrimaryPasswordDlg(
             val doNotMatchMsgWithDelay = Runnable { binding.clErr.visibility = View.VISIBLE }
 
             binding.etConfirm.doBeforeTextChanged { _, _, _, _ ->
-                if (btConfirmClicked) {
-                    btConfirmClicked = false
+                if (isNeedSkipTextChangedCheck) {
+                    // fixes error message flickering when user click on Eye button
+                    isNeedSkipTextChangedCheck = false
                     return@doBeforeTextChanged
                 }
                 binding.clErr.removeCallbacks(doNotMatchMsgWithDelay)
@@ -236,7 +207,13 @@ class PrimaryPasswordDlg(
 
             binding.etConfirm.doAfterTextChanged { x ->
                 confirmIsVisible =
-                    widgetBehavior(context, x, binding.etConfirm, binding.btShowConfirm, confirmIsVisible)
+                    PasswordInput.widgetBehavior(
+                        context,
+                        x,
+                        binding.etConfirm,
+                        binding.btShowConfirm,
+                        confirmIsVisible
+                    )
                 binding.btNeutral.isEnabled =
                     x.toString().isEmpty() && binding.etPassword.text.toString().isEmpty()
                 binding.cbRememberPass.visibility =
@@ -255,53 +232,67 @@ class PrimaryPasswordDlg(
         }
     }
 
-    fun isNeedToRemember() = rememberMasterPass
+    private fun getTitle(mode: Mode): String {
+        return context.getString(
+            when (mode) {
+                Mode.OPEN -> R.string.dlg_title_openFile
+                Mode.NEW -> R.string.dlg_title_createNewFile
+                Mode.SAVE_AS -> R.string.dlg_title_saveAs
+            }
+        )
+    }
 
-    companion object {
-        fun widgetBehavior(
-            context: Context,
-            x: Editable?,
-            etPassword: EditText,
-            btShow: MaterialButton,
-            isVisible: Boolean
-        ): Boolean {
-            var current = isVisible
+    private fun configureMainButtons(binding: DialogDataEntryBinding, mode: Mode) {
+        binding.btPositive.text =
+            context.getString(if (mode == Mode.OPEN) R.string.app_bt_enter else R.string.app_bt_save)
+        binding.btPositive.icon = ContextCompat.getDrawable(
+            context,
+            if (mode == Mode.OPEN) R.drawable.ic_enter else R.drawable.ic_save
+        )
 
-            val isNotEmpty = x.toString().isNotEmpty()
-            if (!isNotEmpty) current = showHidePassword(context, etPassword, btShow, true)
-            etPassword.typeface = ResourcesCompat.getFont(
+        binding.btNegative.text = context.getString(R.string.app_bt_cancel)
+        binding.btNegative.icon = ContextCompat.getDrawable(context, R.drawable.ic_close)
+    }
+
+    private fun configureRememberingCheckbox(
+        binding: DialogDataEntryBinding,
+        mode: Mode,
+        biometricAuthActive: Boolean
+    ) {
+        binding.cbRememberPass.isChecked =
+            ParamStorage.getBool(context, Param.CHECKBOX_REMEMBER_PASSWORD_BY_DEFAULT)
+        binding.cbRememberPass.visibility =
+            if (mode != Mode.SAVE_AS && biometricAuthActive) View.VISIBLE else View.GONE
+    }
+
+    private fun configureNeutralBtn(binding: DialogDataEntryBinding, mode: Mode) {
+        if (mode != Mode.SAVE_AS) return // no configuration required
+        binding.btNeutral.visibility = View.VISIBLE
+        binding.btNeutral.text = context.getString(R.string.app_bt_saveWithCurrentPassword)
+        binding.btNeutral.icon = ContextCompat.getDrawable(context, R.drawable.ic_save)
+    }
+
+    private fun configureConfirmWidget(binding: DialogDataEntryBinding, mode: Mode) {
+        if (mode == Mode.OPEN) return // no configuration required
+        binding.clConfirm.visibility = View.VISIBLE
+        binding.btShowConfirm.setOnClickListener {
+            isNeedSkipTextChangedCheck = true
+            confirmIsVisible = PasswordInput.showHidePassword(
                 context,
-                if (isNotEmpty) if (current) R.font.overpassmono_semibold else R.font.passmono_asterisk
-                else R.font.manrope
+                binding.etConfirm,
+                binding.btShowConfirm,
+                confirmIsVisible
             )
-            btShow.visibility = if (isNotEmpty) View.VISIBLE else View.INVISIBLE
-
-            return current
         }
+    }
 
-        fun showHidePassword(
-            context: Context,
-            etPassword: EditText,
-            btShow: MaterialButton,
-            isVisible: Boolean
-        ): Boolean {
-            val current = !isVisible
-
-            etPassword.transformationMethod =
-                if (current) HideReturnsTransformationMethod.getInstance() else PasswordTransformationMethod.getInstance()
-            etPassword.setSelection(etPassword.text.length)
-
-            etPassword.typeface = ResourcesCompat.getFont(
-                context,
-                if (current) R.font.overpassmono_semibold else R.font.passmono_asterisk
-            )
-
-            btShow.icon = ContextCompat.getDrawable(
-                context,
-                if (current) R.drawable.ic_lock else R.drawable.ic_password_show
-            )
-
-            return current
-        }
+    private fun handleIncorrectPassword(
+        binding: DialogDataEntryBinding,
+        incorrectPassword: Boolean
+    ) {
+        if (!incorrectPassword) return // don't do anything
+        binding.cbRememberPass.isChecked = checkboxInitState
+        binding.clErr.visibility = View.VISIBLE
+        binding.tvErrMsg.text = context.getString(R.string.dlg_ct_incorrectPassword)
     }
 }
