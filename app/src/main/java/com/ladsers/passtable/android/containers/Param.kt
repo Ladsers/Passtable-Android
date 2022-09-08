@@ -6,6 +6,7 @@ enum class Param(
     val defInt: Int = 0,
     val defStr: String = ""
 ) {
+    /* For Snackbar manager */
     INITIAL_INFO_ITEM_MENU("initialInfoItemMenu", defBool = true),
     INITIAL_INFO_PIN_TO_SCREEN("initialInfoPinToScreen", defBool = true),
     INITIAL_INFO_KEYBOARD_SHORTCUTS("initialInfoKeyboardShortcuts", defBool = true),
@@ -13,6 +14,7 @@ enum class Param(
 
     PHYSICAL_KEYBOARD_DETECTED("physicalKeyboardDetected", defBool = false),
 
+    /* Parameters */
     CHECKBOX_REMEMBER_PASSWORD_BY_DEFAULT("checkboxRememberPasswordByDefault", defBool = true),
     LOCK_MODE("lockMode", defInt = 0),
     LOCK_SECS("lockSecs", defInt = 120),

@@ -34,12 +34,12 @@ class BiometricAuth(
 
     private val keyName = "EncryptedPrimaryPassword"
 
-    fun startAuth(masterPassEncrypted: String) {
+    fun startAuth(primaryPasswordEncrypted: String) {
         if (!checkAvailability()) {
             showAuthError(context.getString(R.string.dlg_err_fingerprintSensorNotAvailable))
             return
         }
-        if (masterPassEncrypted.isBlank() || masterPassEncrypted == "@") {
+        if (primaryPasswordEncrypted.isBlank() || primaryPasswordEncrypted == "@") {
             showAuthError(context.getString(R.string.dlg_err_biometricFailure))
             return
         }
@@ -47,13 +47,12 @@ class BiometricAuth(
         val cipher = getCipher()
         val secretKey = getSecretKey()
 
-        val mpeList = masterPassEncrypted.split("@")
+        val mpeList = primaryPasswordEncrypted.split("@")
         val initVec = Base64.decode(mpeList[0])
 
         try {
             cipher.init(Cipher.DECRYPT_MODE, secretKey, GCMParameterSpec(128, initVec))
-        }
-        catch (e: Exception){
+        } catch (e: Exception) {
             resetAuth()
             showAuthError(context.getString(R.string.dlg_err_biometricNewFingerprints))
             return
@@ -66,7 +65,7 @@ class BiometricAuth(
         )
     }
 
-    fun activateAuth(masterPass: String) {
+    fun activateAuth(primaryPassword: String) {
         if (!checkAvailability()) {
             showActivateError(context.getString(R.string.dlg_err_fingerprintSensorNotAvailable))
             afterActivation()
@@ -78,15 +77,14 @@ class BiometricAuth(
 
         try {
             cipher.init(Cipher.ENCRYPT_MODE, secretKey)
-        }
-        catch (e: Exception){
+        } catch (e: Exception) {
             resetAuth()
             showActivateError(context.getString(R.string.dlg_err_biometricNewFingerprintsEnableFail))
             afterActivation()
             return
         }
 
-        strToBiometricPrompt = masterPass
+        strToBiometricPrompt = primaryPassword
         biometricPrompt.authenticate(
             promptInfoActivate,
             BiometricPrompt.CryptoObject(cipher)
@@ -105,16 +103,17 @@ class BiometricAuth(
         val keyStore = KeyStore.getInstance("AndroidKeyStore")
         keyStore.load(null)
         keyStore.deleteEntry(keyName)
-        RecentFiles.forgetMpsEncrypted(context)
+        RecentFiles.forgetAllPasswordsEncrypted(context)
     }
 
-    private fun encrypt(mp: String, cipher: Cipher) {
-        val mpEncrypted = cipher.doFinal(mp.toByteArray(StandardCharsets.UTF_8))
+    /* password = primary password */
+    private fun encrypt(password: String, cipher: Cipher) {
+        val passwordEncrypted = cipher.doFinal(password.toByteArray(StandardCharsets.UTF_8))
         val iv = Base64.toBase64String(cipher.iv)
-        val data = Base64.toBase64String(mpEncrypted)
+        val data = Base64.toBase64String(passwordEncrypted)
         val outStr = "$iv@$data"
         strToBiometricPrompt = null
-        if (RecentFiles.rememberLastMpEncrypted(context, outStr)) {
+        if (RecentFiles.rememberLastPasswordEncrypted(context, outStr)) {
             Toast.makeText(
                 context,
                 context.getString(R.string.ui_msg_biometricEnabled),
@@ -124,10 +123,11 @@ class BiometricAuth(
         afterActivation()
     }
 
-    private fun decrypt(mpEncrypted: String, cipher: Cipher) {
-        val mp = cipher.doFinal(Base64.decode(mpEncrypted))
+    /* password = primary password */
+    private fun decrypt(passwordEncrypted: String, cipher: Cipher) {
+        val password = cipher.doFinal(Base64.decode(passwordEncrypted))
         strToBiometricPrompt = null
-        authSucceeded(String(mp, StandardCharsets.UTF_8))
+        authSucceeded(String(password, StandardCharsets.UTF_8))
     }
 
     private fun getCipher() = Cipher.getInstance(

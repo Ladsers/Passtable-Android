@@ -58,14 +58,14 @@ class TableAdapter(
                 }
 
                 binding.tvNote.text = note
-                binding.tvLogin.text = username
+                binding.tvUsername.text = username
                 binding.tvPassword.text = password
 
                 binding.tvNote.visibility =
                     if (binding.tvNote.text == "") View.GONE else View.VISIBLE
 
-                binding.tvLogin.visibility =
-                    if (binding.tvLogin.text == "") View.GONE else View.VISIBLE
+                binding.tvUsername.visibility =
+                    if (binding.tvUsername.text == "") View.GONE else View.VISIBLE
 
                 binding.tvPassword.visibility =
                     if (password != "/yes" && password != "/no") View.VISIBLE else View.GONE
@@ -84,45 +84,44 @@ class TableAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return dataList.size
-    }
+    override fun getItemCount() = dataList.size
 
     private fun showPopupMenu(binding: ItemDataTableBinding, view: View, position: Int): Boolean {
-        val pop = PopupMenu(binding.root.context, view, Gravity.CENTER, 0,
+        val pop = PopupMenu(
+            binding.root.context, view, Gravity.CENTER, 0,
             R.style.PopupMenuCustomPosTable
         )
         pop.inflate(R.menu.menu_item)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) pop.setForceShowIcon(true)
 
         pop.menu.findItem(R.id.btShowNote).isVisible = isEllipsized(binding.tvNote)
-        pop.menu.findItem(R.id.btShowLogin).isVisible = isEllipsized(binding.tvLogin)
+        pop.menu.findItem(R.id.btShowUsername).isVisible = isEllipsized(binding.tvUsername)
         pop.menu.findItem(R.id.btShowPassword).isVisible = isEllipsized(binding.tvPassword)
 
         pop.menu.findItem(R.id.btCopyNote).isVisible = binding.tvNote.text != ""
-        pop.menu.findItem(R.id.btCopyLogin).isVisible = binding.tvLogin.text != ""
+        pop.menu.findItem(R.id.btCopyUsername).isVisible = binding.tvUsername.text != ""
         pop.menu.findItem(R.id.btCopyPassword).isVisible = binding.tvPassword.text != "/no"
 
-        val pinIsAvailable = binding.tvLogin.text != "" && binding.tvPassword.text != "/no"
+        val pinIsAvailable = binding.tvUsername.text != "" && binding.tvPassword.text != "/no"
         pop.menu.findItem(R.id.btPinToScreen).isVisible = pinIsAvailable
         showInfoPinToScreen(binding.root.context, binding.root, pinIsAvailable)
 
         val colorNegative = ContextCompat.getColor(binding.root.context, R.color.actionNegative)
-        val itemMenuRemove = pop.menu.findItem(R.id.btRemove)
-        val spanStr = SpannableString(itemMenuRemove.title.toString())
+        val btDelete = pop.menu.findItem(R.id.btDelete)
+        val spanStr = SpannableString(btDelete.title.toString())
         spanStr.setSpan(ForegroundColorSpan(colorNegative), 0, spanStr.length, 0)
-        itemMenuRemove.title = spanStr
+        btDelete.title = spanStr
 
         pop.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.btShowNote -> popupAction(position, 1)
-                R.id.btShowLogin -> popupAction(position, 2)
+                R.id.btShowUsername -> popupAction(position, 2)
                 R.id.btShowPassword -> popupAction(position, 3)
                 R.id.btCopyNote -> popupAction(position, 4)
-                R.id.btCopyLogin -> popupAction(position, 5)
+                R.id.btCopyUsername -> popupAction(position, 5)
                 R.id.btCopyPassword -> popupAction(position, 6)
                 R.id.btEdit -> popupAction(position, 7)
-                R.id.btRemove -> popupAction(position, 8)
+                R.id.btDelete -> popupAction(position, 8)
                 R.id.btPinToScreen -> popupAction(position, 9)
             }
             true

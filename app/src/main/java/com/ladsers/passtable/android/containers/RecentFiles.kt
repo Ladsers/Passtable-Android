@@ -31,40 +31,41 @@ object RecentFiles {
             strDate.split("|").toMutableList()
         } else mutableListOf()
 
-        val strMpEncrypted = shPref.getString("mpEncrypted", "")
-        val mpEncryptedList = if (!strMpEncrypted.isNullOrEmpty()) {
-            strMpEncrypted.split("|").toMutableList()
+        /* password = primary password */
+        val strPasswordEncrypted = shPref.getString("passwordEncrypted", "")
+        val passwordEncryptedList = if (!strPasswordEncrypted.isNullOrEmpty()) {
+            strPasswordEncrypted.split("|").toMutableList()
         } else mutableListOf()
 
-        var currentMpEncrypted = " "
+        var currentPasswordEncrypted = " "
         val index = uriList.indexOf(data)
         if (index != -1) {
             uriList.removeAt(index)
             dateList.removeAt(index)
 
-            currentMpEncrypted = mpEncryptedList[index]
-            mpEncryptedList.removeAt(index)
+            currentPasswordEncrypted = passwordEncryptedList[index]
+            passwordEncryptedList.removeAt(index)
         }
 
         if (isAdding) {
             uriList.add(data)
             dateList.add(getCurrentDateAsStr())
-            mpEncryptedList.add(currentMpEncrypted)
+            passwordEncryptedList.add(currentPasswordEncrypted)
             val maxItems = shPref.getInt("maxItems", 15)
             if (uriList.size > maxItems) {
                 uriList.removeAt(0)
                 dateList.removeAt(0)
-                mpEncryptedList.removeAt(0)
+                passwordEncryptedList.removeAt(0)
             }
         }
 
         val newStrUri = uriList.joinToString("|") { it.toString() }
         val newStrDate = dateList.joinToString("|")
-        val newStrMpEncrypted = mpEncryptedList.joinToString("|")
+        val newStrPasswordEncrypted = passwordEncryptedList.joinToString("|")
         with(shPref.edit()) {
             putString("uri", newStrUri)
             putString("date", newStrDate)
-            putString("mpEncrypted", newStrMpEncrypted)
+            putString("passwordEncrypted", newStrPasswordEncrypted)
             apply()
         }
         return true
@@ -77,7 +78,7 @@ object RecentFiles {
         with(shPref.edit()) {
             putString("uri", "")
             putString("date", "")
-            putString("mpEncrypted", "")
+            putString("passwordEncrypted", "")
             apply()
         }
         return true
@@ -91,45 +92,37 @@ object RecentFiles {
         return !strUri.isNullOrEmpty()
     }
 
-    fun loadUri(context: Context?): MutableList<Uri> {
+    private fun loadData(context: Context?, key: String): List<String>? {
         val shPref = context?.getSharedPreferences("recentFiles", Context.MODE_PRIVATE)
-            ?: return mutableListOf()
+            ?: return null
+        val str = shPref.getString(key, "")
+        return if (str.isNullOrEmpty()) null else str.split("|")
+    }
 
-        val str = shPref.getString("uri", "")
-        if (str.isNullOrEmpty()) return mutableListOf()
-        val strList = str.split("|")
+    fun loadUri(context: Context?): MutableList<Uri> {
+        val strList = loadData(context, "uri") ?: return mutableListOf()
         return strList.map { it.toUri() }.reversed().toMutableList()
     }
 
     fun loadDate(context: Context?): MutableList<String> {
-        val shPref = context?.getSharedPreferences("recentFiles", Context.MODE_PRIVATE)
-            ?: return mutableListOf()
-
-        val str = shPref.getString("date", "")
-        if (str.isNullOrEmpty()) return mutableListOf()
-        val strList = str.split("|")
+        val strList = loadData(context, "date") ?: return mutableListOf()
         return strList.reversed().toMutableList()
     }
 
-    fun loadMpsEncrypted(context: Context?): MutableList<Boolean> {
-        val shPref = context?.getSharedPreferences("recentFiles", Context.MODE_PRIVATE)
-            ?: return mutableListOf()
-
-        val str = shPref.getString("mpEncrypted", "")
-        if (str.isNullOrEmpty()) return mutableListOf()
-        val strList = str.split("|")
+    fun loadPasswordsEncrypted(context: Context?): MutableList<Boolean> {
+        val strList = loadData(context, "passwordEncrypted") ?: return mutableListOf()
         return strList.map { it.isNotBlank() }.reversed().toMutableList()
     }
 
-    fun getLastMpEncrypted(context: Context?): String? {
+    fun getLastPasswordEncrypted(context: Context?): String? {
         val shPref = context?.getSharedPreferences("recentFiles", Context.MODE_PRIVATE)
             ?: return null
-        val strMpEncrypted = shPref.getString("mpEncrypted", "")
-        val mpEncryptedList = strMpEncrypted!!.split("|").toMutableList()
-        return mpEncryptedList[mpEncryptedList.lastIndex]
+        val strPasswordEncrypted = shPref.getString("passwordEncrypted", "")
+        val passwordEncryptedList = strPasswordEncrypted!!.split("|").toMutableList()
+        return passwordEncryptedList[passwordEncryptedList.lastIndex]
     }
 
-    fun forgetMpEncrypted(context: Context?, data: Uri): Boolean {
+    fun forgetPasswordEncrypted(context: Context?, data: Uri): Boolean {
         val shPref = context?.getSharedPreferences("recentFiles", Context.MODE_PRIVATE)
             ?: return false
 
@@ -139,23 +132,23 @@ object RecentFiles {
             strList.map { it.toUri() }.toMutableList()
         } else mutableListOf()
 
-        val strMpEncrypted = shPref.getString("mpEncrypted", "")
-        val mpEncryptedList = if (!strMpEncrypted.isNullOrEmpty()) {
-            strMpEncrypted.split("|").toMutableList()
+        val strPasswordEncrypted = shPref.getString("passwordEncrypted", "")
+        val passwordEncryptedList = if (!strPasswordEncrypted.isNullOrEmpty()) {
+            strPasswordEncrypted.split("|").toMutableList()
         } else mutableListOf()
 
         val index = uriList.indexOf(data)
-        if (index != -1) mpEncryptedList[index] = " "
+        if (index != -1) passwordEncryptedList[index] = " "
 
-        val newStrMpEncrypted = mpEncryptedList.joinToString("|")
+        val newStrPasswordEncrypted = passwordEncryptedList.joinToString("|")
         with(shPref.edit()) {
-            putString("mpEncrypted", newStrMpEncrypted)
+            putString("passwordEncrypted", newStrPasswordEncrypted)
             apply()
         }
         return true
     }
 
-    fun forgetMpsEncrypted(context: Context?): Boolean {
+    fun forgetAllPasswordsEncrypted(context: Context?): Boolean {
         val shPref = context?.getSharedPreferences("recentFiles", Context.MODE_PRIVATE)
             ?: return false
 
@@ -165,22 +158,22 @@ object RecentFiles {
             strList.map { it.toUri() }.toMutableList()
         } else mutableListOf()
 
-        val mpEncryptedList = mutableListOf<String>()
-        while (mpEncryptedList.size < uriList.size) mpEncryptedList.add(" ")
-        val newStrMpEncrypted = mpEncryptedList.joinToString("|")
-        shPref.edit().putString("mpEncrypted", newStrMpEncrypted).apply()
+        val passwordEncryptedList = mutableListOf<String>()
+        while (passwordEncryptedList.size < uriList.size) passwordEncryptedList.add(" ")
+        val newStrPasswordEncrypted = passwordEncryptedList.joinToString("|")
+        shPref.edit().putString("passwordEncrypted", newStrPasswordEncrypted).apply()
         return true
     }
 
-    fun rememberLastMpEncrypted(context: Context?, data: String): Boolean {
+    fun rememberLastPasswordEncrypted(context: Context?, data: String): Boolean {
         val shPref = context?.getSharedPreferences("recentFiles", Context.MODE_PRIVATE)
             ?: return false
-        val strMpEncrypted = shPref.getString("mpEncrypted", "")
-        val mpEncryptedList = strMpEncrypted!!.split("|").toMutableList()
-        mpEncryptedList[mpEncryptedList.lastIndex] = data
-        val newStrMpEncrypted = mpEncryptedList.joinToString("|")
+        val strPasswordEncrypted = shPref.getString("passwordEncrypted", "")
+        val passwordEncryptedList = strPasswordEncrypted!!.split("|").toMutableList()
+        passwordEncryptedList[passwordEncryptedList.lastIndex] = data
+        val newStrPasswordEncrypted = passwordEncryptedList.joinToString("|")
 
-        shPref.edit().putString("mpEncrypted", newStrMpEncrypted).apply()
+        shPref.edit().putString("passwordEncrypted", newStrPasswordEncrypted).apply()
         return true
     }
 

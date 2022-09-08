@@ -17,7 +17,7 @@
         app:srcCompat="@drawable/ic_logo" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btLogin"
+        android:id="@+id/bt_username"
         style="@style/IconButton"
         android:layout_width="42dp"
         android:layout_height="42dp"

@@ -22,7 +22,7 @@ import java.util.*
 class RecentAdapter(
     private val recentUri: MutableList<Uri>,
     private val recentDate: MutableList<String>,
-    private val recentMps: MutableList<Boolean>,
+    private val recentPasswords: MutableList<Boolean>, // having encrypted primary passwords?
     private val contextActivity: Context,
     private val open: (Int, Int) -> Unit,
     private val popupAction: (Int, Int) -> Unit,
@@ -69,9 +69,7 @@ class RecentAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return recentUri.size
-    }
+    override fun getItemCount() = recentUri.size
 
     private fun getFormattedDate(str: String): String {
         val parser = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ROOT)
@@ -100,25 +98,26 @@ class RecentAdapter(
     }
 
     private fun showPopupMenu(view: View, position: Int): Boolean {
-        val pop = PopupMenu(contextActivity, view, Gravity.CENTER, 0,
+        val pop = PopupMenu(
+            contextActivity, view, Gravity.CENTER, 0,
             R.style.PopupMenuCustomPosRecent
         )
         pop.inflate(R.menu.menu_recent_files)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) pop.setForceShowIcon(true)
 
-        val btForgetPassword = pop.menu.findItem(R.id.btForgetPassword)
-        btForgetPassword.isVisible = recentMps[position]
-        btForgetPassword.isEnabled = recentMps[position]
+        val btDisableBiometric = pop.menu.findItem(R.id.btDisableBiometric)
+        btDisableBiometric.isVisible = recentPasswords[position]
+        btDisableBiometric.isEnabled = recentPasswords[position]
         val colorNegative = ContextCompat.getColor(contextActivity, R.color.actionNegative)
-        val itemMenuRemove = pop.menu.findItem(R.id.btRemoveFromList)
-        val spanStr = SpannableString(itemMenuRemove.title.toString())
+        val btRemoveFromList = pop.menu.findItem(R.id.btRemoveFromList)
+        val spanStr = SpannableString(btRemoveFromList.title.toString())
         spanStr.setSpan(ForegroundColorSpan(colorNegative), 0, spanStr.length, 0)
-        itemMenuRemove.title = spanStr
+        btRemoveFromList.title = spanStr
 
         pop.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.btRemoveFromList -> popupAction(position, 1)
-                R.id.btForgetPassword -> popupAction(position, 2)
+                R.id.btDisableBiometric -> popupAction(position, 2)
             }
             true
         }

@@ -37,7 +37,9 @@ class DataPanel(
     private var pX: Int = 0
     private var pY: Int = 0
 
-    private var login = ""
+    private enum class Key { USERNAME, PASSWORD, CLEAR }
+
+    private var username = ""
     private var password = ""
 
     private val panelWidthDp = 215
@@ -57,8 +59,8 @@ class DataPanel(
         ).show()
     }
 
-    fun show(login: String, password: String) {
-        this.login = login
+    fun show(username: String, password: String) {
+        this.username = username
         this.password = password
         if (Settings.canDrawOverlays(context)) createPanel()
         else {
@@ -102,10 +104,10 @@ class DataPanel(
         }
 
         binding.root.setOnTouchListener(onTouchListener)
-        binding.btLogin.setOnClickListener { toClipboard("l") }
-        binding.btPassword.setOnClickListener { toClipboard("p") }
+        binding.btUsername.setOnClickListener { toClipboard(Key.USERNAME) }
+        binding.btPassword.setOnClickListener { toClipboard(Key.PASSWORD) }
         binding.btClose.setOnClickListener {
-            toClipboard("")
+            toClipboard(Key.CLEAR)
             closePanel()
         }
 
@@ -144,10 +146,11 @@ class DataPanel(
         return@OnTouchListener false
     }
 
-    private fun toClipboard(key: String) {
+    private fun toClipboard(key: Key) {
         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        if (key == "l" || key == "p") {
-            val clip = ClipData.newPlainText(key, if (key == "l") login else password)
+        if (key == Key.USERNAME || key == Key.PASSWORD) {
+            val clip =
+                ClipData.newPlainText("data", if (key == Key.USERNAME) username else password)
             clipboard.setPrimaryClip(clip)
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -159,8 +162,8 @@ class DataPanel(
         }
 
         val msg = when (key) {
-            "l" -> context.getString(R.string.ui_msg_usernameCopied)
-            "p" -> context.getString(R.string.ui_msg_passwordCopied)
+            Key.USERNAME -> context.getString(R.string.ui_msg_usernameCopied)
+            Key.PASSWORD -> context.getString(R.string.ui_msg_passwordCopied)
             else -> context.getString(R.string.ui_msg_clipboardCleared)
         }
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()

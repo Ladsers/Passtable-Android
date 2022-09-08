@@ -42,5 +42,4 @@ object ParamStorage {
             ?: return param.defStr
         return shPref.getString(param.str, param.defStr)!!
     }
-
 }

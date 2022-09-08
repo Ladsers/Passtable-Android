@@ -15,7 +15,7 @@
         android:visible="false" />
 
     <item
-        android:id="@+id/btShowLogin"
+        android:id="@+id/btShowUsername"
         android:icon="@drawable/ic_open_window"
         android:title="@string/app_bt_showUsername"
         android:visible="false" />
@@ -33,7 +33,7 @@
         android:visible="false" />
 
     <item
-        android:id="@+id/btCopyLogin"
+        android:id="@+id/btCopyUsername"
         android:icon="@drawable/ic_copy"
         android:title="@string/app_bt_copyUsername"
         android:visible="false" />
@@ -50,7 +50,7 @@
         android:title="@string/app_bt_edit" />
 
     <item
-        android:id="@+id/btRemove"
+        android:id="@+id/btDelete"
         android:icon="@drawable/ic_delete"
         android:iconTint="@color/actionNegative"
         android:title="@string/app_bt_delete"

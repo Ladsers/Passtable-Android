@@ -217,7 +217,7 @@ class TableActivity : AppCompatActivity() {
             else -> {
                 if (!quickView && ParamStorage.getBool(this, Param.REMEMBER_RECENT_FILES)) {
                     RecentFiles.add(this, mainUri)
-                    val mpEncrypted = RecentFiles.getLastMpEncrypted(this)
+                    val mpEncrypted = RecentFiles.getLastPasswordEncrypted(this)
                     if (mpEncrypted.isNullOrBlank()) primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN)
                     else biometricAuth.startAuth(mpEncrypted)
                 } else primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN, canRememberPass = false)

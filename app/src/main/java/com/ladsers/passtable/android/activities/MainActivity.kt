@@ -249,7 +249,7 @@ class MainActivity : AppCompatActivity() {
                 removeFromRecentList(id)
             }
             2 -> { // forget password
-                RecentFiles.forgetMpEncrypted(this, recentUri[id])
+                RecentFiles.forgetPasswordEncrypted(this, recentUri[id])
                 recentMps[id] = false
                 adapter.notifyItemChanged(id)
             }
@@ -263,7 +263,7 @@ class MainActivity : AppCompatActivity() {
         recentDate.clear()
         recentDate.addAll(RecentFiles.loadDate(this))
         recentMps.clear()
-        recentMps.addAll(RecentFiles.loadMpsEncrypted(this))
+        recentMps.addAll(RecentFiles.loadPasswordsEncrypted(this))
         adapter.notifyDataSetChanged()
         notifyUser()
     }
