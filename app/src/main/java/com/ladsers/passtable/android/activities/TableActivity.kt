@@ -33,6 +33,7 @@ import com.ladsers.passtable.android.containers.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.containers.RecentFiles
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
+import com.ladsers.passtable.android.dialogs.ErrorDlg
 import com.ladsers.passtable.android.dialogs.FileCreatorDlg
 import com.ladsers.passtable.android.dialogs.PrimaryPasswordDlg
 import com.ladsers.passtable.android.dialogs.MessageDlg
@@ -42,7 +43,6 @@ import com.ladsers.passtable.lib.DataItem
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.*
-
 
 class TableActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTableBinding
@@ -74,6 +74,8 @@ class TableActivity : AppCompatActivity() {
     private var isBackgrounded = false
     private var disableLockFileSystem = true
     private var backgroundSecs = 0L
+
+    private enum class ClipboardKey { NOTE, USERNAME, PASSWORD }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,7 +119,7 @@ class TableActivity : AppCompatActivity() {
             }
         }
         if (uri == null) {
-            showCriticalError(getString(R.string.dlg_err_filePathNotReceived))
+            ErrorDlg.showCritical(messageDlg, this, getString(R.string.dlg_err_filePathNotReceived))
             return
         }
 
@@ -138,7 +140,7 @@ class TableActivity : AppCompatActivity() {
             cryptData = BufferedReader(InputStreamReader(inputStream)).readText()
         } catch (e: Exception) {
             RecentFiles.remove(this, mainUri)
-            showCriticalError(getString(R.string.dlg_err_unableToOpenFile))
+            ErrorDlg.showCritical(messageDlg, this, getString(R.string.dlg_err_unableToOpenFile))
             return
         }
 
@@ -202,46 +204,37 @@ class TableActivity : AppCompatActivity() {
         val fileExtension = getString(R.string.app_com_fileExtension)
         getFileNameWithExt(mainUri)?.let { it ->
             if (!it.endsWith(fileExtension)) {
-                showCriticalError(getString(R.string.dlg_err_fileTypeUnsupported))
+                ErrorDlg.showCritical(messageDlg, this, getString(R.string.dlg_err_fileTypeUnsupported))
                 return
             }
         }
 
-        table = DataTableAndroid(mainUri.toString(), "/test", cryptData, contentResolver)
-        when (table.fill()) {
-            2 -> showCriticalError(getString(R.string.dlg_err_needAppUpdate))
-            -2 -> {
-                RecentFiles.remove(this, mainUri)
-                showCriticalError(getString(R.string.dlg_err_fileDamaged))
-            }
-            else -> {
-                if (!quickView && ParamStorage.getBool(this, Param.REMEMBER_RECENT_FILES)) {
-                    RecentFiles.add(this, mainUri)
-                    val mpEncrypted = RecentFiles.getLastPasswordEncrypted(this)
-                    if (mpEncrypted.isNullOrBlank()) primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN)
-                    else biometricAuth.startAuth(mpEncrypted)
-                } else primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN, canRememberPass = false)
-            }
+        fun badResult(isNeedUpdate: Boolean = false) {
+            RecentFiles.remove(this, mainUri)
+            val msg =
+                getString(if (isNeedUpdate) R.string.dlg_err_needAppUpdate else R.string.dlg_err_fileDamaged)
+            ErrorDlg.showCritical(messageDlg, this, msg)
         }
-    }
 
-    private fun showError(error: String, reason: String) {
-        messageDlg.create(error, reason)
-        messageDlg.addPositiveBtn(
-            getString(R.string.app_bt_ok),
-            R.drawable.ic_accept
-        ) {}
-        messageDlg.show()
-    }
+        fun goodResult(){
+            if (!quickView && ParamStorage.getBool(this, Param.REMEMBER_RECENT_FILES)) {
+                RecentFiles.add(this, mainUri)
+                val mpEncrypted = RecentFiles.getLastPasswordEncrypted(this)
+                if (mpEncrypted.isNullOrBlank()) primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN)
+                else biometricAuth.startAuth(mpEncrypted)
+            } else primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN, canRememberPass = false)
+        }
 
-    private fun showCriticalError(reason: String) {
-        messageDlg.create(getString(R.string.dlg_title_criticalError), reason)
-        messageDlg.addPositiveBtn(
-            getString(R.string.app_bt_closeFile),
-            R.drawable.ic_exit
-        ) { finish() }
-        messageDlg.disableSkip()
-        messageDlg.show()
+        table = DataTableAndroid(mainUri.toString(), "/test", cryptData, contentResolver)
+        try {
+            when (table.fill()) {
+                2 -> badResult(true)
+                -2 -> badResult()
+                else -> goodResult()
+            }
+        } catch (E: Exception) {
+            badResult()
+        }
     }
 
     private fun loginSucceeded() {
@@ -274,45 +267,30 @@ class TableActivity : AppCompatActivity() {
 
     private fun popupAction(id: Int, resCode: Int){
         val tableId = if (mtList[id].id == -1) id else mtList[id].id
+
+        fun show(strResource: Int, data: String, key: ClipboardKey) {
+            messageDlg.quickDialog(
+                getString(strResource),
+                data,
+                { toClipboard(id, key) },
+                posText = getString(R.string.app_bt_copy),
+                negText = getString(R.string.app_bt_close),
+                posIcon = R.drawable.ic_copy
+            )
+        }
+
         when (resCode){
-            1 -> { // show note
-                messageDlg.quickDialog(
-                    getString(R.string.app_com_note),
-                    table.getNote(tableId),
-                    { toClipboard(id, "n") },
-                    posText = getString(R.string.app_bt_copy),
-                    negText = getString(R.string.app_bt_close),
-                    posIcon = R.drawable.ic_copy
-                )
-            }
-            2 -> { // show login
-                messageDlg.quickDialog(
-                    getString(R.string.app_com_username),
-                    table.getUsername(tableId),
-                    { toClipboard(id, "l") },
-                    posText = getString(R.string.app_bt_copy),
-                    negText = getString(R.string.app_bt_close),
-                    posIcon = R.drawable.ic_copy
-                )
-            }
-            3 -> { // show password
-                messageDlg.quickDialog(
-                    getString(R.string.app_com_password),
-                    table.getPassword(tableId),
-                    { toClipboard(id, "p") },
-                    posText = getString(R.string.app_bt_copy),
-                    negText = getString(R.string.app_bt_close),
-                    posIcon = R.drawable.ic_copy
-                )
-            }
-            4 -> toClipboard(id, "n") // copy note
-            5 -> toClipboard(id, "l") // copy login
-            6 -> toClipboard(id, "p") // copy password
+            1 -> show(R.string.app_com_note, table.getNote(tableId), ClipboardKey.NOTE)
+            2 -> show(R.string.app_com_username, table.getUsername(tableId), ClipboardKey.USERNAME)
+            3 -> show(R.string.app_com_password, table.getPassword(tableId), ClipboardKey.PASSWORD)
+            4 -> toClipboard(id, ClipboardKey.NOTE)
+            5 -> toClipboard(id, ClipboardKey.USERNAME)
+            6 -> toClipboard(id, ClipboardKey.PASSWORD)
             7 -> { // edit
                 editId = id
                 editItem()
             }
-            8 -> removeItem(id, table.getNote(tableId)) // remove
+            8 -> deleteItem(id, table.getNote(tableId))
             9 -> dataPanel.show(table.getUsername(tableId), table.getPassword(tableId))
         }
     }
@@ -325,32 +303,31 @@ class TableActivity : AppCompatActivity() {
         if (id == mtList.lastIndex) binding.rvTable.scrollToPosition(mtList.lastIndex)
     }
 
-    private fun toClipboard(id: Int, key: String) {
+    private fun toClipboard(id: Int, key: ClipboardKey) {
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val tableId = if (mtList[id].id == -1) id else mtList[id].id
 
-        val data = when (key) { // TODO: refactor this
-            "n" -> table.getNote(tableId)
-            "l" -> table.getUsername(tableId)
-            "p" -> table.getPassword(tableId)
-            else -> return
+        val data = when (key) {
+            ClipboardKey.NOTE -> table.getNote(tableId)
+            ClipboardKey.USERNAME -> table.getUsername(tableId)
+            ClipboardKey.PASSWORD -> table.getPassword(tableId)
         }
 
-        val clip = ClipData.newPlainText(key, data)
+        val clip = ClipData.newPlainText("data", data)
         clipboard.setPrimaryClip(clip)
 
         val msg = when (key) {
-            "n" -> getString(R.string.ui_msg_noteCopied)
-            "l" -> getString(R.string.ui_msg_usernameCopied)
-            "p" -> getString(R.string.ui_msg_passwordCopied)
-            else -> return
+            ClipboardKey.NOTE -> getString(R.string.ui_msg_noteCopied)
+            ClipboardKey.USERNAME -> getString(R.string.ui_msg_usernameCopied)
+            ClipboardKey.PASSWORD  -> getString(R.string.ui_msg_passwordCopied)
         }
         Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
     }
 
     private fun parseDataFromEditActivity(data: Intent?): List<String>? {
         return if (data == null) {
-            showError(
+            ErrorDlg.show(
+                messageDlg,
                 getString(R.string.dlg_title_changesNotSaved),
                 getString(R.string.dlg_err_couldNotReadData)
             )
@@ -363,7 +340,8 @@ class TableActivity : AppCompatActivity() {
             if (newTag != null && newNote != null && newLogin != null && newPassword != null)
                 listOf(newTag, newNote, newLogin, newPassword)
             else {
-                showError(
+                ErrorDlg.show(
+                    messageDlg,
                     getString(R.string.dlg_title_changesNotSaved),
                     getString(R.string.dlg_err_couldNotReadData)
                 )
@@ -505,7 +483,7 @@ class TableActivity : AppCompatActivity() {
         return false
     }
 
-    private fun removeItem(id: Int, note: String) {
+    private fun deleteItem(id: Int, note: String) {
         val maxChars = 12
         val title = when (true) {
             note.length > maxChars -> getString(R.string.dlg_title_deleteItemFormat, note.take(maxChars - 1) + "…")
@@ -566,27 +544,17 @@ class TableActivity : AppCompatActivity() {
     private fun searchByTag(tagCode: Int, btTag: MaterialButton) {
         tagFilter[tagCode] = !tagFilter[tagCode]
         val tf = tagFilter[tagCode]
-        when (btTag) {
-            binding.btTagRed -> btTag.icon = ContextCompat.getDrawable(
-                this,
-                if (tf) R.drawable.ic_tag_red_checked else R.drawable.ic_tag_red
-            )
-            binding.btTagGreen -> btTag.icon = ContextCompat.getDrawable(
-                this,
-                if (tf) R.drawable.ic_tag_green_checked else R.drawable.ic_tag_green
-            )
-            binding.btTagBlue -> btTag.icon = ContextCompat.getDrawable(
-                this,
-                if (tf) R.drawable.ic_tag_blue_checked else R.drawable.ic_tag_blue
-            )
-            binding.btTagYellow -> btTag.icon = ContextCompat.getDrawable(
-                this,
-                if (tf) R.drawable.ic_tag_yellow_checked else R.drawable.ic_tag_yellow
-            )
-            binding.btTagPurple -> btTag.icon = ContextCompat.getDrawable(
-                this,
-                if (tf) R.drawable.ic_tag_purple_checked else R.drawable.ic_tag_purple
-            )
+
+        fun getIcon(tag: Int, tagChecked: Int) =
+            ContextCompat.getDrawable(this, if (tf) tagChecked else tag)
+
+        btTag.icon = when (btTag) {
+            binding.btTagRed -> getIcon(R.drawable.ic_tag_red, R.drawable.ic_tag_red_checked)
+            binding.btTagGreen -> getIcon(R.drawable.ic_tag_green, R.drawable.ic_tag_green_checked)
+            binding.btTagBlue -> getIcon(R.drawable.ic_tag_blue, R.drawable.ic_tag_blue_checked)
+            binding.btTagYellow -> getIcon(R.drawable.ic_tag_yellow, R.drawable.ic_tag_yellow_checked)
+            binding.btTagPurple -> getIcon(R.drawable.ic_tag_purple, R.drawable.ic_tag_purple_checked)
+            else -> null
         }
 
         val mtListOld = mtList.toList()

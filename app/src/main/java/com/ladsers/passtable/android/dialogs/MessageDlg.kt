@@ -16,7 +16,7 @@ import com.ladsers.passtable.android.databinding.DialogMessageBinding
 import java.util.*
 
 class MessageDlg(
-    private val context: Context,
+    val context: Context,
     private val window: Window
 ) {
     private var title = ""

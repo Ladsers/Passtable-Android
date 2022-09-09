@@ -164,7 +164,7 @@ class DataPanel(
         val msg = when (key) {
             Key.USERNAME -> context.getString(R.string.ui_msg_usernameCopied)
             Key.PASSWORD -> context.getString(R.string.ui_msg_passwordCopied)
-            else -> context.getString(R.string.ui_msg_clipboardCleared)
+            Key.CLEAR -> context.getString(R.string.ui_msg_clipboardCleared)
         }
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
     }
