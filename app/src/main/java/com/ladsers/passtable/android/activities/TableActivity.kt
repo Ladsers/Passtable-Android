@@ -1,33 +1,31 @@
 package com.ladsers.passtable.android.activities
 
 import android.app.Activity
-import android.content.*
+import android.content.ContentResolver
+import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.DocumentsContract
-import android.text.InputType
 import android.view.*
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.color.MaterialColors
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.adapters.TableAdapter
 import com.ladsers.passtable.android.callbacks.SearchDiffCallback
 import com.ladsers.passtable.android.components.BiometricAuth
 import com.ladsers.passtable.android.components.DataPanel
-import com.ladsers.passtable.android.components.SnackbarManager
+import com.ladsers.passtable.android.components.TagPanel
+import com.ladsers.passtable.android.components.tableActivity.TableClipboard
+import com.ladsers.passtable.android.components.tableActivity.TableInitInfo
 import com.ladsers.passtable.android.containers.DataTableAndroid
 import com.ladsers.passtable.android.containers.Param
 import com.ladsers.passtable.android.containers.ParamStorage
@@ -35,8 +33,8 @@ import com.ladsers.passtable.android.containers.RecentFiles
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
 import com.ladsers.passtable.android.dialogs.ErrorDlg
 import com.ladsers.passtable.android.dialogs.FileCreatorDlg
-import com.ladsers.passtable.android.dialogs.PrimaryPasswordDlg
 import com.ladsers.passtable.android.dialogs.MessageDlg
+import com.ladsers.passtable.android.dialogs.PrimaryPasswordDlg
 import com.ladsers.passtable.android.extensions.getFileName
 import com.ladsers.passtable.android.extensions.getFileNameWithExt
 import com.ladsers.passtable.lib.DataItem
@@ -52,18 +50,18 @@ class TableActivity : AppCompatActivity() {
     private lateinit var cryptData: String
 
     private lateinit var adapter: TableAdapter
-    private lateinit var mtList: MutableList<DataItem>
+    private lateinit var itemList: MutableList<DataItem>
     private lateinit var biometricAuth: BiometricAuth
     private lateinit var primaryPasswordDlg: PrimaryPasswordDlg
     private lateinit var fileCreatorDlg: FileCreatorDlg
     private lateinit var messageDlg: MessageDlg
     private lateinit var dataPanel: DataPanel
+    private lateinit var tagPanel: TagPanel
+    private lateinit var tableClipboard: TableClipboard
 
     private lateinit var nothingFoundDelay: Runnable
 
     private var editId = -1
-    private val tagFilter = MutableList(6) { false }
-    private var searchMode = false
     private var saveAsMode = false
     private var afterRemoval = false
     private var escPressed = false
@@ -74,8 +72,6 @@ class TableActivity : AppCompatActivity() {
     private var isBackgrounded = false
     private var disableLockFileSystem = true
     private var backgroundSecs = 0L
-
-    private enum class ClipboardKey { NOTE, USERNAME, PASSWORD }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,7 +88,7 @@ class TableActivity : AppCompatActivity() {
             this,
             this,
             { loginSucceeded() },
-            { mp -> openProcess(mp) },
+            { primaryPassword -> openProcess(primaryPassword) },
             { primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN, canRememberPass = false) })
         primaryPasswordDlg = PrimaryPasswordDlg(
             this,
@@ -145,11 +141,14 @@ class TableActivity : AppCompatActivity() {
         }
 
         val newFile = intent.getBooleanExtra("newFile", false)
-        if (newFile) primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.NEW, mainUri) else checkFileProcess()
+        if (newFile) primaryPasswordDlg.show(
+            PrimaryPasswordDlg.Mode.NEW,
+            mainUri
+        ) else checkFileProcess()
     }
 
     override fun onBackPressed() {
-        if (tagFilter.any { it } || searchMode) openSearchPanel() else {
+        if (tagPanel.isAnyTagActive() || tagPanel.searchModeIsActive) tagPanel.switchPanel() else {
             if (!escPressed) super.onBackPressed()
             else {
                 Toast.makeText(this, getString(R.string.ui_msg_ctrlQToClose), Toast.LENGTH_SHORT)
@@ -180,19 +179,20 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
-    private fun creationFileProcess(masterPass: String) {
+    private fun creationFileProcess(primaryPassword: String) {
         RecentFiles.add(this, mainUri)
-        table = DataTableAndroid(mainUri.toString(), masterPass, cryptData, contentResolver)
+        table = DataTableAndroid(mainUri.toString(), primaryPassword, cryptData, contentResolver)
         if (!saving(firstSave = true)) return
-        if (primaryPasswordDlg.isNeedRememberPassword) biometricAuth.activateAuth(masterPass)
+        if (primaryPasswordDlg.isNeedRememberPassword) biometricAuth.activateAuth(primaryPassword)
         else loginSucceeded()
     }
 
-    private fun openProcess(masterPass: String) {
-        table = DataTableAndroid(mainUri.toString(), masterPass, cryptData, contentResolver)
+    private fun openProcess(primaryPassword: String) {
+        table = DataTableAndroid(mainUri.toString(), primaryPassword, cryptData, contentResolver)
         when (table.fill()) {
             0 -> {
-                if (primaryPasswordDlg.isNeedRememberPassword) biometricAuth.activateAuth(masterPass)
+                if (primaryPasswordDlg.isNeedRememberPassword)
+                    biometricAuth.activateAuth(primaryPassword)
                 else loginSucceeded()
             }
             3 -> primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN, incorrectPassword = true)
@@ -204,7 +204,11 @@ class TableActivity : AppCompatActivity() {
         val fileExtension = getString(R.string.app_com_fileExtension)
         getFileNameWithExt(mainUri)?.let { it ->
             if (!it.endsWith(fileExtension)) {
-                ErrorDlg.showCritical(messageDlg, this, getString(R.string.dlg_err_fileTypeUnsupported))
+                ErrorDlg.showCritical(
+                    messageDlg,
+                    this,
+                    getString(R.string.dlg_err_fileTypeUnsupported)
+                )
                 return
             }
         }
@@ -216,12 +220,12 @@ class TableActivity : AppCompatActivity() {
             ErrorDlg.showCritical(messageDlg, this, msg)
         }
 
-        fun goodResult(){
+        fun goodResult() {
             if (!quickView && ParamStorage.getBool(this, Param.REMEMBER_RECENT_FILES)) {
                 RecentFiles.add(this, mainUri)
-                val mpEncrypted = RecentFiles.getLastPasswordEncrypted(this)
-                if (mpEncrypted.isNullOrBlank()) primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN)
-                else biometricAuth.startAuth(mpEncrypted)
+                val passEncrypted = RecentFiles.getLastPasswordEncrypted(this)
+                if (passEncrypted.isNullOrBlank()) primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN)
+                else biometricAuth.startAuth(passEncrypted)
             } else primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN, canRememberPass = false)
         }
 
@@ -255,37 +259,48 @@ class TableActivity : AppCompatActivity() {
             }
         })
 
-        mtList = table.getData()
-        adapter = TableAdapter(mtList, { id, resCode -> popupAction(id, resCode) },
+        itemList = table.getData()
+        adapter = TableAdapter(itemList, { id, resCode -> popupAction(id, resCode) },
             { id -> showPassword(id) })
+        tableClipboard = TableClipboard(this, itemList, table)
+        tagPanel = TagPanel(
+            this,
+            binding,
+            itemList,
+            table,
+            { searchQuery -> notifyUser(searchQuery) },
+            { mtListOld -> notifyDataSetChanged(mtListOld) })
+        tagPanel.init()
         binding.rvTable.adapter = adapter
         (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-        initPanel()
-        showInfoKeyboardShortcuts()
+        TableInitInfo.showKeyboardShortcuts(this, binding)
         notifyUser()
     }
 
-    private fun popupAction(id: Int, resCode: Int){
-        val tableId = if (mtList[id].id == -1) id else mtList[id].id
+    private fun popupAction(id: Int, resCode: Int) {
+        val tableId = if (itemList[id].id == -1) id else itemList[id].id
 
-        fun show(strResource: Int, data: String, key: ClipboardKey) {
+        fun show(strResource: Int, data: String, key: TableClipboard.Key) {
             messageDlg.quickDialog(
                 getString(strResource),
                 data,
-                { toClipboard(id, key) },
+                { tableClipboard.copy(id, key) },
                 posText = getString(R.string.app_bt_copy),
                 negText = getString(R.string.app_bt_close),
                 posIcon = R.drawable.ic_copy
             )
         }
 
-        when (resCode){
-            1 -> show(R.string.app_com_note, table.getNote(tableId), ClipboardKey.NOTE)
-            2 -> show(R.string.app_com_username, table.getUsername(tableId), ClipboardKey.USERNAME)
-            3 -> show(R.string.app_com_password, table.getPassword(tableId), ClipboardKey.PASSWORD)
-            4 -> toClipboard(id, ClipboardKey.NOTE)
-            5 -> toClipboard(id, ClipboardKey.USERNAME)
-            6 -> toClipboard(id, ClipboardKey.PASSWORD)
+        val keyNote = TableClipboard.Key.NOTE
+        val keyUsername = TableClipboard.Key.USERNAME
+        val keyPassword = TableClipboard.Key.PASSWORD
+        when (resCode) {
+            1 -> show(R.string.app_com_note, table.getNote(tableId), keyNote)
+            2 -> show(R.string.app_com_username, table.getUsername(tableId), keyUsername)
+            3 -> show(R.string.app_com_password, table.getPassword(tableId), keyPassword)
+            4 -> tableClipboard.copy(id, keyNote)
+            5 -> tableClipboard.copy(id, keyUsername)
+            6 -> tableClipboard.copy(id, keyPassword)
             7 -> { // edit
                 editId = id
                 editItem()
@@ -296,32 +311,11 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun showPassword(id: Int) {
-        val tableId = if (mtList[id].id == -1) id else mtList[id].id
-        mtList[id].password = if (mtList[id].password == "/yes") table.getPassword(tableId)
+        val tableId = if (itemList[id].id == -1) id else itemList[id].id
+        itemList[id].password = if (itemList[id].password == "/yes") table.getPassword(tableId)
         else "/yes"
         adapter.notifyItemChanged(id)
-        if (id == mtList.lastIndex) binding.rvTable.scrollToPosition(mtList.lastIndex)
-    }
-
-    private fun toClipboard(id: Int, key: ClipboardKey) {
-        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val tableId = if (mtList[id].id == -1) id else mtList[id].id
-
-        val data = when (key) {
-            ClipboardKey.NOTE -> table.getNote(tableId)
-            ClipboardKey.USERNAME -> table.getUsername(tableId)
-            ClipboardKey.PASSWORD -> table.getPassword(tableId)
-        }
-
-        val clip = ClipData.newPlainText("data", data)
-        clipboard.setPrimaryClip(clip)
-
-        val msg = when (key) {
-            ClipboardKey.NOTE -> getString(R.string.ui_msg_noteCopied)
-            ClipboardKey.USERNAME -> getString(R.string.ui_msg_usernameCopied)
-            ClipboardKey.PASSWORD  -> getString(R.string.ui_msg_passwordCopied)
-        }
-        Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+        if (id == itemList.lastIndex) binding.rvTable.scrollToPosition(itemList.lastIndex)
     }
 
     private fun parseDataFromEditActivity(data: Intent?): List<String>? {
@@ -335,10 +329,10 @@ class TableActivity : AppCompatActivity() {
         } else {
             val newTag = data.getStringExtra("newDataTag")
             val newNote = data.getStringExtra("newDataNote")
-            val newLogin = data.getStringExtra("newDataUsername")
+            val newUsername = data.getStringExtra("newDataUsername")
             val newPassword = data.getStringExtra("newDataPassword")
-            if (newTag != null && newNote != null && newLogin != null && newPassword != null)
-                listOf(newTag, newNote, newLogin, newPassword)
+            if (newTag != null && newNote != null && newUsername != null && newPassword != null)
+                listOf(newTag, newNote, newUsername, newPassword)
             else {
                 ErrorDlg.show(
                     messageDlg,
@@ -355,7 +349,7 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun editItem(blockClosing: Boolean = false) {
-        val tableId = if (mtList[editId].id == -1) editId else mtList[editId].id
+        val tableId = if (itemList[editId].id == -1) editId else itemList[editId].id
         val intent = Intent(this, EditActivity::class.java)
         intent.putExtra("dataTag", table.getTag(tableId))
         intent.putExtra("dataNote", table.getNote(tableId))
@@ -385,23 +379,24 @@ class TableActivity : AppCompatActivity() {
 
         val data = parseDataFromEditActivity(result.data) ?: return@registerForActivityResult
 
-        val tableId = if (mtList[editId].id == -1) editId else mtList[editId].id
+        val tableId = if (itemList[editId].id == -1) editId else itemList[editId].id
         table.setData(tableId, data[0], data[1], data[2], data[3])
         saving()
 
-        if (!tagFilter.any { it } || tagFilter[data[0].toInt()]) {
-            mtList[editId].tag = data[0]
-            mtList[editId].note = data[1]
-            mtList[editId].username = data[2]
-            mtList[editId].password = if (data[3].isNotEmpty()) "/yes" else "/no"
+        if (!tagPanel.isAnyTagActive() || tagPanel.checkTag(data[0])) {
+            itemList[editId].tag = data[0]
+            itemList[editId].note = data[1]
+            itemList[editId].username = data[2]
+            itemList[editId].password = if (data[3].isNotEmpty()) "/yes" else "/no"
 
             (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = true
             adapter.notifyItemChanged(editId)
             binding.rvTable.post {
-                (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+                (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
+                    false
             }
         } else {
-            mtList.removeAt(editId)
+            itemList.removeAt(editId)
             adapter.notifyItemRemoved(editId)
             adapter.notifyItemRangeChanged(editId, adapter.itemCount)
             notifyUser()
@@ -410,10 +405,8 @@ class TableActivity : AppCompatActivity() {
 
     private fun addItem() {
         val intent = Intent(this, EditActivity::class.java)
-        if (tagFilter.count { it } == 1) {
-            intent.putExtra("dataTag", tagFilter.indexOf(true).toString())
-        }
-        if (searchMode) openSearchPanel()
+        tagPanel.findActiveTag().let { intent.putExtra("dataTag", it) }
+        if (tagPanel.searchModeIsActive) tagPanel.switchPanel()
         disableLockFileSystem = true
         addActivityResult.launch(intent)
     }
@@ -437,14 +430,14 @@ class TableActivity : AppCompatActivity() {
             table.add(data[0], data[1], data[2], data[3])
             editId = table.getSize() - 1
 
-            if (!tagFilter.any { it } || tagFilter[data[0].toInt()]) {
+            if (!tagPanel.isAnyTagActive() || tagPanel.checkTag(data[0])) {
                 val hasPassword = if (data[3].isNotEmpty()) "/yes" else "/no"
-                val id = if (!tagFilter.any { it }) -1 else editId
-                mtList.add(DataItem(data[0], data[1], data[2], hasPassword, id))
+                val id = if (!tagPanel.isAnyTagActive()) -1 else editId
+                itemList.add(DataItem(data[0], data[1], data[2], hasPassword, id))
                 notifyUser()
-                adapter.notifyItemInserted(mtList.lastIndex)
+                adapter.notifyItemInserted(itemList.lastIndex)
                 binding.rvTable.postDelayed({
-                    binding.rvTable.smoothScrollToPosition(mtList.lastIndex)
+                    binding.rvTable.smoothScrollToPosition(itemList.lastIndex)
                 }, 500)
             }
 
@@ -486,7 +479,10 @@ class TableActivity : AppCompatActivity() {
     private fun deleteItem(id: Int, note: String) {
         val maxChars = 12
         val title = when (true) {
-            note.length > maxChars -> getString(R.string.dlg_title_deleteItemFormat, note.take(maxChars - 1) + "…")
+            note.length > maxChars -> getString(
+                R.string.dlg_title_deleteItemFormat,
+                note.take(maxChars - 1) + "…"
+            )
             note.isBlank() -> getString(R.string.dlg_title_deleteItem)
             else -> getString(R.string.dlg_title_deleteItemFormat, note)
         }
@@ -496,18 +492,24 @@ class TableActivity : AppCompatActivity() {
             getString(R.string.app_bt_delete),
             R.drawable.ic_delete
         ) {
-            val tableId = if (mtList[id].id == -1) id else mtList[id].id
+            val tableId = if (itemList[id].id == -1) id else itemList[id].id
             table.delete(tableId)
 
-            if (mtList[id].id != -1) { // id correction for search result
-                val tl = mtList.toList()
+            if (itemList[id].id != -1) { // id correction for search result
+                val tl = itemList.toList()
                 for (i in id + 1..tl.lastIndex) {
-                    mtList[i] =
-                        DataItem(tl[i].tag, tl[i].note, tl[i].username, tl[i].password, tl[i].id - 1)
+                    itemList[i] =
+                        DataItem(
+                            tl[i].tag,
+                            tl[i].note,
+                            tl[i].username,
+                            tl[i].password,
+                            tl[i].id - 1
+                        )
                 }
             }
 
-            mtList.removeAt(id)
+            itemList.removeAt(id)
             adapter.notifyItemRemoved(id)
             adapter.notifyItemRangeChanged(id, adapter.itemCount)
             notifyUser()
@@ -520,126 +522,6 @@ class TableActivity : AppCompatActivity() {
             R.drawable.ic_close
         ) {}
         messageDlg.show()
-    }
-
-    private fun initPanel() {
-        binding.btTagRed.setOnClickListener { v -> searchByTag(1, v as MaterialButton) }
-        binding.btTagGreen.setOnClickListener { v -> searchByTag(2, v as MaterialButton) }
-        binding.btTagBlue.setOnClickListener { v -> searchByTag(3, v as MaterialButton) }
-        binding.btTagYellow.setOnClickListener { v -> searchByTag(4, v as MaterialButton) }
-        binding.btTagPurple.setOnClickListener { v -> searchByTag(5, v as MaterialButton) }
-
-        var query = ""
-        val searchWithDelay = Runnable { searchByData(query) }
-        binding.etSearch.doAfterTextChanged { text ->
-            binding.etSearch.removeCallbacks(searchWithDelay)
-            query = text.toString()
-            if (query.isNotEmpty()) binding.etSearch.postDelayed(searchWithDelay, 500)
-            else searchByData(query)
-        }
-
-        binding.btSearch.setOnClickListener { openSearchPanel() }
-    }
-
-    private fun searchByTag(tagCode: Int, btTag: MaterialButton) {
-        tagFilter[tagCode] = !tagFilter[tagCode]
-        val tf = tagFilter[tagCode]
-
-        fun getIcon(tag: Int, tagChecked: Int) =
-            ContextCompat.getDrawable(this, if (tf) tagChecked else tag)
-
-        btTag.icon = when (btTag) {
-            binding.btTagRed -> getIcon(R.drawable.ic_tag_red, R.drawable.ic_tag_red_checked)
-            binding.btTagGreen -> getIcon(R.drawable.ic_tag_green, R.drawable.ic_tag_green_checked)
-            binding.btTagBlue -> getIcon(R.drawable.ic_tag_blue, R.drawable.ic_tag_blue_checked)
-            binding.btTagYellow -> getIcon(R.drawable.ic_tag_yellow, R.drawable.ic_tag_yellow_checked)
-            binding.btTagPurple -> getIcon(R.drawable.ic_tag_purple, R.drawable.ic_tag_purple_checked)
-            else -> null
-        }
-
-        val mtListOld = mtList.toList()
-        mtList.clear()
-        if (tagFilter.any { it }) {
-            mtList.addAll(
-                table.searchByTag(
-                    tagFilter[1],
-                    tagFilter[2],
-                    tagFilter[3],
-                    tagFilter[4],
-                    tagFilter[5]
-                )
-            )
-            binding.btSearch.icon = ContextCompat.getDrawable(this, R.drawable.ic_search_off)
-        } else {
-            mtList.addAll(table.getData())
-            binding.btSearch.icon = ContextCompat.getDrawable(this, R.drawable.ic_search)
-        }
-
-        notifyUser()
-        notifyDataSetChanged(mtListOld)
-    }
-
-    private fun openSearchPanel() {
-        if (!tagFilter.any { it }) {
-            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-            searchMode = !searchMode
-
-            binding.clTagButtons.visibility = if (searchMode) View.GONE else View.VISIBLE
-            binding.etSearch.visibility = if (searchMode) View.VISIBLE else View.GONE
-
-            if (searchMode) {
-                binding.clPanel.setBackgroundColor(
-                    MaterialColors.getColor(
-                        binding.clPanel,
-                        R.attr.editBackground
-                    )
-                )
-                binding.etSearch.requestFocus()
-                binding.etSearch.inputType = InputType.TYPE_CLASS_TEXT
-                imm.showSoftInput(binding.etSearch, InputMethodManager.SHOW_IMPLICIT)
-                binding.btSearch.icon =
-                    ContextCompat.getDrawable(this, R.drawable.ic_search_off)
-            } else {
-                binding.clPanel.setBackgroundColor(
-                    MaterialColors.getColor(
-                        binding.clPanel,
-                        R.attr.panelTableBackground
-                    )
-                )
-                binding.etSearch.clearFocus()
-                imm.hideSoftInputFromWindow(binding.etSearch.windowToken, 0)
-                binding.etSearch.inputType = InputType.TYPE_NULL
-                binding.etSearch.text.clear()
-                binding.btSearch.icon = ContextCompat.getDrawable(this, R.drawable.ic_search)
-            }
-        } else {
-            // closing tags
-            for (i in 1..5) tagFilter[i] = false
-            val mtListOld = mtList.toList()
-            mtList.clear()
-            mtList.addAll(table.getData())
-            notifyUser()
-            notifyDataSetChanged(mtListOld)
-
-            with(binding) {
-                val context = this@TableActivity
-                btSearch.icon = ContextCompat.getDrawable(context, R.drawable.ic_search)
-
-                btTagRed.icon = ContextCompat.getDrawable(context, R.drawable.ic_tag_red)
-                btTagGreen.icon = ContextCompat.getDrawable(context, R.drawable.ic_tag_green)
-                btTagBlue.icon = ContextCompat.getDrawable(context, R.drawable.ic_tag_blue)
-                btTagYellow.icon = ContextCompat.getDrawable(context, R.drawable.ic_tag_yellow)
-                btTagPurple.icon = ContextCompat.getDrawable(context, R.drawable.ic_tag_purple)
-            }
-        }
-    }
-
-    private fun searchByData(query: String) {
-        val mtListOld = mtList.toList()
-        mtList.clear()
-        mtList.addAll(if (query.isNotEmpty()) table.searchByData(query) else table.getData())
-        notifyUser(query)
-        notifyDataSetChanged(mtListOld)
     }
 
     private fun openFileExplorer() {
@@ -663,7 +545,8 @@ class TableActivity : AppCompatActivity() {
         }
 
         if (result.data?.data == null) {
-            Toast.makeText(this, getString(R.string.dlg_err_filePathNotReceived), Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.dlg_err_filePathNotReceived), Toast.LENGTH_LONG)
+                .show()
             if (!saveAsMode) saving() // return err message again.
             return@registerForActivityResult
         }
@@ -694,15 +577,18 @@ class TableActivity : AppCompatActivity() {
 
     private fun fixSaveErrEncryption() {
         disableLockFileSystem = true
-        val mtListOld = mtList.toList()
-        mtList.clear()
-        mtList.addAll(table.getData())
+        val mtListOld = itemList.toList()
+        itemList.clear()
+        itemList.addAll(table.getData())
         notifyUser()
         notifyDataSetChanged(mtListOld)
-        if (tagFilter.any { it } || searchMode) openSearchPanel()
+        if (tagPanel.isAnyTagActive() || tagPanel.searchModeIsActive) tagPanel.switchPanel()
 
         if (!afterRemoval) {
-            messageDlg.create(getString(R.string.dlg_title_encryptionError), getString(R.string.dlg_err_unsupportedChar))
+            messageDlg.create(
+                getString(R.string.dlg_title_encryptionError),
+                getString(R.string.dlg_err_unsupportedChar)
+            )
             messageDlg.addPositiveBtn(
                 getString(R.string.app_bt_tryEditLastItem),
                 R.drawable.ic_edit
@@ -714,7 +600,10 @@ class TableActivity : AppCompatActivity() {
             messageDlg.disableSkip()
             messageDlg.show()
         } else {
-            messageDlg.create(getString(R.string.dlg_title_encryptionError), getString(R.string.dlg_err_tryAddDelete))
+            messageDlg.create(
+                getString(R.string.dlg_title_encryptionError),
+                getString(R.string.dlg_err_tryAddDelete)
+            )
             messageDlg.addPositiveBtn(
                 getString(R.string.app_bt_undoLastAction),
                 R.drawable.ic_undo
@@ -726,9 +615,9 @@ class TableActivity : AppCompatActivity() {
 
     private fun fixSaveErrEncryptionUndo() {
         table.fill()
-        val mtListOld = mtList.toList()
-        mtList.clear()
-        mtList.addAll(table.getData())
+        val mtListOld = itemList.toList()
+        itemList.clear()
+        itemList.addAll(table.getData())
         notifyUser()
         notifyDataSetChanged(mtListOld)
         disableLockFileSystem = false
@@ -760,8 +649,8 @@ class TableActivity : AppCompatActivity() {
         when (keyCode) {
             KeyEvent.KEYCODE_F -> {
                 if (event?.isCtrlPressed ?: return super.onKeyDown(keyCode, event)) {
-                    if (tagFilter.any { it }) openSearchPanel()
-                    if (!searchMode) openSearchPanel()
+                    if (tagPanel.isAnyTagActive()) tagPanel.switchPanel()
+                    if (!tagPanel.searchModeIsActive) tagPanel.switchPanel()
                 }
             }
             KeyEvent.KEYCODE_ESCAPE -> escPressed = true
@@ -776,7 +665,7 @@ class TableActivity : AppCompatActivity() {
                 }
             }
             KeyEvent.KEYCODE_MOVE_HOME -> binding.rvTable.smoothScrollToPosition(0)
-            KeyEvent.KEYCODE_MOVE_END -> binding.rvTable.smoothScrollToPosition(mtList.lastIndex)
+            KeyEvent.KEYCODE_MOVE_END -> binding.rvTable.smoothScrollToPosition(itemList.lastIndex)
         }
         return super.onKeyDown(keyCode, event)
     }
@@ -810,8 +699,8 @@ class TableActivity : AppCompatActivity() {
     private fun lockFile() = recreate()
 
     private fun notifyUser(searchQuery: String = "") {
-        if (mtList.size == 0) {
-            if (tagFilter.any { it } || searchQuery.isNotEmpty()) {
+        if (itemList.size == 0) {
+            if (tagPanel.isAnyTagActive() || searchQuery.isNotEmpty()) {
                 binding.notificationEmptyCollection.clInfo.visibility = View.GONE
                 binding.notificationNothingFound.clInfo.postDelayed(nothingFoundDelay, 300)
             } else {
@@ -823,43 +712,23 @@ class TableActivity : AppCompatActivity() {
             binding.notificationEmptyCollection.clInfo.visibility = View.GONE
             binding.notificationNothingFound.clInfo.removeCallbacks(nothingFoundDelay)
             binding.notificationNothingFound.clInfo.visibility = View.GONE
-            showInfoItemMenu()
+            TableInitInfo.showItemMenu(this, binding, itemList)
         }
     }
 
     private fun notifyDataSetChanged(mtListOld: List<DataItem>) {
-        DiffUtil.calculateDiff(SearchDiffCallback(mtListOld, mtList), false)
+        DiffUtil.calculateDiff(SearchDiffCallback(mtListOld, itemList), false)
             .dispatchUpdatesTo(adapter)
-            binding.toolbar.root.elevation = 0f
-            disableElevation = true
+        binding.toolbar.root.elevation = 0f
+        disableElevation = true
         binding.rvTable.post {
             if (!binding.rvTable.canScrollVertically(-1)) disableElevation = false
             else binding.rvTable.smoothScrollToPosition(0)
         }
     }
 
-    private fun showInfoItemMenu() {
-        val param = Param.INITIAL_INFO_ITEM_MENU
-        if (ParamStorage.getBool(this, param) && mtList.isNotEmpty()) SnackbarManager.showInitInfo(
-            this,
-            binding.root,
-            param,
-            getString(R.string.app_info_itemMenu)
-        )
-    }
-
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        showInfoKeyboardShortcuts()
-    }
-
-    private fun showInfoKeyboardShortcuts() {
-        val param = Param.INITIAL_INFO_KEYBOARD_SHORTCUTS
-        if (ParamStorage.getBool(this, param) &&
-            resources.configuration.keyboard == Configuration.KEYBOARD_QWERTY
-        ) {
-            val info = getString(R.string.app_info_keyboardShortcuts)
-            SnackbarManager.showInitInfo(this, binding.root, param, info)
-        }
+        TableInitInfo.showKeyboardShortcuts(this, binding)
     }
 }
