@@ -54,8 +54,8 @@ class RecentAdapter(
             }
 
             val openCode = when (true) {
-                fileName != "???" -> 0
-                fileName == "???" && gdriveFile -> 1
+                (fileName != "???") -> 0
+                (fileName == "???" && gdriveFile) -> 1
                 else -> 2
             }
             binding.clItem.setOnClickListener { open(position, openCode) }

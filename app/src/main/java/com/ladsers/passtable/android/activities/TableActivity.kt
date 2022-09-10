@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.DocumentsContract
 import android.view.*
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -81,7 +82,7 @@ class TableActivity : AppCompatActivity() {
         }
         binding = ActivityTableBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        onBackPressedDispatcher.addCallback(onBackPressedCallback)
         /* Init essential components */
         messageDlg = MessageDlg(this, window)
         biometricAuth = BiometricAuth(
@@ -108,7 +109,10 @@ class TableActivity : AppCompatActivity() {
         dataPanel = DataPanel(applicationContext, this)
 
         /* Get file path (uri) */
-        var uri = intent.getParcelableExtra<Uri>("fileUri")
+        @Suppress("DEPRECATION") var uri =
+            if (Build.VERSION.SDK_INT >= 33) intent.getParcelableExtra("fileUri", Uri::class.java)
+            else intent.getParcelableExtra<Uri>("fileUri")
+
         intent.action?.let {
             if (it == Intent.ACTION_VIEW && intent.scheme == ContentResolver.SCHEME_CONTENT) {
                 uri = intent.data
@@ -478,7 +482,7 @@ class TableActivity : AppCompatActivity() {
     private fun deleteItem(id: Int, note: String) {
         val maxChars = 12 // limit for name of file
         val title = when (true) {
-            note.length > maxChars -> getString( // need to crop name
+            (note.length > maxChars) -> getString( // need to crop name
                 R.string.dlg_title_deleteItemFormat,
                 note.take(maxChars - 1) + "…"
             )
@@ -530,8 +534,8 @@ class TableActivity : AppCompatActivity() {
         firstSave: Boolean = false // show special message
     ): Boolean {
         val resCode = when (true) {
-            newPath != null && newPassword == null -> table.save(newPath)
-            newPath != null && newPassword != null -> table.save(newPath, newPassword)
+            (newPath != null && newPassword == null) -> table.save(newPath)
+            (newPath != null && newPassword != null) -> table.save(newPath, newPassword)
             else -> table.save()
         }
         when (resCode) {
@@ -752,16 +756,20 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
-        if (tagPanel.isAnyTagActive() || tagPanel.searchModeIsActive) tagPanel.switchPanel() else {
-            if (!escPressed) super.onBackPressed()
-            else {
-                // implemented for physical keyboard
-                Toast.makeText(this, getString(R.string.ui_msg_ctrlQToClose), Toast.LENGTH_SHORT)
-                    .show()
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if (tagPanel.isAnyTagActive() || tagPanel.searchModeIsActive) tagPanel.switchPanel() else {
+                if (!escPressed) finish()
+                else {
+                    // implemented for physical keyboard
+                    Toast.makeText(
+                        this@TableActivity, getString(R.string.ui_msg_ctrlQToClose),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
+            escPressed = false
         }
-        escPressed = false
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

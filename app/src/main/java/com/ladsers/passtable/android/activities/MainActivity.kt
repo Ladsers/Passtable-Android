@@ -131,7 +131,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         val color = MaterialColors.getColor(window.decorView, R.attr.notificationTint)
-        menu.findItem(R.id.btUpdate).icon.setTint(color)
+        menu.findItem(R.id.btUpdate).icon?.setTint(color)
         checkUpdate(menu)
         return true
     }
