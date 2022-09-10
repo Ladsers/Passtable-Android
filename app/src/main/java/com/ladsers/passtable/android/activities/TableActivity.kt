@@ -66,23 +66,23 @@ class TableActivity : AppCompatActivity() {
     private var afterRemoval = false
     private var escPressed = false
     private var disableElevation = false
-
     private var quickView = false
 
+    /* Vars for lock the file system */
     private var isBackgrounded = false
     private var disableLockFileSystem = true
     private var backgroundSecs = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (ParamStorage.getBool(this, Param.PREVENT_SCREEN_CAPTURE)) {
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_SECURE,
-                WindowManager.LayoutParams.FLAG_SECURE
-            )
+        if (ParamStorage.getBool(this, Param.PREVENT_SCREEN_CAPTURE)) { // prevent screen capture
+            val flagSecure = WindowManager.LayoutParams.FLAG_SECURE
+            window.setFlags(flagSecure, flagSecure)
         }
         binding = ActivityTableBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        /* Init essential components */
         messageDlg = MessageDlg(this, window)
         biometricAuth = BiometricAuth(
             this,
@@ -107,6 +107,7 @@ class TableActivity : AppCompatActivity() {
         ) { openFileExplorer() }
         dataPanel = DataPanel(applicationContext, this)
 
+        /* Get file path (uri) */
         var uri = intent.getParcelableExtra<Uri>("fileUri")
         intent.action?.let {
             if (it == Intent.ACTION_VIEW && intent.scheme == ContentResolver.SCHEME_CONTENT) {
@@ -118,8 +119,9 @@ class TableActivity : AppCompatActivity() {
             ErrorDlg.showCritical(messageDlg, this, getString(R.string.dlg_err_filePathNotReceived))
             return
         }
-
         mainUri = uri!!
+
+        /* Configure toolbar */
         binding.toolbar.root.title = getFileName(mainUri) ?: getString(R.string.app_info_appName)
         binding.toolbar.root.navigationIcon = ContextCompat.getDrawable(
             this,
@@ -128,9 +130,11 @@ class TableActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar.root)
         binding.toolbar.root.setNavigationOnClickListener { finish() }
 
+        /* Init runnable vars */
         nothingFoundDelay =
             Runnable { binding.notificationNothingFound.clInfo.visibility = View.VISIBLE }
 
+        /* Try to read file data */
         try {
             val inputStream = contentResolver.openInputStream(mainUri)
             cryptData = BufferedReader(InputStreamReader(inputStream)).readText()
@@ -141,44 +145,15 @@ class TableActivity : AppCompatActivity() {
         }
 
         val newFile = intent.getBooleanExtra("newFile", false)
-        if (newFile) primaryPasswordDlg.show(
-            PrimaryPasswordDlg.Mode.NEW,
-            mainUri
-        ) else checkFileProcess()
+        if (newFile) {
+            // ask password for new file
+            primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.NEW, mainUri)
+        } else checkFileProcess() // further opening steps
     }
 
-    override fun onBackPressed() {
-        if (tagPanel.isAnyTagActive() || tagPanel.searchModeIsActive) tagPanel.switchPanel() else {
-            if (!escPressed) super.onBackPressed()
-            else {
-                Toast.makeText(this, getString(R.string.ui_msg_ctrlQToClose), Toast.LENGTH_SHORT)
-                    .show()
-            }
-        }
-        escPressed = false
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_table, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.btAdd -> {
-                addItem()
-                true
-            }
-            R.id.btSaveAs -> {
-                disableLockFileSystem = true
-                saveAsMode = true
-                fileCreatorDlg.askName(getFileName(mainUri))
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
+    /**
+     * Creating a new file. Called after successfully closing the primary password dialog.
+     */
     private fun creationFileProcess(primaryPassword: String) {
         RecentFiles.add(this, mainUri)
         table = DataTableAndroid(mainUri.toString(), primaryPassword, cryptData, contentResolver)
@@ -187,20 +162,11 @@ class TableActivity : AppCompatActivity() {
         else loginSucceeded()
     }
 
-    private fun openProcess(primaryPassword: String) {
-        table = DataTableAndroid(mainUri.toString(), primaryPassword, cryptData, contentResolver)
-        when (table.fill()) {
-            0 -> {
-                if (primaryPasswordDlg.isNeedRememberPassword)
-                    biometricAuth.activateAuth(primaryPassword)
-                else loginSucceeded()
-            }
-            3 -> primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN, incorrectPassword = true)
-        }
-    }
-
+    /**
+     * Testing for errors in the file. If everything is fine with the file, request the primary
+     * password or start biometric authentication.
+     */
     private fun checkFileProcess() {
-        /* Testing for errors in the file. */
         val fileExtension = getString(R.string.app_com_fileExtension)
         getFileNameWithExt(mainUri)?.let { it ->
             if (!it.endsWith(fileExtension)) {
@@ -241,8 +207,30 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Opening an existing file. Called after successfully closing the primary password dialog or
+     * successful biometric authentication.
+     */
+    private fun openProcess(primaryPassword: String) {
+        table = DataTableAndroid(mainUri.toString(), primaryPassword, cryptData, contentResolver)
+        when (table.fill()) {
+            0 -> {
+                if (primaryPasswordDlg.isNeedRememberPassword)
+                    biometricAuth.activateAuth(primaryPassword)
+                else loginSucceeded()
+            }
+            3 -> primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN, incorrectPassword = true)
+        }
+    }
+
+    /**
+     * The last step of opening or creating a file. If there are problems with the file, then
+     * the activity ends before this method.
+     */
     private fun loginSucceeded() {
-        disableLockFileSystem = false
+        disableLockFileSystem = false // lock the file system is now active
+
+        /* Configure widget */
         binding.rvTable.layoutManager = LinearLayoutManager(
             this,
             LinearLayoutManager.VERTICAL,
@@ -259,9 +247,14 @@ class TableActivity : AppCompatActivity() {
             }
         })
 
+        /* Configure table adapter */
         itemList = table.getData()
         adapter = TableAdapter(itemList, { id, resCode -> popupAction(id, resCode) },
             { id -> showPassword(id) })
+        binding.rvTable.adapter = adapter
+        (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+
+        /* Init remaining components */
         tableClipboard = TableClipboard(this, itemList, table)
         tagPanel = TagPanel(
             this,
@@ -271,15 +264,41 @@ class TableActivity : AppCompatActivity() {
             { searchQuery -> notifyUser(searchQuery) },
             { mtListOld -> notifyDataSetChanged(mtListOld) })
         tagPanel.init()
-        binding.rvTable.adapter = adapter
-        (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+
+        /* Notify user */
         TableInitInfo.showKeyboardShortcuts(this, binding)
         notifyUser()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_table, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        /* Toolbar menu */
+        return when (item.itemId) {
+            R.id.btAdd -> {
+                addItem()
+                true
+            }
+            R.id.btSaveAs -> {
+                disableLockFileSystem = true
+                saveAsMode = true
+                fileCreatorDlg.askName(getFileName(mainUri))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    /**
+     * Do action from pop-up menu created by the table adapter.
+     */
     private fun popupAction(id: Int, resCode: Int) {
         val tableId = if (itemList[id].id == -1) id else itemList[id].id
 
+        // show a window for cropped data
         fun show(strResource: Int, data: String, key: TableClipboard.Key) {
             messageDlg.quickDialog(
                 getString(strResource),
@@ -312,8 +331,8 @@ class TableActivity : AppCompatActivity() {
 
     private fun showPassword(id: Int) {
         val tableId = if (itemList[id].id == -1) id else itemList[id].id
-        itemList[id].password = if (itemList[id].password == "/yes") table.getPassword(tableId)
-        else "/yes"
+        itemList[id].password =
+            if (itemList[id].password == "/yes") table.getPassword(tableId) else "/yes"
         adapter.notifyItemChanged(id)
         if (id == itemList.lastIndex) binding.rvTable.scrollToPosition(itemList.lastIndex)
     }
@@ -344,10 +363,6 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
-    private fun needToLock(intent: Intent?): Boolean {
-        return (intent?.getBooleanExtra("needToLock", false)) ?: return false
-    }
-
     private fun editItem(blockClosing: Boolean = false) {
         val tableId = if (itemList[editId].id == -1) editId else itemList[editId].id
         val intent = Intent(this, EditActivity::class.java)
@@ -358,15 +373,17 @@ class TableActivity : AppCompatActivity() {
 
         intent.putExtra("modeEdit", true)
         intent.putExtra("blockClosing", blockClosing)
-        disableLockFileSystem = true
+        disableLockFileSystem = true // for Table activity
         editActivityResult.launch(intent)
     }
 
+    /**
+     * Action after closing the Edit activity.
+     */
     private val editActivityResult = registerForActivityResult(
-        ActivityResultContracts
-            .StartActivityForResult()
+        ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        disableLockFileSystem = false
+        disableLockFileSystem = false // turn on again
         if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
 
         if (needToLock(result.data)) {
@@ -405,17 +422,19 @@ class TableActivity : AppCompatActivity() {
 
     private fun addItem() {
         val intent = Intent(this, EditActivity::class.java)
-        tagPanel.findActiveTag().let { intent.putExtra("dataTag", it) }
-        if (tagPanel.searchModeIsActive) tagPanel.switchPanel()
-        disableLockFileSystem = true
+        tagPanel.findActiveTag().let { intent.putExtra("dataTag", it) } // preselect tag
+        if (tagPanel.searchModeIsActive) tagPanel.switchPanel() // close data search (not by tag)
+        disableLockFileSystem = true // for Table activity
         addActivityResult.launch(intent)
     }
 
+    /**
+     * Action after closing the Edit activity.
+     */
     private val addActivityResult = registerForActivityResult(
-        ActivityResultContracts
-            .StartActivityForResult()
+        ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        disableLockFileSystem = false
+        disableLockFileSystem = false // turn on again
         if (result.resultCode == Activity.RESULT_OK) {
             if (needToLock(result.data)) {
                 Toast.makeText(
@@ -449,44 +468,18 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
-    private fun saving(
-        newPath: String? = null,
-        newPassword: String? = null,
-        firstSave: Boolean = false
-    ): Boolean {
-        val resCode = when (true) {
-            newPath != null && newPassword == null -> table.save(newPath)
-            newPath != null && newPassword != null -> table.save(newPath, newPassword)
-            else -> table.save()
-        }
-        when (resCode) {
-            0 -> {
-                afterRemoval = false
-                Toast.makeText(
-                    applicationContext,
-                    if (firstSave) getString(R.string.ui_msg_fileCreated)
-                    else getString(R.string.ui_msg_saved),
-                    Toast.LENGTH_SHORT
-                ).show()
-                return true
-            }
-            2, -2 -> fixSaveErrEncryption()
-            -3 -> fixSaveErrWrite()
-        }
-        return false
-    }
-
     private fun deleteItem(id: Int, note: String) {
-        val maxChars = 12
+        val maxChars = 12 // limit for name of file
         val title = when (true) {
-            note.length > maxChars -> getString(
+            note.length > maxChars -> getString( // need to crop name
                 R.string.dlg_title_deleteItemFormat,
                 note.take(maxChars - 1) + "…"
             )
-            note.isBlank() -> getString(R.string.dlg_title_deleteItem)
-            else -> getString(R.string.dlg_title_deleteItemFormat, note)
+            note.isBlank() -> getString(R.string.dlg_title_deleteItem) // no name
+            else -> getString(R.string.dlg_title_deleteItemFormat, note) // no need to crop name
         }
 
+        /* Confirmation dialog */
         messageDlg.create(title, getString(R.string.dlg_msg_permanentAction))
         messageDlg.addPositiveBtn(
             getString(R.string.app_bt_delete),
@@ -495,9 +488,9 @@ class TableActivity : AppCompatActivity() {
             val tableId = if (itemList[id].id == -1) id else itemList[id].id
             table.delete(tableId)
 
-            if (itemList[id].id != -1) { // id correction for search result
+            if (itemList[id].id != -1) { // id correction for other elements in search mode
                 val tl = itemList.toList()
-                for (i in id + 1..tl.lastIndex) {
+                for (i in id + 1..tl.lastIndex) { // after the deleted item
                     itemList[i] =
                         DataItem(
                             tl[i].tag,
@@ -514,7 +507,7 @@ class TableActivity : AppCompatActivity() {
             adapter.notifyItemRangeChanged(id, adapter.itemCount)
             notifyUser()
 
-            afterRemoval = true
+            afterRemoval = true // if saving is not successful, then it is needed for the fixer
             saving()
         }
         messageDlg.addNegativeBtn(
@@ -524,6 +517,36 @@ class TableActivity : AppCompatActivity() {
         messageDlg.show()
     }
 
+    private fun saving(
+        newPath: String? = null, // to save to another file
+        newPassword: String? = null, // to save to another file
+        firstSave: Boolean = false // show special message
+    ): Boolean {
+        val resCode = when (true) {
+            newPath != null && newPassword == null -> table.save(newPath)
+            newPath != null && newPassword != null -> table.save(newPath, newPassword)
+            else -> table.save()
+        }
+        when (resCode) {
+            0 -> {
+                afterRemoval = false // reset flag
+                Toast.makeText(
+                    applicationContext,
+                    if (firstSave) getString(R.string.ui_msg_fileCreated)
+                    else getString(R.string.ui_msg_saved),
+                    Toast.LENGTH_SHORT
+                ).show()
+                return true
+            }
+            2, -2 -> fixSaveErrEncryption() // try to fix it
+            -3 -> fixSaveErrWrite() // try to fix it
+        }
+        return false
+    }
+
+    /**
+     * For saving data to a new file. Called when "save as" or fixing save errors.
+     */
     private fun openFileExplorer() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -536,11 +559,10 @@ class TableActivity : AppCompatActivity() {
     }
 
     private val explorerResult = registerForActivityResult(
-        ActivityResultContracts
-            .StartActivityForResult()
+        ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode != Activity.RESULT_OK) {
-            if (!saveAsMode) saving() // if the user canceled the creation of another file, return err message again.
+            if (!saveAsMode) saving() // if the user canceled the necessary creation of another file, return err message again.
             return@registerForActivityResult
         }
 
@@ -553,14 +575,14 @@ class TableActivity : AppCompatActivity() {
 
         val tree = result.data?.data!!
         val perms = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-        contentResolver.takePersistableUriPermission(tree, perms)
+        contentResolver.takePersistableUriPermission(tree, perms) // for recent files
 
         val file = fileCreatorDlg.createFile(tree)
 
-        if (saveAsMode) primaryPasswordDlg.show(
+        if (saveAsMode) primaryPasswordDlg.show( // if "save as" mode, then ask new primary password
             PrimaryPasswordDlg.Mode.SAVE_AS,
             file
-        ) else saveToOtherFileProcess(file, null)
+        ) else saveToOtherFileProcess(file, null) // no need to ask new primary password
     }
 
     private fun saveToOtherFileProcess(newPath: Uri, newPassword: String?) {
@@ -575,8 +597,12 @@ class TableActivity : AppCompatActivity() {
         } else disableLockFileSystem = false
     }
 
+    /**
+     * Try to fix the error that occurred when writing data to a file
+     */
     private fun fixSaveErrEncryption() {
-        disableLockFileSystem = true
+        disableLockFileSystem = true // when correcting errors, the lock should not be triggered
+        /* Force reset search mode */
         val mtListOld = itemList.toList()
         itemList.clear()
         itemList.addAll(table.getData())
@@ -584,7 +610,7 @@ class TableActivity : AppCompatActivity() {
         notifyDataSetChanged(mtListOld)
         if (tagPanel.isAnyTagActive() || tagPanel.searchModeIsActive) tagPanel.switchPanel()
 
-        if (!afterRemoval) {
+        if (!afterRemoval) { // occurred after editing the item
             messageDlg.create(
                 getString(R.string.dlg_title_encryptionError),
                 getString(R.string.dlg_err_unsupportedChar)
@@ -592,14 +618,14 @@ class TableActivity : AppCompatActivity() {
             messageDlg.addPositiveBtn(
                 getString(R.string.app_bt_tryEditLastItem),
                 R.drawable.ic_edit
-            ) { editItem(blockClosing = true) }
+            ) { editItem(blockClosing = true) } // try to edit item again
             messageDlg.addNegativeBtn(
                 getString(R.string.app_bt_undoLastAction),
                 R.drawable.ic_undo
-            ) { fixSaveErrEncryptionUndo() }
+            ) { fixSaveErrEncryptionUndo() } // just revert to the last successful save.
             messageDlg.disableSkip()
             messageDlg.show()
-        } else {
+        } else { // occurred after deleting the item
             messageDlg.create(
                 getString(R.string.dlg_title_encryptionError),
                 getString(R.string.dlg_err_tryAddDelete)
@@ -607,7 +633,7 @@ class TableActivity : AppCompatActivity() {
             messageDlg.addPositiveBtn(
                 getString(R.string.app_bt_undoLastAction),
                 R.drawable.ic_undo
-            ) { fixSaveErrEncryptionUndo() }
+            ) { fixSaveErrEncryptionUndo() } // just revert to the last successful save.
             messageDlg.disableSkip()
             messageDlg.show()
         }
@@ -623,8 +649,12 @@ class TableActivity : AppCompatActivity() {
         disableLockFileSystem = false
     }
 
+    /**
+     * Try to fix the error that occurred when writing the file itself. It mainly occurs when
+     * the application does not have enough permissions to write to the specified directory.
+     */
     private fun fixSaveErrWrite() {
-        disableLockFileSystem = true
+        disableLockFileSystem = true // when correcting errors, the lock should not be triggered
 
         messageDlg.create(
             getString(R.string.dlg_title_writeError),
@@ -634,45 +664,29 @@ class TableActivity : AppCompatActivity() {
             getString(R.string.app_bt_createNewFile),
             R.drawable.ic_new_file
         ) {
-            saveAsMode = false
-            fileCreatorDlg.askName(getFileName(mainUri), false)
+            saveAsMode = false // error fixing mode
+            fileCreatorDlg.askName(getFileName(mainUri), false) // save to new directory
         }
         messageDlg.addNegativeBtn(
             getString(R.string.app_bt_ignoreAndCloseFile),
             R.drawable.ic_exit
-        ) { finish() }
+        ) { finish() } // ignore and close the file
         messageDlg.disableSkip()
         messageDlg.show()
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        when (keyCode) {
-            KeyEvent.KEYCODE_F -> {
-                if (event?.isCtrlPressed ?: return super.onKeyDown(keyCode, event)) {
-                    if (tagPanel.isAnyTagActive()) tagPanel.switchPanel()
-                    if (!tagPanel.searchModeIsActive) tagPanel.switchPanel()
-                }
-            }
-            KeyEvent.KEYCODE_ESCAPE -> escPressed = true
-            KeyEvent.KEYCODE_N -> {
-                if (event?.isCtrlPressed ?: return super.onKeyDown(keyCode, event)) {
-                    addItem()
-                }
-            }
-            KeyEvent.KEYCODE_Q -> {
-                if (event?.isCtrlPressed ?: return super.onKeyDown(keyCode, event)) {
-                    finish()
-                }
-            }
-            KeyEvent.KEYCODE_MOVE_HOME -> binding.rvTable.smoothScrollToPosition(0)
-            KeyEvent.KEYCODE_MOVE_END -> binding.rvTable.smoothScrollToPosition(itemList.lastIndex)
-        }
-        return super.onKeyDown(keyCode, event)
+    /**
+     * Part of lock the file system. Used to check if the lock is triggered while on the
+     * Edit activity.
+     */
+    private fun needToLock(intent: Intent?): Boolean {
+        return (intent?.getBooleanExtra("needToLock", false)) ?: return false
     }
 
     override fun onPause() {
         super.onPause()
 
+        /* Lock the file system */
         if (!disableLockFileSystem) {
             isBackgrounded = true
             backgroundSecs = Date().time / 1000
@@ -682,6 +696,7 @@ class TableActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        /* Lock the file system */
         if (isBackgrounded) {
             isBackgrounded = false
 
@@ -696,8 +711,11 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
-    private fun lockFile() = recreate()
+    private fun lockFile() = recreate() // ask the primary password again
 
+    /**
+     * Show a list of items, "no items", "nothing found" depending on the situation.
+     */
     private fun notifyUser(searchQuery: String = "") {
         if (itemList.size == 0) {
             if (tagPanel.isAnyTagActive() || searchQuery.isNotEmpty()) {
@@ -727,8 +745,46 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        if (tagPanel.isAnyTagActive() || tagPanel.searchModeIsActive) tagPanel.switchPanel() else {
+            if (!escPressed) super.onBackPressed()
+            else {
+                // implemented for physical keyboard
+                Toast.makeText(this, getString(R.string.ui_msg_ctrlQToClose), Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+        escPressed = false
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        when (keyCode) {
+            KeyEvent.KEYCODE_F -> {
+                if (event?.isCtrlPressed ?: return super.onKeyDown(keyCode, event)) {
+                    if (tagPanel.isAnyTagActive()) tagPanel.switchPanel() // turn off search by tag
+                    if (!tagPanel.searchModeIsActive) tagPanel.switchPanel()
+                }
+            }
+            KeyEvent.KEYCODE_ESCAPE -> escPressed = true // set flag for onBackPressed function
+            KeyEvent.KEYCODE_N -> {
+                if (event?.isCtrlPressed ?: return super.onKeyDown(keyCode, event)) {
+                    addItem()
+                }
+            }
+            KeyEvent.KEYCODE_Q -> {
+                if (event?.isCtrlPressed ?: return super.onKeyDown(keyCode, event)) {
+                    finish()
+                }
+            }
+            KeyEvent.KEYCODE_MOVE_HOME -> binding.rvTable.smoothScrollToPosition(0)
+            KeyEvent.KEYCODE_MOVE_END -> binding.rvTable.smoothScrollToPosition(itemList.lastIndex)
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
+        // if the physical keyboard is connected while the app is running, then show hotkeys information
         TableInitInfo.showKeyboardShortcuts(this, binding)
     }
 }
