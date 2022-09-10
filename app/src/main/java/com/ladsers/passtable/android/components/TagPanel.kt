@@ -24,6 +24,8 @@ class TagPanel(
 ) {
     var searchModeIsActive = false
         private set
+    var lastSearchQuery = ""
+        private set
 
     private val tagIsActive = MutableList(6) { false }
 
@@ -110,7 +112,13 @@ class TagPanel(
         }
     }
 
+    fun checkDataInQuery(data: String): Boolean {
+        if (lastSearchQuery.isEmpty()) return false
+        return data.lowercase().contains(lastSearchQuery)
+    }
+
     private fun searchByData(query: String) {
+        lastSearchQuery = query
         val dataListOld = dataList.toList()
         dataList.clear()
         dataList.addAll(if (query.isNotEmpty()) table.searchByData(query) else table.getData())

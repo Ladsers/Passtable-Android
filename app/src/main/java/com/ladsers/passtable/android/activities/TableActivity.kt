@@ -400,7 +400,11 @@ class TableActivity : AppCompatActivity() {
         table.setData(tableId, data[0], data[1], data[2], data[3])
         saving()
 
-        if (!tagPanel.isAnyTagActive() || tagPanel.checkTag(data[0])) {
+        val searchIsRunning = tagPanel.isAnyTagActive() || tagPanel.searchModeIsActive
+        val containQuery =
+            tagPanel.checkDataInQuery(data[1]) || tagPanel.checkDataInQuery(data[2])
+
+        if (!searchIsRunning || tagPanel.checkTag(data[0]) || containQuery) {
             itemList[editId].tag = data[0]
             itemList[editId].note = data[1]
             itemList[editId].username = data[2]
@@ -423,7 +427,6 @@ class TableActivity : AppCompatActivity() {
     private fun addItem() {
         val intent = Intent(this, EditActivity::class.java)
         tagPanel.findActiveTag().let { intent.putExtra("dataTag", it) } // preselect tag
-        if (tagPanel.searchModeIsActive) tagPanel.switchPanel() // close data search (not by tag)
         disableLockFileSystem = true // for Table activity
         addActivityResult.launch(intent)
     }
@@ -449,9 +452,13 @@ class TableActivity : AppCompatActivity() {
             table.add(data[0], data[1], data[2], data[3])
             editId = table.getSize() - 1
 
-            if (!tagPanel.isAnyTagActive() || tagPanel.checkTag(data[0])) {
+            val searchIsRunning = tagPanel.isAnyTagActive() || tagPanel.searchModeIsActive
+            val containQuery =
+                tagPanel.checkDataInQuery(data[1]) || tagPanel.checkDataInQuery(data[2])
+
+            if (!searchIsRunning || tagPanel.checkTag(data[0]) || containQuery) {
                 val hasPassword = if (data[3].isNotEmpty()) "/yes" else "/no"
-                val id = if (!tagPanel.isAnyTagActive()) -1 else editId
+                val id = if (!searchIsRunning) -1 else editId
                 itemList.add(DataItem(data[0], data[1], data[2], hasPassword, id))
                 notifyUser()
                 adapter.notifyItemInserted(itemList.lastIndex)
