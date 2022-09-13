@@ -19,7 +19,7 @@ class TagPanel(
     private val binding: ActivityTableBinding,
     private val dataList: MutableList<DataItem>,
     private val table: DataTable,
-    private val notifyUser: (String) -> Unit,
+    private val notifyUser: () -> Unit,
     private val notifyDataSetChanged: (List<DataItem>) -> Unit,
 ) {
     var searchModeIsActive = false
@@ -97,7 +97,7 @@ class TagPanel(
             val dataListOld = dataList.toList()
             dataList.clear()
             dataList.addAll(table.getData())
-            notifyUser("")
+            notifyUser()
             notifyDataSetChanged(dataListOld)
 
             with(binding) {
@@ -122,7 +122,7 @@ class TagPanel(
         val dataListOld = dataList.toList()
         dataList.clear()
         dataList.addAll(if (query.isNotEmpty()) table.searchByData(query) else table.getData())
-        notifyUser(query)
+        notifyUser()
         notifyDataSetChanged(dataListOld)
     }
 
@@ -165,7 +165,7 @@ class TagPanel(
             binding.btSearch.icon = ContextCompat.getDrawable(context, R.drawable.ic_search)
         }
 
-        notifyUser("")
+        notifyUser()
         notifyDataSetChanged(dataListOld)
     }
 }

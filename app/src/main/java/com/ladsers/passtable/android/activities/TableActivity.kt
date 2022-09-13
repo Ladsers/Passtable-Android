@@ -267,7 +267,7 @@ class TableActivity : AppCompatActivity() {
             binding,
             itemList,
             table,
-            { searchQuery -> notifyUser(searchQuery) },
+            { notifyUser() },
             { mtListOld -> notifyDataSetChanged(mtListOld) })
         tagPanel.init()
 
@@ -729,9 +729,9 @@ class TableActivity : AppCompatActivity() {
     /**
      * Show a list of items, "no items", "nothing found" depending on the situation.
      */
-    private fun notifyUser(searchQuery: String = "") {
+    private fun notifyUser() {
         if (itemList.size == 0) {
-            if (tagPanel.isAnyTagActive() || searchQuery.isNotEmpty()) {
+            if (tagPanel.isAnyTagActive() || tagPanel.searchModeIsActive) {
                 binding.notificationEmptyCollection.clInfo.visibility = View.GONE
                 binding.notificationNothingFound.clInfo.postDelayed(nothingFoundDelay, 300)
             } else {
