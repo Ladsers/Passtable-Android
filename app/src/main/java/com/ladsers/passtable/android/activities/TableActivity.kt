@@ -62,6 +62,8 @@ class TableActivity : AppCompatActivity() {
 
     private lateinit var nothingFoundDelay: Runnable
 
+    private val smoothAnimItemLimit = 150 // to speed up work with big files
+
     private var editId = -1
     private var saveAsMode = false
     private var afterRemoval = false
@@ -752,7 +754,10 @@ class TableActivity : AppCompatActivity() {
         disableElevation = true
         binding.rvTable.post {
             if (!binding.rvTable.canScrollVertically(-1)) disableElevation = false
-            else binding.rvTable.smoothScrollToPosition(0)
+            else {
+                if (itemList.size < smoothAnimItemLimit) binding.rvTable.smoothScrollToPosition(0)
+                else binding.rvTable.scrollToPosition(0) // quick, but ugly
+            }
         }
     }
 
