@@ -653,12 +653,13 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun fixSaveErrEncryptionUndo() {
-        table.fill()
+        table.fill() // roll back to the last saved version of the file
         val mtListOld = itemList.toList()
         itemList.clear()
         itemList.addAll(table.getData())
         notifyUser()
         notifyDataSetChanged(mtListOld)
+        afterRemoval = false
         disableLockFileSystem = false
     }
 
