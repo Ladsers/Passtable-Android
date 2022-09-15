@@ -731,7 +731,7 @@ class TableActivity : AppCompatActivity() {
      */
     private fun notifyUser() {
         if (itemList.size == 0) {
-            if (tagPanel.isAnyTagActive() || tagPanel.searchModeIsActive) {
+            if (tagPanel.isAnyTagActive() || tagPanel.lastSearchQuery.isNotEmpty()) {
                 binding.notificationEmptyCollection.clInfo.visibility = View.GONE
                 binding.notificationNothingFound.clInfo.postDelayed(nothingFoundDelay, 300)
             } else {
