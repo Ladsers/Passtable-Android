@@ -725,7 +725,10 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
-    private fun lockFile() = recreate() // ask the primary password again
+    private fun lockFile() {
+        intent.removeExtra("newFile") // if the file was created in this session
+        recreate() // ask the primary password again
+    }
 
     /**
      * Show a list of items, "no items", "nothing found" depending on the situation.
