@@ -1,1 +1,8 @@
 blank_issues_enabled: false
+contact_links:
+    - name: Ask a question
+      url: https://github.com/Ladsers/Passtable-Android/discussions/categories/q-a
+      about: Ask your question here
+    - name: Suggest an idea
+      url: https://github.com/Ladsers/Passtable-Android/discussions/categories/ideas
+      about: Suggest an idea for this app
