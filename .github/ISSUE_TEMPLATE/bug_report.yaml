@@ -1,0 +1,45 @@
+name: Bug report
+description: Create a report to help us improve
+title: "Bug title"
+labels: []
+body: 
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: Describe the bug
+      description: A sufficient description of the bug
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: How to reproduce the bug?
+      description: Please provide any required setup and steps to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Tap on '...'
+        3. See error...
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: A concise description of what you expected to happen
+  - type: textarea
+    attributes:
+      label: Screenshots
+      description: If necessary, put screenshots here
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: App version
+      description: The version of the application can be found in "Settings"
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: Operating system
+      description: Please specify the operating system with version tag and software overlay name
+      placeholder: e.g. Android 13, OneUI 5.0, MIUI 14
+  - type: textarea
+    attributes:
+      label: Additional context
