@@ -1,4 +1,4 @@
-![cover](https://github.com/Ladsers/Passtable-Android/raw/master/.github/readme/github_readme_cover.png)
+![cover](https://github.com/Ladsers/Passtable-Android/raw/developing/.github/readme/github_readme_cover.png)
 
 **The Passtable project**:ㅤ<ins>Android app</ins>ㅤ|ㅤ[Windows app](https://github.com/Ladsers/Passtable-for-Windows)ㅤ|ㅤ[JVM app (Linux & macOS)](https://github.com/Ladsers/Passtable-JVM)ㅤ|ㅤ[Library](https://github.com/Ladsers/Passtable-Lib)
 </br></br>
@@ -28,7 +28,7 @@ Add tags when creating elements in one touch, and then quickly find your data us
 Easy access to data using a fingerprint scanner.
 
 ### Screenshots
-![screenshot](https://github.com/Ladsers/Passtable-Android/raw/master/.github/readme/github_smartphone.png)
+![screenshot](https://github.com/Ladsers/Passtable-Android/raw/developing/.github/readme/github_smartphone.png)
 
 ### Contributing
 Here are some ways you can contribute:
