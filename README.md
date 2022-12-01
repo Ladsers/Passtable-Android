@@ -5,6 +5,11 @@
 
 
 ## Passtable
+Android application for storing passwords and confidential data. Written in Kotlin using its own core library. This application can be run on Android 6 and above. Opens ".passtable" files.
+
+```
+git clone --recursive https://github.com/Ladsers/Passtable-Android.git
+```
 
 ### Features
 🔸 **Free & No ads** </br>
@@ -24,3 +29,19 @@ Easy access to data using a fingerprint scanner.
 
 ### Screenshots
 ![screenshot](https://github.com/Ladsers/Passtable-Android/raw/master/.github/readme/github_smartphone.png)
+
+### Contributing
+Here are some ways you can contribute:
++ [Submit Issues](https://github.com/Ladsers/Passtable-Android/issues/new/choose) in Passtable-Android or another the Passtable project repository;
++ [Submit Pull requests](https://github.com/Ladsers/Passtable-Android/pulls) with fixes and features;
++ [Share your Ideas](https://github.com/Ladsers/Passtable-Android/discussions/categories/ideas) about application.
+
+#### Branches
++ **developing** is the most relevant branch. Contains the latest features, but is not stable. The default branch for Pull requests. Without testing. <ins>It is strongly not recommended to use for real data.</ins>
++ **beta** branch is used for debugging and fixing bugs in pre-release.
++ **stable** branch contains the source code from which release binaries are built.
+
+### License
+The code in this repository is licensed under the [Apache License 2.0](https://github.com/Ladsers/Passtable-Android/blob/master/LICENSE.md). The third party resources used are listed in [NOTICE.md](https://github.com/Ladsers/Passtable-Android/blob/master/NOTICE.md).
+</br></br>
+The Passtable logo can be used in applications or articles only when the Passtable project is explicitly mentioned.
