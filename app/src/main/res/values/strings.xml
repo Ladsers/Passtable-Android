@@ -55,6 +55,7 @@
         <string name="app_bt_license">License</string>
         <string name="app_bt_ok">OK</string>
         <string name="app_bt_open">Open</string>
+        <string name="app_bt_passwordGenerator">Password generator</string>
         <string name="app_bt_pinToScreen">Pin to screen</string>
         <string name="app_bt_removeFromList">Remove from list</string>
         <string name="app_bt_save">Save</string>
@@ -100,6 +101,7 @@
         <string name="ui_ct_nothingFound">Nothing found</string>
         <string name="ui_ct_openOrCreateFile">Open an existing file or create a new one</string>
         <string name="ui_ct_passwordsDoNotMatch">Passwords don\'t match</string>
+        <string name="ui_ct_passwordGenerator">Password generator</string>
         <string name="ui_ct_plusToAddNew">Click on \"+\" in the top right corner to add a new item</string>
         <string name="ui_ct_preventScreenCapture">Prevent screen capture</string>
         <string name="ui_ct_recentFiles">Recent files</string>

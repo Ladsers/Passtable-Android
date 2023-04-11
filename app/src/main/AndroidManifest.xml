@@ -22,6 +22,9 @@
             android:name=".activities.EditActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|keyboard|navigation" />
         <activity
+            android:name=".activities.PasswordGeneratorActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|keyboard|navigation" />
+        <activity
             android:name=".activities.TableActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|keyboard|navigation"
             android:exported="true">

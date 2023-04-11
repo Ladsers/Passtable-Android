@@ -54,6 +54,7 @@
         <string name="app_bt_license">Лицензия</string>
         <string name="app_bt_ok">Ладно</string>
         <string name="app_bt_open">Открыть</string>
+        <string name="app_bt_passwordGenerator">Генератор паролей</string>
         <string name="app_bt_pinToScreen">Закрепить на экране</string>
         <string name="app_bt_removeFromList">Убрать из списка</string>
         <string name="app_bt_save">Сохранить</string>
@@ -99,6 +100,7 @@
         <string name="ui_ct_nothingFound">Ничего не найдено</string>
         <string name="ui_ct_openOrCreateFile">Откройте существующий файл или создайте новый</string>
         <string name="ui_ct_passwordsDoNotMatch">Пароли не совпадают</string>
+        <string name="ui_ct_passwordGenerator">Генератор паролей</string>
         <string name="ui_ct_plusToAddNew">Нажмите на \"+\" в правом верхнем углу для добавления нового элемента</string>
         <string name="ui_ct_preventScreenCapture">Предотвращать захват экрана</string>
         <string name="ui_ct_recentFiles">Недавние файлы</string>

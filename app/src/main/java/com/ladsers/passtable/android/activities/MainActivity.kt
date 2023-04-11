@@ -22,6 +22,7 @@ import com.google.android.material.color.MaterialColors
 import com.ladsers.passtable.android.BuildConfig
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.adapters.RecentAdapter
+import com.ladsers.passtable.android.components.PasswordGeneratorProcessor
 import com.ladsers.passtable.android.components.SnackbarManager
 import com.ladsers.passtable.android.containers.Param
 import com.ladsers.passtable.android.containers.ParamStorage
@@ -141,6 +142,12 @@ class MainActivity : AppCompatActivity() {
             R.id.btSettings -> {
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
+                true
+            }
+            R.id.btPasswordGenerator -> {
+                PasswordGeneratorProcessor(activityResultRegistry, this) { s ->
+                    s?.let { Toast.makeText(this, s, Toast.LENGTH_SHORT).show() }
+                }.start()
                 true
             }
             R.id.btUpdate -> {
