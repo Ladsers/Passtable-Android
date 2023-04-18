@@ -223,7 +223,7 @@
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/background_edittext"
-                app:layout_constraintEnd_toStartOf="@+id/btUndoPassword"
+                app:layout_constraintEnd_toStartOf="@+id/btPasswordGenerator"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/et_username">
 
@@ -256,6 +256,22 @@
                     tools:visibility="visible" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btPasswordGenerator"
+                style="@style/IconButton"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="?whiteOrBlack"
+                app:icon="@drawable/ic_password_generator"
+                app:iconTint="@color/selector_icon_tint"
+                app:layout_constraintBottom_toBottomOf="@+id/clPassword"
+                app:layout_constraintEnd_toStartOf="@+id/btUndoPassword"
+                app:layout_constraintTop_toTopOf="@+id/clPassword"
+                app:strokeColor="@color/selector_icon_tint"
+                app:strokeWidth="2dp"
+                tools:visibility="visible" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btUndoPassword"

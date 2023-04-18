@@ -22,6 +22,7 @@ import com.google.android.material.color.MaterialColors
 import com.ladsers.passtable.android.BuildConfig
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.adapters.RecentAdapter
+import com.ladsers.passtable.android.components.ClipboardManager
 import com.ladsers.passtable.android.components.PasswordGeneratorProcessor
 import com.ladsers.passtable.android.components.SnackbarManager
 import com.ladsers.passtable.android.containers.Param
@@ -44,6 +45,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: RecentAdapter
     private lateinit var fileCreatorDlg: FileCreatorDlg
     private lateinit var messageDlg: MessageDlg
+    private lateinit var passwordGeneratorProcessor: PasswordGeneratorProcessor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +70,9 @@ class MainActivity : AppCompatActivity() {
 
         binding.btOpenFile.setOnClickListener { openFileExplorer(false) }
         binding.btNewFile.setOnClickListener { v -> fileCreatorDlg.askName(btView = v) }
+
+        passwordGeneratorProcessor = PasswordGeneratorProcessor(activityResultRegistry, this)
+        { s -> ClipboardManager.copy(this, s, getString(R.string.ui_msg_passwordCopied)) }
 
         messageDlg = MessageDlg(this, window)
         fileCreatorDlg =
@@ -145,9 +150,7 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.btPasswordGenerator -> {
-                PasswordGeneratorProcessor(activityResultRegistry, this) { s ->
-                    s?.let { Toast.makeText(this, s, Toast.LENGTH_SHORT).show() }
-                }.start()
+                passwordGeneratorProcessor.start(true)
                 true
             }
             R.id.btUpdate -> {

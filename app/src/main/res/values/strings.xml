@@ -44,6 +44,7 @@
         <string name="app_bt_disable">Disable</string>
         <string name="app_bt_disableBiometricForAll">Disable biometric authentication for all files</string>
         <string name="app_bt_disableBiometricForOne">Disable biometric authentication</string>
+        <string name="app_bt_done">Done</string>
         <string name="app_bt_downloadFromGithub">Download from GitHub</string>
         <string name="app_bt_edit">Edit</string>
         <string name="app_bt_enter">Enter</string>

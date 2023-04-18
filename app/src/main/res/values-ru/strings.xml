@@ -43,6 +43,7 @@
         <string name="app_bt_disable">Отключить</string>
         <string name="app_bt_disableBiometricForAll">Отключить биометрическую аутентификацию для всех файлов</string>
         <string name="app_bt_disableBiometricForOne">Откл. биометр. аутентификацию</string>
+        <string name="app_bt_done">Готово</string>
         <string name="app_bt_downloadFromGithub">Скачать с GitHub</string>
         <string name="app_bt_edit">Редактировать</string>
         <string name="app_bt_enter">Ввод</string>
