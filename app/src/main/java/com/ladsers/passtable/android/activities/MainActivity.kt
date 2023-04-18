@@ -31,7 +31,9 @@ import com.ladsers.passtable.android.containers.RecentFiles
 import com.ladsers.passtable.android.databinding.ActivityMainBinding
 import com.ladsers.passtable.android.dialogs.FileCreatorDlg
 import com.ladsers.passtable.android.dialogs.MessageDlg
-import com.ladsers.passtable.lib.Updater
+import com.ladsers.passtable.lib.codes.UpdaterCheckResult
+import com.ladsers.passtable.lib.updater.Platform
+import com.ladsers.passtable.lib.updater.Updater
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -115,11 +117,11 @@ class MainActivity : AppCompatActivity() {
     private fun checkUpdate(menu: Menu) {
         try {
             Thread {
-                val res = Updater.check("apk", BuildConfig.VERSION_NAME)
+                val res = Updater.check(Platform.ANDROID_RELEASE, BuildConfig.VERSION_NAME)
                 window.decorView.post {
                     val button = menu.findItem(R.id.btUpdate)
-                    button.isVisible = res == 1
-                    button.isEnabled = res == 1
+                    button.isVisible = res == UpdaterCheckResult.NEED_UPDATE
+                    button.isEnabled = res == UpdaterCheckResult.NEED_UPDATE
                 }
             }.start()
         } catch (e: Exception) { /* do nothing */
@@ -127,7 +129,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getNewVersion() {
-        val lastVer = Updater.getLastVer()
+        // TODO : migrate to ladsers.com
+        val lastVer = Updater.lastVer
         val urlGitHub = "https://github.com/Ladsers/Passtable-Android/releases/download"
         val newApp = "Passtable-$lastVer.apk"
         val url = "$urlGitHub/$lastVer/$newApp"
