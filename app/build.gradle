@@ -46,6 +46,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "androidx.activity:activity-ktx:1.5.1"
     implementation 'androidx.fragment:fragment-ktx:1.5.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0'
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
     implementation "androidx.biometric:biometric-ktx:1.2.0-alpha04"
     testImplementation 'junit:junit:4.+'
