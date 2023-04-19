@@ -1,13 +1,11 @@
 package com.ladsers.passtable.android.dialogs
 
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.ladsers.passtable.android.BuildConfig
 import com.ladsers.passtable.android.R
-import com.ladsers.passtable.android.components.PackageFinder
-import com.ladsers.passtable.android.components.PackageFinder.isPackageInstalled
+import com.ladsers.passtable.android.components.AppStoreProcessor
+import com.ladsers.passtable.android.containers.AppStore
 import com.ladsers.passtable.lib.updater.Updater
 
 object UpdateDlg {
@@ -15,8 +13,7 @@ object UpdateDlg {
 
         val context = messageDlg.context
 
-        val isRuStoreInstalled =
-            context.packageManager.isPackageInstalled(PackageFinder.packageNameRuStore)
+        val isRuStoreInstalled = AppStoreProcessor.isInstalled(context, AppStore.RUSTORE)
 
         messageDlg.create(
             context.getString(R.string.dlg_title_updateAvailable),
@@ -27,7 +24,7 @@ object UpdateDlg {
             messageDlg.addPositiveBtn(
                 "Open RuStore", //TODO
                 R.drawable.ic_download
-            ) { openRuStore(context) }
+            ) { AppStoreProcessor.open(context, AppStore.RUSTORE) }
 
             messageDlg.addNeutralBtn(
                 context.getString(R.string.app_bt_downloadFromGithub), //TODO
@@ -51,18 +48,5 @@ object UpdateDlg {
     private fun downloadFromSite(context: Context) {
         val url = "https://ladsers.com/wp-content/uploads/Passtable-${Updater.lastVer}.apk"
         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-    }
-
-    private fun openRuStore(context: Context) {
-        try {
-            context.startActivity(
-                Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("rustore://apps.rustore.ru/app/${BuildConfig.APPLICATION_ID}")
-                )
-            )
-        } catch (ex: ActivityNotFoundException) {
-            /* do nothing */
-        }
     }
 }
