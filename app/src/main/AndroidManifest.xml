@@ -51,4 +51,8 @@
         </activity>
     </application>
 
+    <queries>
+        <package android:name="ru.vk.store"/>
+    </queries>
+
 </manifest>

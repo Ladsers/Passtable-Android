@@ -31,6 +31,7 @@ import com.ladsers.passtable.android.containers.RecentFiles
 import com.ladsers.passtable.android.databinding.ActivityMainBinding
 import com.ladsers.passtable.android.dialogs.FileCreatorDlg
 import com.ladsers.passtable.android.dialogs.MessageDlg
+import com.ladsers.passtable.android.dialogs.UpdateDlg
 import com.ladsers.passtable.lib.codes.UpdaterCheckResult
 import com.ladsers.passtable.lib.updater.Platform
 import com.ladsers.passtable.lib.updater.Updater
@@ -128,15 +129,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getNewVersion() {
-        // TODO : migrate to ladsers.com
-        val lastVer = Updater.lastVer
-        val urlGitHub = "https://github.com/Ladsers/Passtable-Android/releases/download"
-        val newApp = "Passtable-$lastVer.apk"
-        val url = "$urlGitHub/$lastVer/$newApp"
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         val color = MaterialColors.getColor(window.decorView, R.attr.notificationTint)
@@ -157,21 +149,7 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.btUpdate -> {
-                messageDlg.create(
-                    getString(R.string.dlg_title_updateAvailable),
-                    getString(R.string.dlg_msg_downloadNewVersion)
-                )
-                messageDlg.addPositiveBtn(
-                    getString(R.string.app_bt_ok),
-                    R.drawable.ic_accept
-                ) {}
-                messageDlg.addNeutralBtn(
-                    getString(R.string.app_bt_downloadFromGithub),
-                    R.drawable.ic_download
-                ) {
-                    getNewVersion()
-                }
-                messageDlg.show()
+                UpdateDlg.show(messageDlg)
                 true
             }
             else -> super.onOptionsItemSelected(item)
