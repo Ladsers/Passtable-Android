@@ -45,7 +45,7 @@
         <string name="app_bt_disableBiometricForAll">Disable biometric authentication for all files</string>
         <string name="app_bt_disableBiometricForOne">Disable biometric authentication</string>
         <string name="app_bt_done">Done</string>
-        <string name="app_bt_downloadFromGithub">Download from GitHub</string>
+        <string name="app_bt_download">Download</string>
         <string name="app_bt_edit">Edit</string>
         <string name="app_bt_enter">Enter</string>
         <string name="app_bt_enterPassword">Enter password</string>
@@ -56,6 +56,7 @@
         <string name="app_bt_license">License</string>
         <string name="app_bt_ok">OK</string>
         <string name="app_bt_open">Open</string>
+        <string name="app_bt_openRuStore">Open RuStore</string>
         <string name="app_bt_passwordGenerator">Password generator</string>
         <string name="app_bt_pinToScreen">Pin to screen</string>
         <string name="app_bt_removeFromList">Remove from list</string>
@@ -72,6 +73,13 @@
         <string name="app_bt_undoLastAction">Undo last action</string>
         <string name="app_bt_updateAvailable">Update available</string>
         <string name="app_bt_webPage">Web page</string>
+
+        <string name="app_bt_about">About</string>
+        <string name="app_bt_tools">Tools</string>
+        <string name="app_bt_rateApp">Rate app</string>
+        <string name="app_bt_sendFeedback">Send feedback</string>
+        <string name="app_bt_supportDeveloper">Support developer</string>
+        <string name="app_bt_appForPc">App for PC</string>
         <!-- end! -->
 
     <!-- END -->
@@ -89,7 +97,6 @@
         <string name="ui_ct_doNotLock">Do not lock</string>
         <string name="ui_ct_editItem">Edit item</string>
         <string name="ui_ct_fileNoItems">File contains no items</string>
-        <string name="ui_ct_help">Help</string>
         <string name="ui_ct_home">Home</string>
         <string name="ui_ct_itemMustContain">Item must contain note or username with password</string>
         <string name="ui_ct_leaveBlankToSkip">Leave blank to skip verification</string>
@@ -131,6 +138,9 @@
         <string name="ui_msg_recentFilesUpdated">The list of recent files has been updated</string>
         <string name="ui_msg_saved">Saved</string>
         <string name="ui_msg_usernameCopied">Username copied to clipboard</string>
+
+        <string name="ui_msg_copied">Copied to clipboard</string>
+        <string name="ui_msg_downloadLinkCopied">Download link copied to clipboard</string>
         <!-- end! -->
 
     <!-- END -->
@@ -196,7 +206,8 @@
         <string name="dlg_msg_actionWillClearRecentFiles">This action will permanently clear the list of recent files</string>
         <string name="dlg_msg_actionWillClearRecentFilesWithBiometric">This action will permanently clear the list of recent files. Biometric authentication will be disabled for all files.</string>
         <string name="dlg_msg_clearRecentFilesWithBiometric">This is permanent and cannot be undone. Biometric authentication will be disabled for all files.</string>
-        <string name="dlg_msg_downloadNewVersion">You can download the new version from the application store or the GitHub repository</string>
+        <string name="dlg_msg_downloadNewVersion">You can download the new version from the app website</string>
+        <string name="dlg_msg_downloadNewVersionRuStore">You can download the new version from RuStore or from the app website</string>
         <string name="dlg_msg_grantPermissionToDisplayOver">Need to grant permission in settings to display the panel over other apps</string>
         <string name="dlg_msg_needToEnterPrimaryPasswordForAny">To open any file, you will need to enter its primary password</string>
         <string name="dlg_msg_permanentAction">This is permanent and cannot be undone</string>

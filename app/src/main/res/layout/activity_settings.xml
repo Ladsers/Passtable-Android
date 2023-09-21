@@ -27,6 +27,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp"
             android:focusable="true"
             android:focusableInTouchMode="true">
 
@@ -35,10 +37,11 @@
                 layout="@layout/settings_theme"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
 
             <include
                 android:id="@+id/lockFile"
@@ -46,9 +49,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/theme" />
+                app:layout_constraintTop_toBottomOf="@+id/theme"
+                tools:visibility="visible" />
 
             <include
                 android:id="@+id/security"
@@ -56,9 +61,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lockFile" />
+                app:layout_constraintTop_toBottomOf="@+id/lockFile"
+                tools:visibility="visible" />
 
             <include
                 android:id="@+id/recentFiles"
@@ -66,9 +73,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/security" />
+                app:layout_constraintTop_toBottomOf="@+id/security"
+                tools:visibility="visible" />
 
             <include
                 android:id="@+id/biometricAuth"
@@ -76,29 +85,22 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/recentFiles" />
-
-            <include
-                android:id="@+id/help"
-                layout="@layout/settings_help"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="22dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/biometricAuth" />
+                app:layout_constraintTop_toBottomOf="@+id/recentFiles"
+                tools:visibility="visible" />
 
             <include
                 android:id="@+id/web"
                 layout="@layout/settings_web"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="22dp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/help" />
+                app:layout_constraintTop_toBottomOf="@+id/biometricAuth"
+                tools:visibility="visible" />
 
             <include
                 android:id="@+id/about"
@@ -106,11 +108,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
-                android:layout_marginBottom="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/web" />
+                app:layout_constraintTop_toBottomOf="@+id/web"
+                tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

@@ -18,23 +18,18 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.color.MaterialColors
-import com.ladsers.passtable.android.BuildConfig
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.adapters.RecentAdapter
 import com.ladsers.passtable.android.components.ClipboardManager
 import com.ladsers.passtable.android.components.PasswordGeneratorProcessor
 import com.ladsers.passtable.android.components.SnackbarManager
+import com.ladsers.passtable.android.components.menus.MainMenu
 import com.ladsers.passtable.android.containers.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.containers.RecentFiles
 import com.ladsers.passtable.android.databinding.ActivityMainBinding
 import com.ladsers.passtable.android.dialogs.FileCreatorDlg
 import com.ladsers.passtable.android.dialogs.MessageDlg
-import com.ladsers.passtable.android.dialogs.UpdateDlg
-import com.ladsers.passtable.lib.codes.UpdaterCheckResult
-import com.ladsers.passtable.lib.updater.Platform
-import com.ladsers.passtable.lib.updater.Updater
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -48,7 +43,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: RecentAdapter
     private lateinit var fileCreatorDlg: FileCreatorDlg
     private lateinit var messageDlg: MessageDlg
-    private lateinit var passwordGeneratorProcessor: PasswordGeneratorProcessor
+    private lateinit var mainMenu: MainMenu
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,10 +69,12 @@ class MainActivity : AppCompatActivity() {
         binding.btOpenFile.setOnClickListener { openFileExplorer(false) }
         binding.btNewFile.setOnClickListener { v -> fileCreatorDlg.askName(btView = v) }
 
-        passwordGeneratorProcessor = PasswordGeneratorProcessor(activityResultRegistry, this)
-        { s -> ClipboardManager.copy(this, s, getString(R.string.ui_msg_passwordCopied)) }
-
         messageDlg = MessageDlg(this, window)
+
+        val passwordGeneratorProcessor = PasswordGeneratorProcessor(activityResultRegistry, this)
+        { s -> ClipboardManager.copy(this, s, getString(R.string.ui_msg_passwordCopied)) }
+        mainMenu = MainMenu(this, messageDlg, passwordGeneratorProcessor)
+
         fileCreatorDlg =
             FileCreatorDlg(this, contentResolver, window) { openFileExplorer(true) }
 
@@ -115,46 +112,11 @@ class MainActivity : AppCompatActivity() {
         else refreshRecentList()
     }
 
-    private fun checkUpdate(menu: Menu) {
-        try {
-            Thread {
-                val res = Updater.check(Platform.ANDROID_RELEASE, BuildConfig.VERSION_NAME)
-                window.decorView.post {
-                    val button = menu.findItem(R.id.btUpdate)
-                    button.isVisible = res == UpdaterCheckResult.NEED_UPDATE
-                    button.isEnabled = res == UpdaterCheckResult.NEED_UPDATE
-                }
-            }.start()
-        } catch (e: Exception) { /* do nothing */
-        }
-    }
+    override fun onCreateOptionsMenu(menu: Menu) = mainMenu.onCreateOptionsMenu(menu)
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        val color = MaterialColors.getColor(window.decorView, R.attr.notificationTint)
-        menu.findItem(R.id.btUpdate).icon?.setTint(color)
-        checkUpdate(menu)
-        return true
-    }
+    override fun onOptionsItemSelected(item: MenuItem) =
+        mainMenu.onOptionsItemSelected(item) || super.onOptionsItemSelected(item)
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.btSettings -> {
-                val intent = Intent(this, SettingsActivity::class.java)
-                startActivity(intent)
-                true
-            }
-            R.id.btPasswordGenerator -> {
-                passwordGeneratorProcessor.start(true)
-                true
-            }
-            R.id.btUpdate -> {
-                UpdateDlg.show(messageDlg)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
 
     private fun openFileExplorer(newFile: Boolean) {
         this.newFile = newFile

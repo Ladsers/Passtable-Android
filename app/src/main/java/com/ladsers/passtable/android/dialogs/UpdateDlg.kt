@@ -17,24 +17,30 @@ object UpdateDlg {
 
         messageDlg.create(
             context.getString(R.string.dlg_title_updateAvailable),
-            context.getString(R.string.dlg_msg_downloadNewVersion) //TODO
+            context.getString(
+                if (isRuStoreInstalled) R.string.dlg_msg_downloadNewVersionRuStore else R.string.dlg_msg_downloadNewVersion
+            )
         )
 
         if (isRuStoreInstalled) {
+
             messageDlg.addPositiveBtn(
-                "Open RuStore", //TODO
-                R.drawable.ic_download
+                context.getString(R.string.app_bt_openRuStore),
+                R.drawable.ic_open_window
             ) { AppStoreProcessor.open(context, AppStore.RUSTORE) }
 
             messageDlg.addNeutralBtn(
-                context.getString(R.string.app_bt_downloadFromGithub), //TODO
+                context.getString(R.string.app_bt_download),
                 R.drawable.ic_download
             ) { downloadFromSite(context) }
+
         } else {
+
             messageDlg.addPositiveBtn(
-                context.getString(R.string.app_bt_downloadFromGithub), //TODO
+                context.getString(R.string.app_bt_download),
                 R.drawable.ic_download
             ) { downloadFromSite(context) }
+
         }
 
         messageDlg.addNegativeBtn(

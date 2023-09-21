@@ -44,7 +44,7 @@
         <string name="app_bt_disableBiometricForAll">Отключить биометрическую аутентификацию для всех файлов</string>
         <string name="app_bt_disableBiometricForOne">Откл. биометр. аутентификацию</string>
         <string name="app_bt_done">Готово</string>
-        <string name="app_bt_downloadFromGithub">Скачать с GitHub</string>
+        <string name="app_bt_download">Скачать</string>
         <string name="app_bt_edit">Редактировать</string>
         <string name="app_bt_enter">Ввод</string>
         <string name="app_bt_enterPassword">Ввести пароль</string>
@@ -55,6 +55,7 @@
         <string name="app_bt_license">Лицензия</string>
         <string name="app_bt_ok">Ладно</string>
         <string name="app_bt_open">Открыть</string>
+        <string name="app_bt_openRuStore">Открыть RuStore</string>
         <string name="app_bt_passwordGenerator">Генератор паролей</string>
         <string name="app_bt_pinToScreen">Закрепить на экране</string>
         <string name="app_bt_removeFromList">Убрать из списка</string>
@@ -71,6 +72,13 @@
         <string name="app_bt_undoLastAction">Отменить послед. действие</string>
         <string name="app_bt_updateAvailable">Доступно обновление</string>
         <string name="app_bt_webPage">Веб-страница</string>
+
+        <string name="app_bt_about">О приложении</string>
+        <string name="app_bt_tools">Инструменты</string>
+        <string name="app_bt_rateApp">Оценить приложение</string>
+        <string name="app_bt_sendFeedback">Отправить отзыв</string>
+        <string name="app_bt_supportDeveloper">Поддержать разработчика</string>
+        <string name="app_bt_appForPc">Приложение для ПК</string>
         <!-- end! -->
 
     <!-- END -->
@@ -88,7 +96,6 @@
         <string name="ui_ct_doNotLock">Не блокировать</string>
         <string name="ui_ct_editItem">Редактировать элемент</string>
         <string name="ui_ct_fileNoItems">Файл не содержит элементов</string>
-        <string name="ui_ct_help">Помощь</string>
         <string name="ui_ct_home">Главная</string>
         <string name="ui_ct_itemMustContain">Элемент должен содержать заметку или логин с паролем</string>
         <string name="ui_ct_leaveBlankToSkip">Оставьте пустым, чтобы пропустить проверку</string>
@@ -130,6 +137,9 @@
         <string name="ui_msg_recentFilesUpdated">Список последних файлов обновлён</string>
         <string name="ui_msg_saved">Сохранено</string>
         <string name="ui_msg_usernameCopied">Логин скопирован в буфер обмена</string>
+
+        <string name="ui_msg_copied">Скопировано в буфер обмена</string>
+        <string name="ui_msg_downloadLinkCopied">Ссылка для загрузки скопирована в буфер обмена</string>
         <!-- end! -->
 
     <!-- END -->
@@ -195,7 +205,8 @@
         <string name="dlg_msg_actionWillClearRecentFiles">Это действие безвозвратно очистит список последних файлов</string>
         <string name="dlg_msg_actionWillClearRecentFilesWithBiometric">Это действие безвозвратно очистит список последних файлов. Биометрическая аутентификация будет отключена для всех файлов.</string>
         <string name="dlg_msg_clearRecentFilesWithBiometric">Это действие не может быть отменено. Биометрическая аутентификация будет отключена для всех файлов.</string>
-        <string name="dlg_msg_downloadNewVersion">Вы можете скачать новую версию из магазина приложений или репозитория GitHub</string>
+        <string name="dlg_msg_downloadNewVersion">Вы можете скачать новую версию с сайта приложения</string>
+        <string name="dlg_msg_downloadNewVersionRuStore">Вы можете скачать новую версию из RuStore или с сайта приложения</string>
         <string name="dlg_msg_grantPermissionToDisplayOver">Необходимо предоставить разрешение в настройках для отображения панели поверх других приложений</string>
         <string name="dlg_msg_needToEnterPrimaryPasswordForAny">Для открытия любого файла потребуется ввод его основного пароля</string>
         <string name="dlg_msg_permanentAction">Это действие не может быть отменено</string>

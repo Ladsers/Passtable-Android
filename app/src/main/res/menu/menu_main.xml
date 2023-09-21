@@ -11,15 +11,54 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/btPasswordGenerator"
-        android:icon="@drawable/ic_password_generator"
-        android:title="@string/app_bt_passwordGenerator"
-        app:showAsAction="always" />
+        android:id="@+id/btTools"
+        android:icon="@drawable/ic_tools"
+        android:title="@string/app_bt_tools"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/btPasswordGenerator"
+                android:title="@string/app_bt_passwordGenerator"
+                app:showAsAction="never" />
+        </menu>
+    </item>
 
     <item
         android:id="@+id/btSettings"
-        android:icon="@drawable/ic_settings"
         android:title="@string/app_bt_settings"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/btKeyboardShortcuts"
+        android:title="@string/app_bt_keyboardShortcuts"
+        android:visible="false"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/btAppForPc"
+        android:title="@string/app_bt_appForPc"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/btRateApp"
+        android:title="@string/app_bt_rateApp"
+        android:visible="false"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/btSupportDeveloper"
+        android:title="@string/app_bt_supportDeveloper"
+        android:visible="false"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/btSendFeedback"
+        android:title="@string/app_bt_sendFeedback"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/btAbout"
+        android:title="@string/app_bt_about"
+        app:showAsAction="never" />
 
 </menu>
