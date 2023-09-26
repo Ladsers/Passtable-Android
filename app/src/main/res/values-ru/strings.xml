@@ -79,6 +79,7 @@
         <string name="app_bt_sendFeedback">Отправить отзыв</string>
         <string name="app_bt_supportDeveloper">Поддержать разработчика</string>
         <string name="app_bt_appForPc">Приложение для ПК</string>
+        <string name="app_bt_restore">Восстановить</string>
         <!-- end! -->
 
     <!-- END -->
@@ -140,6 +141,7 @@
 
         <string name="ui_msg_copied">Скопировано в буфер обмена</string>
         <string name="ui_msg_downloadLinkCopied">Ссылка для загрузки скопирована в буфер обмена</string>
+        <string name="ui_msg_failedToRestoreBackup">Не удалось восстановить резервную копию</string>
         <!-- end! -->
 
     <!-- END -->
@@ -199,6 +201,8 @@
         <string name="dlg_err_tryAddDelete">Попробуйте добавить ещё один элемент, а затем удалить оба.</string>
         <string name="dlg_err_unableToOpenFile">Файл по указанному пути не существует или у приложения недостаточно прав для его открытия.</string>
         <string name="dlg_err_unsupportedChar">Вероятно, это вызвано использованием неподдерживаемого символа.</string>
+
+        <string name="dlg_err_fileDamagedRestoreBackup">Файл повреждён. Восстановить резервную копию?</string>
         <!-- end! -->
 
         <!-- msg (message) -->

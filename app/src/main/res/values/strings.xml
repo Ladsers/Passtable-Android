@@ -80,6 +80,7 @@
         <string name="app_bt_sendFeedback">Send feedback</string>
         <string name="app_bt_supportDeveloper">Support developer</string>
         <string name="app_bt_appForPc">App for PC</string>
+        <string name="app_bt_restore">Restore</string>
         <!-- end! -->
 
     <!-- END -->
@@ -141,6 +142,7 @@
 
         <string name="ui_msg_copied">Copied to clipboard</string>
         <string name="ui_msg_downloadLinkCopied">Download link copied to clipboard</string>
+        <string name="ui_msg_failedToRestoreBackup">Failed to restore backup</string>
         <!-- end! -->
 
     <!-- END -->
@@ -200,6 +202,8 @@
         <string name="dlg_err_tryAddDelete">Try to add another item and then delete both.</string>
         <string name="dlg_err_unableToOpenFile">The file at the specified path does not exist or the app does not have sufficient permissions to open it.</string>
         <string name="dlg_err_unsupportedChar">This is probably caused by using an unsupported character.</string>
+
+        <string name="dlg_err_fileDamagedRestoreBackup">The file is damaged. Restore backup?</string>
         <!-- end! -->
 
         <!-- msg (message) -->
