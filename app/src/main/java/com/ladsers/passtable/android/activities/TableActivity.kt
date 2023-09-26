@@ -187,9 +187,8 @@ class TableActivity : AppCompatActivity() {
         }
 
         fun badResult(isNeedUpdate: Boolean = false) {
-            RecentFiles.remove(this, mainUri)
-
             if (isNeedUpdate) {
+                RecentFiles.remove(this, mainUri)
                 ErrorDlg.showCritical(messageDlg, this, getString(R.string.dlg_err_needAppUpdate))
             } else {
                 //getBooleanExtra for loop protection
@@ -199,6 +198,7 @@ class TableActivity : AppCompatActivity() {
                 foundBackup?.let {
                     ErrorDlg.showRestoreBackup(messageDlg, this, it, mainUri)
                 } ?: let {
+                    RecentFiles.remove(this, mainUri)
                     ErrorDlg.showCritical(messageDlg, this, getString(R.string.dlg_err_fileDamaged))
                 }
             }
