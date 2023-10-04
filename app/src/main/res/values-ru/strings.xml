@@ -122,6 +122,16 @@
         <string name="ui_ct_timePeriodInSecs">Период времени в секундах</string>
         <string name="ui_ct_version">Версия</string>
         <string name="ui_ct_webResources">Веб-ресурсы</string>
+
+        <string name="ui_ct_minimumNumber">Минимальное количество</string>
+        <string name="ui_ct_basicSet">Базовый набор: %1$s</string>
+        <string name="ui_ct_fullSet">Полный набор</string>
+        <string name="ui_ct_lowercaseLetters">Строчные буквы</string>
+        <string name="ui_ct_capitalLetters">Заглавные буквы</string>
+        <string name="ui_ct_numbers">Цифры</string>
+        <string name="ui_ct_symbols">Символы</string>
+        <string name="ui_ct_passwordLength">Длина пароля</string>
+        <string name="ui_ct_exclude">Исключить</string>
         <!-- end! -->
 
         <!-- msg (message) -->
@@ -142,6 +152,7 @@
         <string name="ui_msg_copied">Скопировано в буфер обмена</string>
         <string name="ui_msg_downloadLinkCopied">Ссылка для загрузки скопирована в буфер обмена</string>
         <string name="ui_msg_failedToRestoreBackup">Не удалось восстановить резервную копию</string>
+        <string name="ui_msg_enterCharsInRowOrSpace">Введите символы подряд или через пробел</string>
         <!-- end! -->
 
     <!-- END -->

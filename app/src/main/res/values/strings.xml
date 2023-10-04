@@ -123,6 +123,16 @@
         <string name="ui_ct_timePeriodInSecs">Time period in seconds</string>
         <string name="ui_ct_version">Version</string>
         <string name="ui_ct_webResources">Web resources</string>
+
+        <string name="ui_ct_minimumNumber">Minimum number</string>
+        <string name="ui_ct_basicSet">Basic set: %1$s</string>
+        <string name="ui_ct_fullSet">Full set</string>
+        <string name="ui_ct_lowercaseLetters">Lowercase letters</string>
+        <string name="ui_ct_capitalLetters">Capital letters</string>
+        <string name="ui_ct_numbers">Numbers</string>
+        <string name="ui_ct_symbols">Symbols</string>
+        <string name="ui_ct_passwordLength">Password length</string>
+        <string name="ui_ct_exclude">Exclude</string>
         <!-- end! -->
 
         <!-- msg (message) -->
@@ -143,6 +153,7 @@
         <string name="ui_msg_copied">Copied to clipboard</string>
         <string name="ui_msg_downloadLinkCopied">Download link copied to clipboard</string>
         <string name="ui_msg_failedToRestoreBackup">Failed to restore backup</string>
+        <string name="ui_msg_enterCharsInRowOrSpace">Enter characters in a row or space-separated</string>
         <!-- end! -->
 
     <!-- END -->

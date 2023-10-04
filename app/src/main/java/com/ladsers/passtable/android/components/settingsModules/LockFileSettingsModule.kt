@@ -52,17 +52,11 @@ class LockFileSettingsModule(
             ParamStorage.set(activity, Param.LOCK_MODE, 1)
             binding.lockFile.swLockAllowWhenEditing.isEnabled = true
             binding.lockFile.etLockSecs.isEnabled = false
-            binding.lockFile.etLockSecs.setText(
-                ParamStorage.getInt(activity, Param.LOCK_SECS).toString()
-            )
         }
         binding.lockFile.rbLockModeNever.setOnClickListener {
             ParamStorage.set(activity, Param.LOCK_MODE, 2)
             binding.lockFile.swLockAllowWhenEditing.isEnabled = false
             binding.lockFile.etLockSecs.isEnabled = false
-            binding.lockFile.etLockSecs.setText(
-                ParamStorage.getInt(activity, Param.LOCK_SECS).toString()
-            )
         }
         binding.lockFile.swLockAllowWhenEditing.setOnCheckedChangeListener { _, isChecked ->
             ParamStorage.set(activity, Param.LOCK_ALLOW_WHEN_EDITING, isChecked)
@@ -76,7 +70,6 @@ class LockFileSettingsModule(
 
         binding.lockFile.etLockSecs.setOnKeyListener { v, keyCode, _ ->
             if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                v.clearFocus()
                 val imm =
                     activity.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(v.windowToken, 0)
@@ -86,10 +79,7 @@ class LockFileSettingsModule(
                     Param.LOCK_SECS,
                     binding.lockFile.etLockSecs.text.toString().toInt()
                 )
-                else binding.lockFile.etLockSecs.setText(
-                    ParamStorage.getInt(activity, Param.LOCK_SECS).toString()
-                )
-
+                v.clearFocus()
                 return@setOnKeyListener true
             }
             return@setOnKeyListener false
@@ -97,12 +87,15 @@ class LockFileSettingsModule(
         binding.lockFile.etLockSecs.doAfterTextChanged { x ->
             if (x.toString().startsWith('0')) binding.lockFile.etLockSecs.setText("")
         }
+        binding.lockFile.etLockSecs.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) return@setOnFocusChangeListener
+            binding.lockFile.etLockSecs.setText(
+                ParamStorage.getInt(activity, Param.LOCK_SECS).toString()
+            )
+        }
     }
 
     override fun attachActionsOnResume() {
-        binding.lockFile.etLockSecs.setText(
-            ParamStorage.getInt(activity, Param.LOCK_SECS).toString()
-        )
         binding.lockFile.etLockSecs.clearFocus()
         val imm =
             activity.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
