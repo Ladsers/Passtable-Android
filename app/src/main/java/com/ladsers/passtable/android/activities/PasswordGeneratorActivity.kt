@@ -4,13 +4,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
+import com.google.android.material.button.MaterialButton
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.components.PasswordGeneratorProcessor
 import com.ladsers.passtable.android.containers.Param
@@ -23,11 +27,14 @@ import com.ladsers.passtable.lib.PasswordGenerator
 class PasswordGeneratorActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPasswordGeneratorBinding
     private lateinit var generator: PasswordGenerator
+    private lateinit var errorWindowAnim: Animation
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPasswordGeneratorBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        errorWindowAnim = AnimationUtils.loadAnimation(this, R.anim.error_window_anim)
 
         binding.toolbar.root.title = getString(R.string.ui_ct_passwordGenerator)
         binding.toolbar.root.navigationIcon =
@@ -39,6 +46,7 @@ class PasswordGeneratorActivity : AppCompatActivity() {
             if (y > oldY || y < oldY) binding.toolbar.root.elevation = 7f
             if (y == 0) binding.toolbar.root.elevation = 0f
         }
+        binding.svLayout.postDelayed({ binding.svLayout.fullScroll(ScrollView.FOCUS_DOWN) }, 500)
 
         generator = PasswordGenerator()
 
@@ -47,6 +55,10 @@ class PasswordGeneratorActivity : AppCompatActivity() {
             binding.passwordLength.textView,
             Param.GENERATOR_PASSWORD_LENGTH
         )
+        // special behavior
+        binding.passwordLength.editText.doAfterTextChanged { x ->
+            if (x.toString().startsWith('0')) binding.passwordLength.editText.setText("")
+        }
         configureEditParamExclude()
 
         configureCollection(
@@ -74,11 +86,26 @@ class PasswordGeneratorActivity : AppCompatActivity() {
             Param.GENERATOR_SYMBOLS_MINIMUM
         )
 
-        binding.btOk.setOnClickListener {
-            val intent = Intent().putExtra(PasswordGeneratorProcessor.ResultKey, "some test string")
+        val isCopyMode = intent.getBooleanExtra(PasswordGeneratorProcessor.CopyModeKey, false)
+        if (isCopyMode) {
+            (binding.result.btOk as MaterialButton).icon =
+                ContextCompat.getDrawable(this, R.drawable.ic_copy)
+        }
+
+        binding.result.btRefresh.setOnClickListener {
+            generate()
+        }
+
+        binding.result.btOk.setOnClickListener {
+            val intent = Intent().putExtra(
+                PasswordGeneratorProcessor.ResultKey,
+                binding.result.etPassword.text.toString()
+            )
             setResult(RESULT_OK, intent)
             finish()
         }
+
+        generate() // auto generation at startup
     }
 
     override fun onResume() {
@@ -219,6 +246,75 @@ class PasswordGeneratorActivity : AppCompatActivity() {
     }
 
     private fun generate() {
+        generator.isLowercaseLettersAllowed = binding.lowercaseLetters.swCollectionAllow.isChecked
+        generator.isCapitalLettersAllowed = binding.capitalLetters.swCollectionAllow.isChecked
+        generator.isNumbersAllowed = binding.numbers.swCollectionAllow.isChecked
+        generator.isSymbolsAllowed = binding.symbols.swCollectionAllow.isChecked
+        generator.isEasySymbolsMode = binding.symbols.rbBasicSet.isChecked
+        generator.blockChars(binding.exclude.editText.text.toString())
 
+        val length = binding.passwordLength.editText.text.toString().toInt()
+        val minLowercaseLetters =
+            if (generator.isLowercaseLettersAllowed) binding.lowercaseLetters.etMinimumNumber.text.toString()
+                .toInt() else 0
+        val minSymbolsChars =
+            if (generator.isSymbolsAllowed) binding.symbols.etMinimumNumber.text.toString()
+                .toInt() else 0
+        val minCapitalLetters =
+            if (generator.isCapitalLettersAllowed) binding.capitalLetters.etMinimumNumber.text.toString()
+                .toInt() else 0
+        val minNumbers =
+            if (generator.isNumbersAllowed) binding.numbers.etMinimumNumber.text.toString()
+                .toInt() else 0
+
+        if (!generator.isLowercaseLettersAllowed && !generator.isCapitalLettersAllowed
+            && !generator.isNumbersAllowed && !generator.isSymbolsAllowed
+        ) {
+            badResult(getString(R.string.ui_ct_noCharSetsGeneration))
+            return
+        }
+
+        if (!generator.checkGenParams(
+                length,
+                minLowercaseLetters,
+                minSymbolsChars,
+                minCapitalLetters,
+                minNumbers
+            )
+        ) {
+            badResult(getString(R.string.ui_ct_sumMinNumberExceedsPassLength))
+            return
+        }
+
+        try {
+            binding.result.etPassword.text = generator.generate(
+                length,
+                minLowercaseLetters,
+                minSymbolsChars,
+                minCapitalLetters,
+                minNumbers
+            )
+            goodResult()
+        } catch (e: IllegalStateException) {
+            badResult(getString(R.string.ui_ct_tooManyCharsExcluded))
+        }
+    }
+
+    private fun goodResult() {
+        binding.result.btOk.isEnabled = true
+        binding.result.btRefresh.isEnabled = true
+        binding.result.clErr.clearAnimation()
+        binding.result.clErr.visibility = View.GONE
+    }
+
+    private fun badResult(errMsg: String) {
+        binding.result.btOk.isEnabled = false
+        binding.result.btRefresh.isEnabled = false
+        binding.result.etPassword.text = ""
+        binding.result.clErr.visibility = View.VISIBLE
+        binding.result.clErr.clearAnimation()
+        binding.result.clErr.startAnimation(errorWindowAnim)
+        binding.result.tvErrMsg.text = errMsg
+        binding.svLayout.post { binding.svLayout.fullScroll(ScrollView.FOCUS_DOWN) }
     }
 }

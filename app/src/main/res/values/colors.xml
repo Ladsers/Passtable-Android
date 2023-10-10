@@ -10,6 +10,8 @@
     <color name="actionNegative">#F44336</color>
     <color name="actionDisabledLight">#9E9E9E</color>
     <color name="actionDisabledDark">#6C6C6C</color>
+    <color name="additionalActionDisabledLight">#EEEEEE</color>
+    <color name="additionalActionDisabledDark">#424242</color>
 
     <color name="textPrimaryLight">#3F3F3F</color>
     <color name="textSecondaryLight">#B3B3B3</color>

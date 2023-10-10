@@ -132,6 +132,10 @@
         <string name="ui_ct_symbols">Символы</string>
         <string name="ui_ct_passwordLength">Длина пароля</string>
         <string name="ui_ct_exclude">Исключить</string>
+        <string name="ui_ct_error">Ошибка</string>
+        <string name="ui_ct_noCharSetsGeneration">Нет доступных наборов символов для генерации</string>
+        <string name="ui_ct_sumMinNumberExceedsPassLength">Сумма минимальных количеств символов превышает длину пароля</string>
+        <string name="ui_ct_tooManyCharsExcluded">Невозможно сгенерировать пароль с указанными параметрами: слишком много символов было исключено</string>
         <!-- end! -->
 
         <!-- msg (message) -->

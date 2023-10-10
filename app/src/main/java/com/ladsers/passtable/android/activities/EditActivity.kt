@@ -58,7 +58,10 @@ class EditActivity : AppCompatActivity() {
         }
 
         passwordGeneratorProcessor = PasswordGeneratorProcessor(activityResultRegistry, this)
-        { s -> s?.let { binding.etPassword.setText(s) } }
+        { s -> s?.let {
+            binding.etPassword.setText(s) }
+            binding.etPassword.setSelection(binding.etPassword.text.length)
+        }
 
         originalTag = intent.getStringExtra("dataTag") ?: "0"
         originalNote = intent.getStringExtra("dataNote") ?: ""

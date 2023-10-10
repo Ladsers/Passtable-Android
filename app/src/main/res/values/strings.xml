@@ -133,6 +133,11 @@
         <string name="ui_ct_symbols">Symbols</string>
         <string name="ui_ct_passwordLength">Password length</string>
         <string name="ui_ct_exclude">Exclude</string>
+        <string name="ui_ct_error">Error</string>
+        <string name="ui_ct_noCharSetsGeneration">There are no character sets available for generation</string>
+        <string name="ui_ct_sumMinNumberExceedsPassLength">The sum of the minimum number of characters exceeds the password length</string>
+        <string name="ui_ct_tooManyCharsExcluded">It is not possible to generate password with the specified parameters: too many characters were excluded</string>
+
         <!-- end! -->
 
         <!-- msg (message) -->

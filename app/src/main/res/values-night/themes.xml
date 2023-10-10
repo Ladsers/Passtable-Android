@@ -20,6 +20,7 @@
         <item name="editBackground">@color/editBackgroundDark</item>
         <item name="settingsItemBackground">@color/grayOverlay</item>
         <item name="actionDisabled">@color/actionDisabledDark</item>
+        <item name="additionalActionDisabled">@color/additionalActionDisabledDark</item>
         <item name="infoErrorForeground">@color/infoRedPrimaryDark</item>
         <item name="infoErrorBackground">@color/infoRedSecondaryDark</item>
         <item name="notificationTint">@color/notificationTintDark</item>

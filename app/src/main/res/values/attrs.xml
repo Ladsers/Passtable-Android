@@ -3,6 +3,7 @@
     <attr name="toolbarBackground" format="color" />
     <attr name="overlayBackground" format="color" />
     <attr name="panelTableBackground" format="color" />
+    <attr name="additionalActionDisabled" format="color" />
     <attr name="iconTint" format="color" />
     <attr name="tagNoneStroke" format="color" />
     <attr name="whiteOrBlack" format="color" />
