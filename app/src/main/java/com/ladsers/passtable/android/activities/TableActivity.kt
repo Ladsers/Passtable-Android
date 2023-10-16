@@ -386,6 +386,8 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun editItem(blockClosing: Boolean = false) {
+        if (tagPanel.searchModeIsActive && tagPanel.lastSearchQuery.isEmpty())
+            tagPanel.switchPanel() // it is necessary to fix the wrong behavior with empty query
         val tableId = if (itemList[editId].id == -1) editId else itemList[editId].id
         val intent = Intent(this, EditActivity::class.java)
         intent.putExtra("dataTag", table.getTag(tableId))
@@ -447,6 +449,8 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun addItem() {
+        if (tagPanel.searchModeIsActive && tagPanel.lastSearchQuery.isEmpty())
+            tagPanel.switchPanel() // it is necessary to fix the wrong behavior with empty query
         val intent = Intent(this, EditActivity::class.java)
         tagPanel.findActiveTag().let { intent.putExtra("dataTag", it) } // preselect tag
         disableLockFileSystem = true // for Table activity
