@@ -18,18 +18,18 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.color.MaterialColors
-import com.ladsers.passtable.android.BuildConfig
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.adapters.RecentAdapter
+import com.ladsers.passtable.android.components.ClipboardManager
+import com.ladsers.passtable.android.components.PasswordGeneratorProcessor
 import com.ladsers.passtable.android.components.SnackbarManager
+import com.ladsers.passtable.android.components.menus.MainMenu
 import com.ladsers.passtable.android.containers.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.containers.RecentFiles
 import com.ladsers.passtable.android.databinding.ActivityMainBinding
 import com.ladsers.passtable.android.dialogs.FileCreatorDlg
 import com.ladsers.passtable.android.dialogs.MessageDlg
-import com.ladsers.passtable.lib.Updater
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: RecentAdapter
     private lateinit var fileCreatorDlg: FileCreatorDlg
     private lateinit var messageDlg: MessageDlg
+    private lateinit var mainMenu: MainMenu
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +70,11 @@ class MainActivity : AppCompatActivity() {
         binding.btNewFile.setOnClickListener { v -> fileCreatorDlg.askName(btView = v) }
 
         messageDlg = MessageDlg(this, window)
+
+        val passwordGeneratorProcessor = PasswordGeneratorProcessor(activityResultRegistry, this)
+        { s -> ClipboardManager.copy(this, s, getString(R.string.ui_msg_passwordCopied)) }
+        mainMenu = MainMenu(this, messageDlg, passwordGeneratorProcessor)
+
         fileCreatorDlg =
             FileCreatorDlg(this, contentResolver, window) { openFileExplorer(true) }
 
@@ -106,64 +112,11 @@ class MainActivity : AppCompatActivity() {
         else refreshRecentList()
     }
 
-    private fun checkUpdate(menu: Menu) {
-        try {
-            Thread {
-                val res = Updater.check("apk", BuildConfig.VERSION_NAME)
-                window.decorView.post {
-                    val button = menu.findItem(R.id.btUpdate)
-                    button.isVisible = res == 1
-                    button.isEnabled = res == 1
-                }
-            }.start()
-        } catch (e: Exception) { /* do nothing */
-        }
-    }
+    override fun onCreateOptionsMenu(menu: Menu) = mainMenu.onCreateOptionsMenu(menu)
 
-    private fun getNewVersion() {
-        val lastVer = Updater.getLastVer()
-        val urlGitHub = "https://github.com/Ladsers/Passtable-Android/releases/download"
-        val newApp = "Passtable-$lastVer.apk"
-        val url = "$urlGitHub/$lastVer/$newApp"
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-    }
+    override fun onOptionsItemSelected(item: MenuItem) =
+        mainMenu.onOptionsItemSelected(item) || super.onOptionsItemSelected(item)
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        val color = MaterialColors.getColor(window.decorView, R.attr.notificationTint)
-        menu.findItem(R.id.btUpdate).icon?.setTint(color)
-        checkUpdate(menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.btSettings -> {
-                val intent = Intent(this, SettingsActivity::class.java)
-                startActivity(intent)
-                true
-            }
-            R.id.btUpdate -> {
-                messageDlg.create(
-                    getString(R.string.dlg_title_updateAvailable),
-                    getString(R.string.dlg_msg_downloadNewVersion)
-                )
-                messageDlg.addPositiveBtn(
-                    getString(R.string.app_bt_ok),
-                    R.drawable.ic_accept
-                ) {}
-                messageDlg.addNeutralBtn(
-                    getString(R.string.app_bt_downloadFromGithub),
-                    R.drawable.ic_download
-                ) {
-                    getNewVersion()
-                }
-                messageDlg.show()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
 
     private fun openFileExplorer(newFile: Boolean) {
         this.newFile = newFile

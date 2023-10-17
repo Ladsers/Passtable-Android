@@ -42,6 +42,6 @@ Here are some ways you can contribute:
 + **stable** branch contains the source code from which release binaries are built.
 
 ### License
-The code in this repository is licensed under the [Apache License 2.0](https://github.com/Ladsers/Passtable-Android/blob/master/LICENSE.md). The third party resources used are listed in [NOTICE.md](https://github.com/Ladsers/Passtable-Android/blob/master/NOTICE.md).
+The code in this repository is licensed under the [Apache License 2.0](https://github.com/Ladsers/Passtable-Android/blob/developing/LICENSE.md). The third party resources used are listed in [NOTICE.md](https://github.com/Ladsers/Passtable-Android/blob/developing/NOTICE.md).
 </br></br>
 The Passtable logo can be used in applications or articles only when the Passtable project is explicitly mentioned.

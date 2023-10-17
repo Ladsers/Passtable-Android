@@ -21,5 +21,17 @@ enum class Param(
     LOCK_ALLOW_WHEN_EDITING("lockAllowWhenEditing", defBool = true),
     REMEMBER_RECENT_FILES("rememberRecentFiles", defBool = true),
     THEME("theme", defInt = 0),
-    PREVENT_SCREEN_CAPTURE("preventScreenCapture", defBool = true)
+    PREVENT_SCREEN_CAPTURE("preventScreenCapture", defBool = true),
+
+    GENERATOR_PASSWORD_LENGTH("generatorPasswordLength", defInt = 8),
+    GENERATOR_LOWERCASE_LETTERS_ALLOW("generatorLowercaseLettersAllow", defBool = true),
+    GENERATOR_LOWERCASE_LETTERS_MINIMUM("generatorLowercaseLettersMinimum", defInt = 2),
+    GENERATOR_CAPITAL_LETTERS_ALLOW("generatorCapitalLettersAllow", defBool = true),
+    GENERATOR_CAPITAL_LETTERS_MINIMUM("generatorCapitalLettersMinimum", defInt = 2),
+    GENERATOR_NUMBERS_ALLOW("generatorNumbersAllow", defBool = true),
+    GENERATOR_NUMBERS_MINIMUM("generatorNumbersMinimum", defInt = 1),
+    GENERATOR_SYMBOLS_ALLOW("generatorSymbolsAllow", defBool = true),
+    GENERATOR_SYMBOLS_MINIMUM("generatorSymbolsMinimum", defInt = 1),
+    GENERATOR_SYMBOLS_SET("generatorSymbolsSet", defInt = 0),
+    GENERATOR_EXCLUDE("generatorExclude", defStr = "")
 }

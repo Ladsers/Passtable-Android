@@ -16,6 +16,7 @@ import androidx.core.widget.doBeforeTextChanged
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
 import com.ladsers.passtable.android.R
+import com.ladsers.passtable.android.components.PasswordGeneratorProcessor
 import com.ladsers.passtable.android.components.PasswordInput
 import com.ladsers.passtable.android.containers.Param
 import com.ladsers.passtable.android.containers.ParamStorage
@@ -44,6 +45,8 @@ class EditActivity : AppCompatActivity() {
     private var btConfirmClicked = false
     private val doNotMatchMsgWithDelay = Runnable { showError(2) }
 
+    private lateinit var passwordGeneratorProcessor: PasswordGeneratorProcessor
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditBinding.inflate(layoutInflater)
@@ -52,6 +55,12 @@ class EditActivity : AppCompatActivity() {
         binding.svLayout.setOnScrollChangeListener { _, _, y, _, oldY ->
             if (y > oldY || y < oldY) binding.toolbar.root.elevation = 7f
             if (y == 0) binding.toolbar.root.elevation = 0f
+        }
+
+        passwordGeneratorProcessor = PasswordGeneratorProcessor(activityResultRegistry, this)
+        { s -> s?.let {
+            binding.etPassword.setText(s) }
+            binding.etPassword.setSelection(binding.etPassword.text.length)
         }
 
         originalTag = intent.getStringExtra("dataTag") ?: "0"
@@ -127,6 +136,7 @@ class EditActivity : AppCompatActivity() {
                 )
         }
 
+        binding.btPasswordGenerator.setOnClickListener { passwordGeneratorProcessor.start() }
         binding.btSave.setOnClickListener { returnNewData() }
 
         passwordsMatchCheck()

@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.adapters.TableAdapter
 import com.ladsers.passtable.android.callbacks.SearchDiffCallback
+import com.ladsers.passtable.android.components.BackupManager
 import com.ladsers.passtable.android.components.BiometricAuth
 import com.ladsers.passtable.android.components.DataPanel
 import com.ladsers.passtable.android.components.TagPanel
@@ -90,7 +91,7 @@ class TableActivity : AppCompatActivity() {
         biometricAuth = BiometricAuth(
             this,
             this,
-            { loginSucceeded() },
+            { loginCompleted() },
             { primaryPassword -> openProcess(primaryPassword) },
             { primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN, canRememberPass = false) })
         primaryPasswordDlg = PrimaryPasswordDlg(
@@ -165,7 +166,7 @@ class TableActivity : AppCompatActivity() {
         table = DataTableAndroid(mainUri.toString(), primaryPassword, cryptData, contentResolver)
         if (!saving(firstSave = true)) return
         if (primaryPasswordDlg.isNeedRememberPassword) biometricAuth.activateAuth(primaryPassword)
-        else loginSucceeded()
+        else loginCompleted()
     }
 
     /**
@@ -186,10 +187,21 @@ class TableActivity : AppCompatActivity() {
         }
 
         fun badResult(isNeedUpdate: Boolean = false) {
-            RecentFiles.remove(this, mainUri)
-            val msg =
-                getString(if (isNeedUpdate) R.string.dlg_err_needAppUpdate else R.string.dlg_err_fileDamaged)
-            ErrorDlg.showCritical(messageDlg, this, msg)
+            if (isNeedUpdate) {
+                RecentFiles.remove(this, mainUri)
+                ErrorDlg.showCritical(messageDlg, this, getString(R.string.dlg_err_needAppUpdate))
+            } else {
+                //getBooleanExtra for loop protection
+                val foundBackup = if (!intent.getBooleanExtra("restored", false))
+                    BackupManager(this).find(mainUri) else null
+
+                foundBackup?.let {
+                    ErrorDlg.showRestoreBackup(messageDlg, this, it, mainUri)
+                } ?: let {
+                    RecentFiles.remove(this, mainUri)
+                    ErrorDlg.showCritical(messageDlg, this, getString(R.string.dlg_err_fileDamaged))
+                }
+            }
         }
 
         fun goodResult() {
@@ -223,7 +235,7 @@ class TableActivity : AppCompatActivity() {
             0 -> {
                 if (primaryPasswordDlg.isNeedRememberPassword)
                     biometricAuth.activateAuth(primaryPassword)
-                else loginSucceeded()
+                else loginCompleted()
             }
             3 -> primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN, incorrectPassword = true)
         }
@@ -233,8 +245,12 @@ class TableActivity : AppCompatActivity() {
      * The last step of opening or creating a file. If there are problems with the file, then
      * the activity ends before this method.
      */
-    private fun loginSucceeded() {
+    private fun loginCompleted() {
         disableLockFileSystem = false // lock the file system is now active
+
+        // create backup if successfully logged in
+        if (!intent.getBooleanExtra("restored", false))
+            BackupManager(this).create(mainUri, cryptData)
 
         /* Configure widget */
         binding.rvTable.layoutManager = LinearLayoutManager(
@@ -370,6 +386,8 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun editItem(blockClosing: Boolean = false) {
+        if (tagPanel.searchModeIsActive && tagPanel.lastSearchQuery.isEmpty())
+            tagPanel.switchPanel() // it is necessary to fix the wrong behavior with empty query
         val tableId = if (itemList[editId].id == -1) editId else itemList[editId].id
         val intent = Intent(this, EditActivity::class.java)
         intent.putExtra("dataTag", table.getTag(tableId))
@@ -431,6 +449,8 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun addItem() {
+        if (tagPanel.searchModeIsActive && tagPanel.lastSearchQuery.isEmpty())
+            tagPanel.switchPanel() // it is necessary to fix the wrong behavior with empty query
         val intent = Intent(this, EditActivity::class.java)
         tagPanel.findActiveTag().let { intent.putExtra("dataTag", it) } // preselect tag
         disableLockFileSystem = true // for Table activity

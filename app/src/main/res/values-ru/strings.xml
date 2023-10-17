@@ -27,7 +27,9 @@
         <!-- end! -->
 
         <!-- bt (button) -->
+        <string name="app_bt_about">О приложении</string>
         <string name="app_bt_addItem">Добавить элемент</string>
+        <string name="app_bt_appForPc">Приложение для ПК</string>
         <string name="app_bt_cancel">Отмена</string>
         <string name="app_bt_clear">Очистить</string>
         <string name="app_bt_clearRecentFiles">Очистить список недавних файлов</string>
@@ -43,7 +45,8 @@
         <string name="app_bt_disable">Отключить</string>
         <string name="app_bt_disableBiometricForAll">Отключить биометрическую аутентификацию для всех файлов</string>
         <string name="app_bt_disableBiometricForOne">Откл. биометр. аутентификацию</string>
-        <string name="app_bt_downloadFromGithub">Скачать с GitHub</string>
+        <string name="app_bt_done">Готово</string>
+        <string name="app_bt_download">Скачать</string>
         <string name="app_bt_edit">Редактировать</string>
         <string name="app_bt_enter">Ввод</string>
         <string name="app_bt_enterPassword">Ввести пароль</string>
@@ -54,17 +57,24 @@
         <string name="app_bt_license">Лицензия</string>
         <string name="app_bt_ok">Ладно</string>
         <string name="app_bt_open">Открыть</string>
+        <string name="app_bt_openRuStore">Открыть RuStore</string>
+        <string name="app_bt_passwordGenerator">Генератор паролей</string>
         <string name="app_bt_pinToScreen">Закрепить на экране</string>
+        <string name="app_bt_rateApp">Оценить приложение</string>
         <string name="app_bt_removeFromList">Убрать из списка</string>
+        <string name="app_bt_restore">Восстановить</string>
         <string name="app_bt_save">Сохранить</string>
         <string name="app_bt_saveAs">Сохранить как</string>
         <string name="app_bt_saveWithCurrentPassword">Сохр. с текущим паролем</string>
         <string name="app_bt_selectFolder">Выбрать папку</string>
+        <string name="app_bt_sendFeedback">Отправить отзыв</string>
         <string name="app_bt_settings">Настройки</string>
         <string name="app_bt_showNote">Показать заметку</string>
         <string name="app_bt_showPassword">Показать пароль</string>
         <string name="app_bt_showUsername">Показать логин</string>
+        <string name="app_bt_supportDeveloper">Поддержать разработчика</string>
         <string name="app_bt_thirdPartyResources">Сторонние ресурсы</string>
+        <string name="app_bt_tools">Инструменты</string>
         <string name="app_bt_tryEditLastItem">Редакт. послед. элемент</string>
         <string name="app_bt_undoLastAction">Отменить послед. действие</string>
         <string name="app_bt_updateAvailable">Доступно обновление</string>
@@ -78,15 +88,19 @@
         <!-- ct (content) -->
         <string name="ui_ct_about">О приложении</string>
         <string name="ui_ct_addItem">Добавить элемент</string>
+        <string name="ui_ct_basicSet">Базовый набор: %1$s</string>
         <string name="ui_ct_biometricAuthentication">Биометрическая аутентификация</string>
         <string name="ui_ct_biometricCheckboxByDefault">Флажок \"Биометрическая аутентификация\" отмечен по умолчанию в окне ввода основного пароля</string>
+        <string name="ui_ct_capitalLetters">Заглавные буквы</string>
         <string name="ui_ct_createdBy">Разработал Максим Королев</string>
         <string name="ui_ct_dark">Тёмная</string>
         <string name="ui_ct_dataInvalidChars">Некоторые данные содержат недопустимые символы</string>
         <string name="ui_ct_doNotLock">Не блокировать</string>
         <string name="ui_ct_editItem">Редактировать элемент</string>
+        <string name="ui_ct_error">Ошибка</string>
+        <string name="ui_ct_exclude">Исключить</string>
         <string name="ui_ct_fileNoItems">Файл не содержит элементов</string>
-        <string name="ui_ct_help">Помощь</string>
+        <string name="ui_ct_fullSet">Полный набор</string>
         <string name="ui_ct_home">Главная</string>
         <string name="ui_ct_itemMustContain">Элемент должен содержать заметку или логин с паролем</string>
         <string name="ui_ct_leaveBlankToSkip">Оставьте пустым, чтобы пропустить проверку</string>
@@ -95,9 +109,15 @@
         <string name="ui_ct_lockMinOrLockPhone">При сворачивании приложения или блокировке телефона</string>
         <string name="ui_ct_lockTimePeriod">По истечении указанного периода времени после сворачивания приложения</string>
         <string name="ui_ct_lockWhenEditing">Блокировать во время редактирования или создания элементов</string>
+        <string name="ui_ct_lowercaseLetters">Строчные буквы</string>
+        <string name="ui_ct_minimumNumber">Минимальное количество</string>
+        <string name="ui_ct_noCharSetsGeneration">Нет доступных наборов символов для генерации</string>
         <string name="ui_ct_noRecentlyOpenedFiles">Нет недавно открытых файлов</string>
         <string name="ui_ct_nothingFound">Ничего не найдено</string>
+        <string name="ui_ct_numbers">Цифры</string>
         <string name="ui_ct_openOrCreateFile">Откройте существующий файл или создайте новый</string>
+        <string name="ui_ct_passwordGenerator">Генератор паролей</string>
+        <string name="ui_ct_passwordLength">Длина пароля</string>
         <string name="ui_ct_passwordsDoNotMatch">Пароли не совпадают</string>
         <string name="ui_ct_plusToAddNew">Нажмите на \"+\" в правом верхнем углу для добавления нового элемента</string>
         <string name="ui_ct_preventScreenCapture">Предотвращать захват экрана</string>
@@ -106,9 +126,12 @@
         <string name="ui_ct_searchByNotesUsernames">Поиск по заметкам и логинам</string>
         <string name="ui_ct_security">Безопасность</string>
         <string name="ui_ct_settings">Настройки</string>
+        <string name="ui_ct_sumMinNumberExceedsPassLength">Сумма минимальных количеств символов превышает длину пароля</string>
+        <string name="ui_ct_symbols">Символы</string>
         <string name="ui_ct_systemDefault">Как в системе</string>
         <string name="ui_ct_theme">Тема</string>
         <string name="ui_ct_timePeriodInSecs">Период времени в секундах</string>
+        <string name="ui_ct_tooManyCharsExcluded">Невозможно сгенерировать пароль с указанными параметрами: слишком много символов было исключено</string>
         <string name="ui_ct_version">Версия</string>
         <string name="ui_ct_webResources">Веб-ресурсы</string>
         <!-- end! -->
@@ -118,8 +141,12 @@
         <string name="ui_msg_biometricNotAvailable">Биометрическая аутентификация в данный момент недоступна. Пожалуйста, введите пароль.</string>
         <string name="ui_msg_canceled">Отменено</string>
         <string name="ui_msg_clipboardCleared">Буфер обмена очищен</string>
+        <string name="ui_msg_copied">Скопировано в буфер обмена</string>
         <string name="ui_msg_ctrlQToClose">Нажмите Ctrl+Q, чтобы закрыть файл</string>
         <string name="ui_msg_done">Выполнено</string>
+        <string name="ui_msg_downloadLinkCopied">Ссылка для загрузки скопирована в буфер обмена</string>
+        <string name="ui_msg_enterCharsInRowOrSpace">Введите символы подряд или через пробел</string>
+        <string name="ui_msg_failedToRestoreBackup">Не удалось восстановить резервную копию</string>
         <string name="ui_msg_fileCreated">Файл создан</string>
         <string name="ui_msg_noteCopied">Заметка скопирована в буфер обмена</string>
         <string name="ui_msg_passwordCopied">Пароль скопирован в буфер обмена</string>
@@ -178,6 +205,7 @@
         <string name="dlg_err_couldNotOpenRecentFile">Приложение не может открыть файл. Если файл всё ещё существует, откройте его снова.</string>
         <string name="dlg_err_couldNotReadData">Приложению не удалось прочитать обновлённые данные. Пожалуйста, попробуйте ещё раз.</string>
         <string name="dlg_err_fileDamaged">Файл повреждён.</string>
+        <string name="dlg_err_fileDamagedRestoreBackup">Файл повреждён. Восстановить резервную копию?</string>
         <string name="dlg_err_filePathNotReceived">Путь к файлу не получен. Если вы используете сторонний файловый менеджер, попробуйте использовать системный.</string>
         <string name="dlg_err_fileTypeUnsupported">Этот тип файла не поддерживается.</string>
         <string name="dlg_err_fingerprintSensorNotAvailable">Датчик отпечатков пальцев недоступен.</string>
@@ -192,7 +220,8 @@
         <string name="dlg_msg_actionWillClearRecentFiles">Это действие безвозвратно очистит список последних файлов</string>
         <string name="dlg_msg_actionWillClearRecentFilesWithBiometric">Это действие безвозвратно очистит список последних файлов. Биометрическая аутентификация будет отключена для всех файлов.</string>
         <string name="dlg_msg_clearRecentFilesWithBiometric">Это действие не может быть отменено. Биометрическая аутентификация будет отключена для всех файлов.</string>
-        <string name="dlg_msg_downloadNewVersion">Вы можете скачать новую версию из магазина приложений или репозитория GitHub</string>
+        <string name="dlg_msg_downloadNewVersion">Вы можете скачать новую версию с сайта приложения</string>
+        <string name="dlg_msg_downloadNewVersionRuStore">Вы можете скачать новую версию из RuStore или с сайта приложения</string>
         <string name="dlg_msg_grantPermissionToDisplayOver">Необходимо предоставить разрешение в настройках для отображения панели поверх других приложений</string>
         <string name="dlg_msg_needToEnterPrimaryPasswordForAny">Для открытия любого файла потребуется ввод его основного пароля</string>
         <string name="dlg_msg_permanentAction">Это действие не может быть отменено</string>

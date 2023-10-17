@@ -5,10 +5,8 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import com.ladsers.passtable.android.containers.Param
-import com.ladsers.passtable.android.containers.ParamStorage
 
-class EditTextLockSecs : androidx.appcompat.widget.AppCompatEditText {
+class EditTextParam : androidx.appcompat.widget.AppCompatEditText {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) :
@@ -16,7 +14,6 @@ class EditTextLockSecs : androidx.appcompat.widget.AppCompatEditText {
 
     override fun onKeyPreIme(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            setText(ParamStorage.getInt(context, Param.LOCK_SECS).toString())
             clearFocus()
             val imm =
                 context.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
