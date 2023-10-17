@@ -27,7 +27,9 @@
         <!-- end! -->
 
         <!-- bt (button) -->
+        <string name="app_bt_about">О приложении</string>
         <string name="app_bt_addItem">Добавить элемент</string>
+        <string name="app_bt_appForPc">Приложение для ПК</string>
         <string name="app_bt_cancel">Отмена</string>
         <string name="app_bt_clear">Очистить</string>
         <string name="app_bt_clearRecentFiles">Очистить список недавних файлов</string>
@@ -58,28 +60,25 @@
         <string name="app_bt_openRuStore">Открыть RuStore</string>
         <string name="app_bt_passwordGenerator">Генератор паролей</string>
         <string name="app_bt_pinToScreen">Закрепить на экране</string>
+        <string name="app_bt_rateApp">Оценить приложение</string>
         <string name="app_bt_removeFromList">Убрать из списка</string>
+        <string name="app_bt_restore">Восстановить</string>
         <string name="app_bt_save">Сохранить</string>
         <string name="app_bt_saveAs">Сохранить как</string>
         <string name="app_bt_saveWithCurrentPassword">Сохр. с текущим паролем</string>
         <string name="app_bt_selectFolder">Выбрать папку</string>
+        <string name="app_bt_sendFeedback">Отправить отзыв</string>
         <string name="app_bt_settings">Настройки</string>
         <string name="app_bt_showNote">Показать заметку</string>
         <string name="app_bt_showPassword">Показать пароль</string>
         <string name="app_bt_showUsername">Показать логин</string>
+        <string name="app_bt_supportDeveloper">Поддержать разработчика</string>
         <string name="app_bt_thirdPartyResources">Сторонние ресурсы</string>
+        <string name="app_bt_tools">Инструменты</string>
         <string name="app_bt_tryEditLastItem">Редакт. послед. элемент</string>
         <string name="app_bt_undoLastAction">Отменить послед. действие</string>
         <string name="app_bt_updateAvailable">Доступно обновление</string>
         <string name="app_bt_webPage">Веб-страница</string>
-
-        <string name="app_bt_about">О приложении</string>
-        <string name="app_bt_tools">Инструменты</string>
-        <string name="app_bt_rateApp">Оценить приложение</string>
-        <string name="app_bt_sendFeedback">Отправить отзыв</string>
-        <string name="app_bt_supportDeveloper">Поддержать разработчика</string>
-        <string name="app_bt_appForPc">Приложение для ПК</string>
-        <string name="app_bt_restore">Восстановить</string>
         <!-- end! -->
 
     <!-- END -->
@@ -89,14 +88,19 @@
         <!-- ct (content) -->
         <string name="ui_ct_about">О приложении</string>
         <string name="ui_ct_addItem">Добавить элемент</string>
+        <string name="ui_ct_basicSet">Базовый набор: %1$s</string>
         <string name="ui_ct_biometricAuthentication">Биометрическая аутентификация</string>
         <string name="ui_ct_biometricCheckboxByDefault">Флажок \"Биометрическая аутентификация\" отмечен по умолчанию в окне ввода основного пароля</string>
+        <string name="ui_ct_capitalLetters">Заглавные буквы</string>
         <string name="ui_ct_createdBy">Разработал Максим Королев</string>
         <string name="ui_ct_dark">Тёмная</string>
         <string name="ui_ct_dataInvalidChars">Некоторые данные содержат недопустимые символы</string>
         <string name="ui_ct_doNotLock">Не блокировать</string>
         <string name="ui_ct_editItem">Редактировать элемент</string>
+        <string name="ui_ct_error">Ошибка</string>
+        <string name="ui_ct_exclude">Исключить</string>
         <string name="ui_ct_fileNoItems">Файл не содержит элементов</string>
+        <string name="ui_ct_fullSet">Полный набор</string>
         <string name="ui_ct_home">Главная</string>
         <string name="ui_ct_itemMustContain">Элемент должен содержать заметку или логин с паролем</string>
         <string name="ui_ct_leaveBlankToSkip">Оставьте пустым, чтобы пропустить проверку</string>
@@ -105,11 +109,16 @@
         <string name="ui_ct_lockMinOrLockPhone">При сворачивании приложения или блокировке телефона</string>
         <string name="ui_ct_lockTimePeriod">По истечении указанного периода времени после сворачивания приложения</string>
         <string name="ui_ct_lockWhenEditing">Блокировать во время редактирования или создания элементов</string>
+        <string name="ui_ct_lowercaseLetters">Строчные буквы</string>
+        <string name="ui_ct_minimumNumber">Минимальное количество</string>
+        <string name="ui_ct_noCharSetsGeneration">Нет доступных наборов символов для генерации</string>
         <string name="ui_ct_noRecentlyOpenedFiles">Нет недавно открытых файлов</string>
         <string name="ui_ct_nothingFound">Ничего не найдено</string>
+        <string name="ui_ct_numbers">Цифры</string>
         <string name="ui_ct_openOrCreateFile">Откройте существующий файл или создайте новый</string>
-        <string name="ui_ct_passwordsDoNotMatch">Пароли не совпадают</string>
         <string name="ui_ct_passwordGenerator">Генератор паролей</string>
+        <string name="ui_ct_passwordLength">Длина пароля</string>
+        <string name="ui_ct_passwordsDoNotMatch">Пароли не совпадают</string>
         <string name="ui_ct_plusToAddNew">Нажмите на \"+\" в правом верхнем углу для добавления нового элемента</string>
         <string name="ui_ct_preventScreenCapture">Предотвращать захват экрана</string>
         <string name="ui_ct_recentFiles">Недавние файлы</string>
@@ -117,25 +126,14 @@
         <string name="ui_ct_searchByNotesUsernames">Поиск по заметкам и логинам</string>
         <string name="ui_ct_security">Безопасность</string>
         <string name="ui_ct_settings">Настройки</string>
+        <string name="ui_ct_sumMinNumberExceedsPassLength">Сумма минимальных количеств символов превышает длину пароля</string>
+        <string name="ui_ct_symbols">Символы</string>
         <string name="ui_ct_systemDefault">Как в системе</string>
         <string name="ui_ct_theme">Тема</string>
         <string name="ui_ct_timePeriodInSecs">Период времени в секундах</string>
+        <string name="ui_ct_tooManyCharsExcluded">Невозможно сгенерировать пароль с указанными параметрами: слишком много символов было исключено</string>
         <string name="ui_ct_version">Версия</string>
         <string name="ui_ct_webResources">Веб-ресурсы</string>
-
-        <string name="ui_ct_minimumNumber">Минимальное количество</string>
-        <string name="ui_ct_basicSet">Базовый набор: %1$s</string>
-        <string name="ui_ct_fullSet">Полный набор</string>
-        <string name="ui_ct_lowercaseLetters">Строчные буквы</string>
-        <string name="ui_ct_capitalLetters">Заглавные буквы</string>
-        <string name="ui_ct_numbers">Цифры</string>
-        <string name="ui_ct_symbols">Символы</string>
-        <string name="ui_ct_passwordLength">Длина пароля</string>
-        <string name="ui_ct_exclude">Исключить</string>
-        <string name="ui_ct_error">Ошибка</string>
-        <string name="ui_ct_noCharSetsGeneration">Нет доступных наборов символов для генерации</string>
-        <string name="ui_ct_sumMinNumberExceedsPassLength">Сумма минимальных количеств символов превышает длину пароля</string>
-        <string name="ui_ct_tooManyCharsExcluded">Невозможно сгенерировать пароль с указанными параметрами: слишком много символов было исключено</string>
         <!-- end! -->
 
         <!-- msg (message) -->
@@ -143,8 +141,12 @@
         <string name="ui_msg_biometricNotAvailable">Биометрическая аутентификация в данный момент недоступна. Пожалуйста, введите пароль.</string>
         <string name="ui_msg_canceled">Отменено</string>
         <string name="ui_msg_clipboardCleared">Буфер обмена очищен</string>
+        <string name="ui_msg_copied">Скопировано в буфер обмена</string>
         <string name="ui_msg_ctrlQToClose">Нажмите Ctrl+Q, чтобы закрыть файл</string>
         <string name="ui_msg_done">Выполнено</string>
+        <string name="ui_msg_downloadLinkCopied">Ссылка для загрузки скопирована в буфер обмена</string>
+        <string name="ui_msg_enterCharsInRowOrSpace">Введите символы подряд или через пробел</string>
+        <string name="ui_msg_failedToRestoreBackup">Не удалось восстановить резервную копию</string>
         <string name="ui_msg_fileCreated">Файл создан</string>
         <string name="ui_msg_noteCopied">Заметка скопирована в буфер обмена</string>
         <string name="ui_msg_passwordCopied">Пароль скопирован в буфер обмена</string>
@@ -152,11 +154,6 @@
         <string name="ui_msg_recentFilesUpdated">Список последних файлов обновлён</string>
         <string name="ui_msg_saved">Сохранено</string>
         <string name="ui_msg_usernameCopied">Логин скопирован в буфер обмена</string>
-
-        <string name="ui_msg_copied">Скопировано в буфер обмена</string>
-        <string name="ui_msg_downloadLinkCopied">Ссылка для загрузки скопирована в буфер обмена</string>
-        <string name="ui_msg_failedToRestoreBackup">Не удалось восстановить резервную копию</string>
-        <string name="ui_msg_enterCharsInRowOrSpace">Введите символы подряд или через пробел</string>
         <!-- end! -->
 
     <!-- END -->
@@ -208,6 +205,7 @@
         <string name="dlg_err_couldNotOpenRecentFile">Приложение не может открыть файл. Если файл всё ещё существует, откройте его снова.</string>
         <string name="dlg_err_couldNotReadData">Приложению не удалось прочитать обновлённые данные. Пожалуйста, попробуйте ещё раз.</string>
         <string name="dlg_err_fileDamaged">Файл повреждён.</string>
+        <string name="dlg_err_fileDamagedRestoreBackup">Файл повреждён. Восстановить резервную копию?</string>
         <string name="dlg_err_filePathNotReceived">Путь к файлу не получен. Если вы используете сторонний файловый менеджер, попробуйте использовать системный.</string>
         <string name="dlg_err_fileTypeUnsupported">Этот тип файла не поддерживается.</string>
         <string name="dlg_err_fingerprintSensorNotAvailable">Датчик отпечатков пальцев недоступен.</string>
@@ -216,8 +214,6 @@
         <string name="dlg_err_tryAddDelete">Попробуйте добавить ещё один элемент, а затем удалить оба.</string>
         <string name="dlg_err_unableToOpenFile">Файл по указанному пути не существует или у приложения недостаточно прав для его открытия.</string>
         <string name="dlg_err_unsupportedChar">Вероятно, это вызвано использованием неподдерживаемого символа.</string>
-
-        <string name="dlg_err_fileDamagedRestoreBackup">Файл повреждён. Восстановить резервную копию?</string>
         <!-- end! -->
 
         <!-- msg (message) -->
