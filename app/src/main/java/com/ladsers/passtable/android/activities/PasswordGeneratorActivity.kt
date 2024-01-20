@@ -17,7 +17,7 @@ import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.button.MaterialButton
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.components.PasswordGeneratorProcessor
-import com.ladsers.passtable.android.containers.Param
+import com.ladsers.passtable.android.enums.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.databinding.ActivityPasswordGeneratorBinding
 import com.ladsers.passtable.android.databinding.PasswordGeneratorCollectionBinding

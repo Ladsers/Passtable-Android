@@ -23,9 +23,10 @@ import com.ladsers.passtable.android.databinding.PanelDataBinding
 import com.ladsers.passtable.android.dialogs.MessageDlg
 
 class DataPanel(
-    private val context: Context,
     private val activity: TableActivity
 ) {
+    private val context = activity.applicationContext
+
     private lateinit var layoutParams: WindowManager.LayoutParams
 
     private val binding = PanelDataBinding.inflate(activity.window.layoutInflater)

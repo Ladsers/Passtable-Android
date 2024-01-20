@@ -5,7 +5,7 @@ import android.view.View
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.ladsers.passtable.android.R
-import com.ladsers.passtable.android.containers.Param
+import com.ladsers.passtable.android.enums.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 
 object SnackbarManager {

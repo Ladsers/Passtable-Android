@@ -24,12 +24,11 @@ import com.ladsers.passtable.android.adapters.TableAdapter
 import com.ladsers.passtable.android.callbacks.SearchDiffCallback
 import com.ladsers.passtable.android.components.BackupManager
 import com.ladsers.passtable.android.components.BiometricAuth
-import com.ladsers.passtable.android.components.DataPanel
 import com.ladsers.passtable.android.components.TagPanel
-import com.ladsers.passtable.android.components.tableActivity.TableClipboard
+import com.ladsers.passtable.android.components.menus.DataItemMenu
 import com.ladsers.passtable.android.components.tableActivity.TableInitInfo
 import com.ladsers.passtable.android.containers.DataTableAndroid
-import com.ladsers.passtable.android.containers.Param
+import com.ladsers.passtable.android.enums.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.containers.RecentFiles
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
@@ -57,15 +56,14 @@ class TableActivity : AppCompatActivity() {
     private lateinit var primaryPasswordDlg: PrimaryPasswordDlg
     private lateinit var fileCreatorDlg: FileCreatorDlg
     private lateinit var messageDlg: MessageDlg
-    private lateinit var dataPanel: DataPanel
+    private lateinit var dataItemMenu: DataItemMenu
     private lateinit var tagPanel: TagPanel
-    private lateinit var tableClipboard: TableClipboard
 
     private lateinit var nothingFoundDelay: Runnable
 
     private val smoothAnimItemLimit = 150 // to speed up work with big files
 
-    private var editId = -1
+    private var lastEditId = -1
     private var saveAsMode = false
     private var afterRemoval = false
     private var escPressed = false
@@ -109,7 +107,8 @@ class TableActivity : AppCompatActivity() {
             contentResolver,
             window
         ) { openFileExplorer() }
-        dataPanel = DataPanel(applicationContext, this)
+        dataItemMenu = DataItemMenu(this, messageDlg, { id -> editItem(id = id) },
+            { id, note -> deleteItem(id, note) })
 
         /* Get file path (uri) */
         @Suppress("DEPRECATION") var uri =
@@ -271,13 +270,12 @@ class TableActivity : AppCompatActivity() {
 
         /* Configure table adapter */
         itemList = table.getData()
-        adapter = TableAdapter(itemList, { id, resCode -> popupAction(id, resCode) },
-            { id -> showPassword(id) })
+        dataItemMenu.attachData(table, itemList)
+        adapter = TableAdapter(itemList, dataItemMenu)
         binding.rvTable.adapter = adapter
         (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
         /* Init remaining components */
-        tableClipboard = TableClipboard(this, itemList, table)
         tagPanel = TagPanel(
             this,
             binding,
@@ -314,51 +312,6 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Do action from pop-up menu created by the table adapter.
-     */
-    private fun popupAction(id: Int, resCode: Int) {
-        val tableId = if (itemList[id].id == -1) id else itemList[id].id
-
-        // show a window for cropped data
-        fun show(strResource: Int, data: String, key: TableClipboard.Key) {
-            messageDlg.quickDialog(
-                getString(strResource),
-                data,
-                { tableClipboard.copy(id, key) },
-                posText = getString(R.string.app_bt_copy),
-                negText = getString(R.string.app_bt_close),
-                posIcon = R.drawable.ic_copy
-            )
-        }
-
-        val keyNote = TableClipboard.Key.NOTE
-        val keyUsername = TableClipboard.Key.USERNAME
-        val keyPassword = TableClipboard.Key.PASSWORD
-        when (resCode) {
-            1 -> show(R.string.app_com_note, table.getNote(tableId), keyNote)
-            2 -> show(R.string.app_com_username, table.getUsername(tableId), keyUsername)
-            3 -> show(R.string.app_com_password, table.getPassword(tableId), keyPassword)
-            4 -> tableClipboard.copy(id, keyNote)
-            5 -> tableClipboard.copy(id, keyUsername)
-            6 -> tableClipboard.copy(id, keyPassword)
-            7 -> { // edit
-                editId = id
-                editItem()
-            }
-            8 -> deleteItem(id, table.getNote(tableId))
-            9 -> dataPanel.show(table.getUsername(tableId), table.getPassword(tableId))
-        }
-    }
-
-    private fun showPassword(id: Int) {
-        val tableId = if (itemList[id].id == -1) id else itemList[id].id
-        itemList[id].password =
-            if (itemList[id].password == "/yes") table.getPassword(tableId) else "/yes"
-        adapter.notifyItemChanged(id)
-        if (id == itemList.lastIndex) binding.rvTable.scrollToPosition(itemList.lastIndex)
-    }
-
     private fun parseDataFromEditActivity(data: Intent?): List<String>? {
         return if (data == null) {
             ErrorDlg.show(
@@ -385,10 +338,13 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
-    private fun editItem(blockClosing: Boolean = false) {
+    private fun editItem(id: Int? = null, blockClosing: Boolean = false) {
+
+        id?.let { lastEditId = it }
+
         if (tagPanel.searchModeIsActive && tagPanel.lastSearchQuery.isEmpty())
             tagPanel.switchPanel() // it is necessary to fix the wrong behavior with empty query
-        val tableId = if (itemList[editId].id == -1) editId else itemList[editId].id
+        val tableId = if (itemList[lastEditId].id == -1) lastEditId else itemList[lastEditId].id
         val intent = Intent(this, EditActivity::class.java)
         intent.putExtra("dataTag", table.getTag(tableId))
         intent.putExtra("dataNote", table.getNote(tableId))
@@ -420,7 +376,7 @@ class TableActivity : AppCompatActivity() {
 
         val data = parseDataFromEditActivity(result.data) ?: return@registerForActivityResult
 
-        val tableId = if (itemList[editId].id == -1) editId else itemList[editId].id
+        val tableId = if (itemList[lastEditId].id == -1) lastEditId else itemList[lastEditId].id
         table.setData(tableId, data[0], data[1], data[2], data[3])
         saving()
 
@@ -429,21 +385,21 @@ class TableActivity : AppCompatActivity() {
             tagPanel.checkDataInQuery(data[1]) || tagPanel.checkDataInQuery(data[2])
 
         if (!searchIsRunning || tagPanel.checkTag(data[0]) || containQuery) {
-            itemList[editId].tag = data[0]
-            itemList[editId].note = data[1]
-            itemList[editId].username = data[2]
-            itemList[editId].password = if (data[3].isNotEmpty()) "/yes" else "/no"
+            itemList[lastEditId].tag = data[0]
+            itemList[lastEditId].note = data[1]
+            itemList[lastEditId].username = data[2]
+            itemList[lastEditId].password = if (data[3].isNotEmpty()) "/yes" else "/no"
 
             (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = true
-            adapter.notifyItemChanged(editId)
+            adapter.notifyItemChanged(lastEditId)
             binding.rvTable.post {
                 (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
                     false
             }
         } else {
-            itemList.removeAt(editId)
-            adapter.notifyItemRemoved(editId)
-            adapter.notifyItemRangeChanged(editId, adapter.itemCount)
+            itemList.removeAt(lastEditId)
+            adapter.notifyItemRemoved(lastEditId)
+            adapter.notifyItemRangeChanged(lastEditId, adapter.itemCount)
             notifyUser()
         }
     }
@@ -476,7 +432,7 @@ class TableActivity : AppCompatActivity() {
             val data = parseDataFromEditActivity(result.data) ?: return@registerForActivityResult
 
             table.add(data[0], data[1], data[2], data[3])
-            editId = table.getSize() - 1
+            lastEditId = table.getSize() - 1
 
             val searchIsRunning = tagPanel.isAnyTagActive() || tagPanel.searchModeIsActive
             val containQuery =
@@ -484,7 +440,7 @@ class TableActivity : AppCompatActivity() {
 
             if (!searchIsRunning || tagPanel.checkTag(data[0]) || containQuery) {
                 val hasPassword = if (data[3].isNotEmpty()) "/yes" else "/no"
-                val id = if (!searchIsRunning) -1 else editId
+                val id = if (!searchIsRunning) -1 else lastEditId
                 itemList.add(DataItem(data[0], data[1], data[2], hasPassword, id))
                 notifyUser()
                 adapter.notifyItemInserted(itemList.lastIndex)

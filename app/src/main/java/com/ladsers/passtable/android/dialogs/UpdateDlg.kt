@@ -5,7 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.components.AppStoreProcessor
-import com.ladsers.passtable.android.containers.AppStore
+import com.ladsers.passtable.android.enums.AppStore
 import com.ladsers.passtable.lib.updater.Updater
 
 object UpdateDlg {

@@ -14,8 +14,8 @@ import com.ladsers.passtable.android.activities.SettingsActivity
 import com.ladsers.passtable.android.components.AppStoreProcessor
 import com.ladsers.passtable.android.components.ClipboardManager
 import com.ladsers.passtable.android.components.PasswordGeneratorProcessor
-import com.ladsers.passtable.android.containers.AppStore
-import com.ladsers.passtable.android.containers.Param
+import com.ladsers.passtable.android.enums.AppStore
+import com.ladsers.passtable.android.enums.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.dialogs.MessageDlg
 import com.ladsers.passtable.android.dialogs.UpdateDlg

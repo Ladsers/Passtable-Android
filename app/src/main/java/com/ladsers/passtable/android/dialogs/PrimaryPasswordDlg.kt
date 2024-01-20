@@ -19,7 +19,7 @@ import androidx.core.widget.doBeforeTextChanged
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.components.BiometricAuth
 import com.ladsers.passtable.android.components.PasswordInput
-import com.ladsers.passtable.android.containers.Param
+import com.ladsers.passtable.android.enums.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.databinding.DialogDataEntryBinding
 import com.ladsers.passtable.lib.Verifier

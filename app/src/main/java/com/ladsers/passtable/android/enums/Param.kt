@@ -1,4 +1,4 @@
-package com.ladsers.passtable.android.containers
+package com.ladsers.passtable.android.enums
 
 enum class Param(
     val str: String,

@@ -6,7 +6,7 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.components.BiometricAuth
-import com.ladsers.passtable.android.containers.Param
+import com.ladsers.passtable.android.enums.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.containers.RecentFiles
 import com.ladsers.passtable.android.databinding.ActivitySettingsBinding

@@ -2,7 +2,7 @@ package com.ladsers.passtable.android.components.settingsModules
 
 import android.app.Activity
 import android.view.View
-import com.ladsers.passtable.android.containers.Param
+import com.ladsers.passtable.android.enums.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.databinding.ActivitySettingsBinding
 import com.ladsers.passtable.android.dialogs.MessageDlg
