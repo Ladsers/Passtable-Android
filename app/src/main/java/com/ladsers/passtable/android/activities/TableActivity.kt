@@ -16,11 +16,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.adapters.TableAdapter
+import com.ladsers.passtable.android.callbacks.ReorderCallback
 import com.ladsers.passtable.android.callbacks.SearchDiffCallback
 import com.ladsers.passtable.android.components.BackupManager
 import com.ladsers.passtable.android.components.BiometricAuth
@@ -58,6 +60,7 @@ class TableActivity : AppCompatActivity() {
     private lateinit var messageDlg: MessageDlg
     private lateinit var dataItemMenu: DataItemMenu
     private lateinit var tagPanel: TagPanel
+    private lateinit var reorderCallback: ReorderCallback
 
     private lateinit var nothingFoundDelay: Runnable
 
@@ -276,11 +279,16 @@ class TableActivity : AppCompatActivity() {
         (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
         /* Init remaining components */
+        reorderCallback = ReorderCallback(itemList)
+        val touchHelper = ItemTouchHelper(reorderCallback)
+        touchHelper.attachToRecyclerView(binding.rvTable)
+
         tagPanel = TagPanel(
             this,
             binding,
             itemList,
             table,
+            reorderCallback,
             { notifyUser() },
             { mtListOld -> notifyDataSetChanged(mtListOld) })
         tagPanel.init()

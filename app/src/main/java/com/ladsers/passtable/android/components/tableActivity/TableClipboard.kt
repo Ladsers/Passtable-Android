@@ -35,4 +35,17 @@ class TableClipboard(
         }
         Toast.makeText(context.applicationContext, msg, Toast.LENGTH_SHORT).show()
     }
+
+    fun copy(data: String, key: Key) {
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("data", data)
+        clipboard.setPrimaryClip(clip)
+
+        val msg = when (key) {
+            Key.NOTE -> context.getString(R.string.ui_msg_noteCopied)
+            Key.USERNAME -> context.getString(R.string.ui_msg_usernameCopied)
+            Key.PASSWORD -> context.getString(R.string.ui_msg_passwordCopied)
+        }
+        Toast.makeText(context.applicationContext, msg, Toast.LENGTH_SHORT).show()
+    }
 }
