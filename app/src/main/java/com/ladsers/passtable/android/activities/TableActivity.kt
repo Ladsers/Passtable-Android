@@ -38,6 +38,7 @@ import com.ladsers.passtable.android.dialogs.ErrorDlg
 import com.ladsers.passtable.android.dialogs.FileCreatorDlg
 import com.ladsers.passtable.android.dialogs.MessageDlg
 import com.ladsers.passtable.android.dialogs.PrimaryPasswordDlg
+import com.ladsers.passtable.android.enums.SearchStatus
 import com.ladsers.passtable.android.extensions.getFileName
 import com.ladsers.passtable.android.extensions.getFileNameWithExt
 import com.ladsers.passtable.lib.DataItem
@@ -77,6 +78,8 @@ class TableActivity : AppCompatActivity() {
     private var isBackgrounded = false
     private var disableLockFileSystem = true
     private var backgroundSecs = 0L
+
+    public fun getSearchStatus() = tagPanel.searchStatus
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -288,7 +291,6 @@ class TableActivity : AppCompatActivity() {
             binding,
             itemList,
             table,
-            reorderCallback,
             { notifyUser() },
             { mtListOld -> notifyDataSetChanged(mtListOld) })
         tagPanel.init()
@@ -320,7 +322,7 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
-    private fun parseDataFromEditActivity(data: Intent?): List<String>? {
+    private fun parseDataFromEditActivity(data: Intent?): DataItem? {
         return if (data == null) {
             ErrorDlg.show(
                 messageDlg,
@@ -334,7 +336,7 @@ class TableActivity : AppCompatActivity() {
             val newUsername = data.getStringExtra("newDataUsername")
             val newPassword = data.getStringExtra("newDataPassword")
             if (newTag != null && newNote != null && newUsername != null && newPassword != null)
-                listOf(newTag, newNote, newUsername, newPassword)
+                DataItem(newTag, newNote, newUsername, newPassword)
             else {
                 ErrorDlg.show(
                     messageDlg,
@@ -347,11 +349,8 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun editItem(id: Int? = null, blockClosing: Boolean = false) {
-
         id?.let { lastEditId = it }
 
-        if (tagPanel.searchModeIsActive && tagPanel.lastSearchQuery.isEmpty())
-            tagPanel.switchPanel() // it is necessary to fix the wrong behavior with empty query
         val tableId = if (itemList[lastEditId].id == -1) lastEditId else itemList[lastEditId].id
         val intent = Intent(this, EditActivity::class.java)
         intent.putExtra("dataTag", table.getTag(tableId))
@@ -385,18 +384,12 @@ class TableActivity : AppCompatActivity() {
         val data = parseDataFromEditActivity(result.data) ?: return@registerForActivityResult
 
         val tableId = if (itemList[lastEditId].id == -1) lastEditId else itemList[lastEditId].id
-        table.setData(tableId, data[0], data[1], data[2], data[3])
+        table.setData(tableId, data.tag, data.note, data.username, data.password)
         saving()
 
-        val searchIsRunning = tagPanel.isAnyTagActive() || tagPanel.searchModeIsActive
-        val containQuery =
-            tagPanel.checkDataInQuery(data[1]) || tagPanel.checkDataInQuery(data[2])
-
-        if (!searchIsRunning || tagPanel.checkTag(data[0]) || containQuery) {
-            itemList[lastEditId].tag = data[0]
-            itemList[lastEditId].note = data[1]
-            itemList[lastEditId].username = data[2]
-            itemList[lastEditId].password = if (data[3].isNotEmpty()) "/yes" else "/no"
+        if (tagPanel.checkItemCanBeShown(data)) {
+            itemList[lastEditId] = data
+            itemList[lastEditId].password = if (data.password.isNotEmpty()) "/yes" else "/no"
 
             (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = true
             adapter.notifyItemChanged(lastEditId)
@@ -413,10 +406,8 @@ class TableActivity : AppCompatActivity() {
     }
 
     private fun addItem() {
-        if (tagPanel.searchModeIsActive && tagPanel.lastSearchQuery.isEmpty())
-            tagPanel.switchPanel() // it is necessary to fix the wrong behavior with empty query
         val intent = Intent(this, EditActivity::class.java)
-        tagPanel.findActiveTag().let { intent.putExtra("dataTag", it) } // preselect tag
+        tagPanel.getSingleTag()?.let { tag -> intent.putExtra("dataTag", tag.index.toString()) } // preselect tag
         disableLockFileSystem = true // for Table activity
         addActivityResult.launch(intent)
     }
@@ -439,17 +430,13 @@ class TableActivity : AppCompatActivity() {
 
             val data = parseDataFromEditActivity(result.data) ?: return@registerForActivityResult
 
-            table.add(data[0], data[1], data[2], data[3])
+            table.add(data.tag, data.note, data.username, data.password)
             lastEditId = table.getSize() - 1
 
-            val searchIsRunning = tagPanel.isAnyTagActive() || tagPanel.searchModeIsActive
-            val containQuery =
-                tagPanel.checkDataInQuery(data[1]) || tagPanel.checkDataInQuery(data[2])
-
-            if (!searchIsRunning || tagPanel.checkTag(data[0]) || containQuery) {
-                val hasPassword = if (data[3].isNotEmpty()) "/yes" else "/no"
-                val id = if (!searchIsRunning) -1 else lastEditId
-                itemList.add(DataItem(data[0], data[1], data[2], hasPassword, id))
+            if (tagPanel.checkItemCanBeShown(data)) {
+                data.password = if (data.password.isNotEmpty()) "/yes" else "/no"
+                val id = if (getSearchStatus() == SearchStatus.NONE) -1 else lastEditId
+                itemList.add(DataItem(data.tag, data.note, data.username, data.password, id))
                 notifyUser()
                 adapter.notifyItemInserted(itemList.lastIndex)
                 binding.rvTable.postDelayed({
@@ -605,7 +592,7 @@ class TableActivity : AppCompatActivity() {
         itemList.addAll(table.getData())
         notifyUser()
         notifyDataSetChanged(mtListOld)
-        if (tagPanel.isAnyTagActive() || tagPanel.searchModeIsActive) tagPanel.switchPanel()
+        tagPanel.clearSearch()
 
         if (!afterRemoval) { // occurred after editing the item
             messageDlg.create(
@@ -719,7 +706,7 @@ class TableActivity : AppCompatActivity() {
      */
     private fun notifyUser() {
         if (itemList.size == 0) {
-            if (tagPanel.isAnyTagActive() || tagPanel.lastSearchQuery.isNotEmpty()) {
+            if (getSearchStatus() == SearchStatus.TAG_QUERY || getSearchStatus() == SearchStatus.TEXT_QUERY) {
                 binding.notificationEmptyCollection.clInfo.visibility = View.GONE
                 binding.notificationNothingFound.clInfo.postDelayed(nothingFoundDelay, 300)
             } else {
@@ -751,15 +738,19 @@ class TableActivity : AppCompatActivity() {
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            if (tagPanel.isAnyTagActive() || tagPanel.searchModeIsActive) tagPanel.switchPanel() else {
-                if (!escPressed) finish()
-                else {
-                    // implemented for physical keyboard
-                    Toast.makeText(
-                        this@TableActivity, getString(R.string.ui_msg_ctrlQToClose),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+            if (getSearchStatus() != SearchStatus.NONE) {
+                tagPanel.clearSearch()
+                escPressed = true
+                return
+            }
+
+            if (!escPressed) finish()
+            else {
+                // implemented for physical keyboard
+                Toast.makeText(
+                    this@TableActivity, getString(R.string.ui_msg_ctrlQToClose),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             escPressed = false
         }
@@ -767,12 +758,6 @@ class TableActivity : AppCompatActivity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         when (keyCode) {
-            KeyEvent.KEYCODE_F -> {
-                if (event?.isCtrlPressed ?: return super.onKeyDown(keyCode, event)) {
-                    if (tagPanel.isAnyTagActive()) tagPanel.switchPanel() // turn off search by tag
-                    if (!tagPanel.searchModeIsActive) tagPanel.switchPanel()
-                }
-            }
             KeyEvent.KEYCODE_ESCAPE -> escPressed = true // set flag for onBackPressed function
             KeyEvent.KEYCODE_N -> {
                 if (event?.isCtrlPressed ?: return super.onKeyDown(keyCode, event)) {
@@ -787,6 +772,9 @@ class TableActivity : AppCompatActivity() {
             KeyEvent.KEYCODE_MOVE_HOME -> binding.rvTable.smoothScrollToPosition(0)
             KeyEvent.KEYCODE_MOVE_END -> binding.rvTable.smoothScrollToPosition(itemList.lastIndex)
         }
+
+        tagPanel.onKeyDown(keyCode, event)
+
         return super.onKeyDown(keyCode, event)
     }
 

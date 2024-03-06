@@ -1,18 +1,34 @@
 package com.ladsers.passtable.android.components
 
 import android.content.Context
+import android.graphics.drawable.Drawable
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
+import com.google.android.material.internal.TextWatcherAdapter
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
+import com.ladsers.passtable.android.enums.SearchStatus
 import com.ladsers.passtable.lib.DataItem
 import com.ladsers.passtable.lib.DataTable
+
+// todo to core
+enum class ItemTagColor(val index: Int) {
+    RED(1),
+    GREEN(2),
+    BLUE(3),
+    YELLOW(4),
+    PURPLE(5)
+}
 
 class TagPanel(
     private val context: Context,
@@ -22,150 +38,238 @@ class TagPanel(
     private val notifyUser: () -> Unit,
     private val notifyDataSetChanged: (List<DataItem>) -> Unit,
 ) {
-    var searchModeIsActive = false
-        private set
-    var lastSearchQuery = ""
-        private set
 
-    private val tagIsActive = MutableList(6) { false }
+    private val iconSearch = ContextCompat.getDrawable(context, R.drawable.ic_search)
+    private val iconSearchOff = ContextCompat.getDrawable(context, R.drawable.ic_search_off)
 
-    fun isAnyTagActive() = tagIsActive.any { it }
+    private var searchRunnable: Runnable? = null
+    private var searchTextWatcher: TextWatcher? = null
 
-    fun findActiveTag(): String? {
-        if (tagIsActive.count { it } != 1) return null
-        return tagIsActive.indexOf(true).toString()
+    var searchStatus = SearchStatus.NONE
+        private set(value) {
+            field = value
+            binding.btSearch.icon = if (value == SearchStatus.NONE) iconSearch else iconSearchOff
+        }
+
+    private val activeTags = BooleanArray(6)
+
+    private var textQuery = ""
+        set(value) {
+            field = value.lowercase()
+        }
+
+    fun getSingleTag(): ItemTagColor? {
+        if (activeTags.count { it } != 1) return null
+        val activeTagIndex = activeTags.indexOf(true)
+        return ItemTagColor.entries.find { it.index == activeTagIndex }
     }
-
-    fun checkTag(index: String) = tagIsActive[index.toInt()]
 
     fun init() {
-        binding.btTagRed.setOnClickListener { v -> searchByTag(1, v as MaterialButton) }
-        binding.btTagGreen.setOnClickListener { v -> searchByTag(2, v as MaterialButton) }
-        binding.btTagBlue.setOnClickListener { v -> searchByTag(3, v as MaterialButton) }
-        binding.btTagYellow.setOnClickListener { v -> searchByTag(4, v as MaterialButton) }
-        binding.btTagPurple.setOnClickListener { v -> searchByTag(5, v as MaterialButton) }
+        with(binding) {
+            btSearch.setOnSearchBtnClickListener()
+            btTagRed.setOnTagClickListener(ItemTagColor.RED)
+            btTagGreen.setOnTagClickListener(ItemTagColor.GREEN)
+            btTagBlue.setOnTagClickListener(ItemTagColor.BLUE)
+            btTagYellow.setOnTagClickListener(ItemTagColor.YELLOW)
+            btTagPurple.setOnTagClickListener(ItemTagColor.PURPLE)
+        }
+    }
 
+    private fun EditText.subscribeOnTextChanged() {
         var query = ""
-        val searchWithDelay = Runnable { searchByData(query) }
-        binding.etSearch.doAfterTextChanged { text ->
-            binding.etSearch.removeCallbacks(searchWithDelay)
-            query = text.toString()
-            if (query.isNotEmpty()) binding.etSearch.postDelayed(searchWithDelay, 500)
-            else searchByData(query)
+        searchRunnable = searchRunnable ?: Runnable { searchByText(query) }
+        searchTextWatcher = searchTextWatcher ?: object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // not used
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                this@subscribeOnTextChanged.removeCallbacks(searchRunnable)
+                query = s?.toString() ?: ""
+                if (query.isNotEmpty()) this@subscribeOnTextChanged.postDelayed(searchRunnable, 500)
+                else setTextQueryEmpty()
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                // not used
+            }
         }
 
-        binding.btSearch.setOnClickListener { switchPanel() }
+        this.addTextChangedListener(searchTextWatcher)
     }
 
-    fun switchPanel() {
-        if (!isAnyTagActive()) {
-            val imm =
-                context.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
-            searchModeIsActive = !searchModeIsActive
+    private fun EditText.unsubscribeOnTextChanged() {
+        searchRunnable?.let { this.removeCallbacks(it) }
+        searchTextWatcher?.let { this.removeTextChangedListener(it) }
+    }
 
-            binding.clTagButtons.visibility = if (searchModeIsActive) View.GONE else View.VISIBLE
-            binding.etSearch.visibility = if (searchModeIsActive) View.VISIBLE else View.GONE
 
-            if (searchModeIsActive) {
-                binding.clPanel.setBackgroundColor(
-                    MaterialColors.getColor(
-                        binding.clPanel,
-                        R.attr.editBackground
-                    )
-                )
-                binding.etSearch.requestFocus()
-                binding.etSearch.inputType = InputType.TYPE_CLASS_TEXT
-                imm.showSoftInput(binding.etSearch, InputMethodManager.SHOW_IMPLICIT)
-                binding.btSearch.icon =
-                    ContextCompat.getDrawable(context, R.drawable.ic_search_off)
-            } else {
-                binding.clPanel.setBackgroundColor(
-                    MaterialColors.getColor(
-                        binding.clPanel,
-                        R.attr.panelTableBackground
-                    )
-                )
-                binding.etSearch.clearFocus()
-                imm.hideSoftInputFromWindow(binding.etSearch.windowToken, 0)
-                binding.etSearch.inputType = InputType.TYPE_NULL
-                binding.etSearch.text.clear()
-                binding.btSearch.icon = ContextCompat.getDrawable(context, R.drawable.ic_search)
-            }
-        } else {
-            // closing tags
-            for (i in 1..5) tagIsActive[i] = false
-            val dataListOld = dataList.toList()
-            dataList.clear()
-            dataList.addAll(table.getData())
-            notifyUser()
-            notifyDataSetChanged(dataListOld)
-
-            with(binding) {
-                btSearch.icon = ContextCompat.getDrawable(context, R.drawable.ic_search)
-
-                btTagRed.icon = ContextCompat.getDrawable(context, R.drawable.ic_tag_red)
-                btTagGreen.icon = ContextCompat.getDrawable(context, R.drawable.ic_tag_green)
-                btTagBlue.icon = ContextCompat.getDrawable(context, R.drawable.ic_tag_blue)
-                btTagYellow.icon = ContextCompat.getDrawable(context, R.drawable.ic_tag_yellow)
-                btTagPurple.icon = ContextCompat.getDrawable(context, R.drawable.ic_tag_purple)
-            }
+    private fun MaterialButton.setOnSearchBtnClickListener() {
+        this.setOnClickListener {
+            if (searchStatus == SearchStatus.NONE) setTextQueryEmpty() else clearSearch()
         }
     }
 
-    fun checkDataInQuery(data: String): Boolean {
-        if (lastSearchQuery.isEmpty()) return false
-        return data.lowercase().contains(lastSearchQuery)
+    private fun MaterialButton.setOnTagClickListener(tagColor: ItemTagColor) {
+        this.setOnClickListener {
+            val isChecked = !activeTags[tagColor.index]
+            activeTags[tagColor.index] = isChecked
+
+            this.icon = getIconDrawable(tagColor, isChecked)
+
+            if (activeTags.any { it }) searchByTags() else clearSearch()
+        }
     }
 
-    private fun searchByData(query: String) {
-        lastSearchQuery = query
+    private fun getIconDrawable(color: ItemTagColor, isChecked: Boolean = false): Drawable {
+        val resource = when (color) {
+            ItemTagColor.RED -> if (isChecked) R.drawable.ic_tag_red_checked else R.drawable.ic_tag_red
+            ItemTagColor.GREEN -> if (isChecked) R.drawable.ic_tag_green_checked else R.drawable.ic_tag_green
+            ItemTagColor.BLUE -> if (isChecked) R.drawable.ic_tag_blue_checked else R.drawable.ic_tag_blue
+            ItemTagColor.YELLOW -> if (isChecked) R.drawable.ic_tag_yellow_checked else R.drawable.ic_tag_yellow
+            ItemTagColor.PURPLE -> if (isChecked) R.drawable.ic_tag_purple_checked else R.drawable.ic_tag_purple
+        }
+
+        return ContextCompat.getDrawable(context, resource)!!
+    }
+
+    private fun searchByTags() {
+        searchStatus = SearchStatus.TAG_QUERY
+
         val dataListOld = dataList.toList()
         dataList.clear()
-        dataList.addAll(if (query.isNotEmpty()) table.searchByData(query) else table.getData())
+        dataList.addAll(
+            table.searchByTag(
+                activeTags[ItemTagColor.RED.index],
+                activeTags[ItemTagColor.GREEN.index],
+                activeTags[ItemTagColor.BLUE.index],
+                activeTags[ItemTagColor.YELLOW.index],
+                activeTags[ItemTagColor.PURPLE.index]
+            )
+        )
         notifyUser()
         notifyDataSetChanged(dataListOld)
     }
 
-    private fun searchByTag(tagCode: Int, btTag: MaterialButton) {
-        tagIsActive[tagCode] = !tagIsActive[tagCode]
+    fun clearSearch() {
+        if (searchStatus == SearchStatus.NONE) return
 
-        fun getIcon(tag: Int, tagChecked: Int) =
-            ContextCompat.getDrawable(context, if (tagIsActive[tagCode]) tagChecked else tag)
+        searchStatus = SearchStatus.NONE
 
-        btTag.icon = when (btTag) {
-            binding.btTagRed -> getIcon(R.drawable.ic_tag_red, R.drawable.ic_tag_red_checked)
-            binding.btTagGreen -> getIcon(R.drawable.ic_tag_green, R.drawable.ic_tag_green_checked)
-            binding.btTagBlue -> getIcon(R.drawable.ic_tag_blue, R.drawable.ic_tag_blue_checked)
-            binding.btTagYellow -> getIcon(
-                R.drawable.ic_tag_yellow,
-                R.drawable.ic_tag_yellow_checked
-            )
-            binding.btTagPurple -> getIcon(
-                R.drawable.ic_tag_purple,
-                R.drawable.ic_tag_purple_checked
-            )
-            else -> null
+        activeTags.fill(false)
+        textQuery = ""
+
+        with(binding) {
+            btTagRed.icon = getIconDrawable(ItemTagColor.RED)
+            btTagGreen.icon = getIconDrawable(ItemTagColor.GREEN)
+            btTagBlue.icon = getIconDrawable(ItemTagColor.BLUE)
+            btTagYellow.icon = getIconDrawable(ItemTagColor.YELLOW)
+            btTagPurple.icon = getIconDrawable(ItemTagColor.PURPLE)
         }
+
+        deactivateEditText()
 
         val dataListOld = dataList.toList()
         dataList.clear()
-        if (isAnyTagActive()) {
-            dataList.addAll(
-                table.searchByTag(
-                    tagIsActive[1],
-                    tagIsActive[2],
-                    tagIsActive[3],
-                    tagIsActive[4],
-                    tagIsActive[5]
-                )
-            )
-            binding.btSearch.icon = ContextCompat.getDrawable(context, R.drawable.ic_search_off)
-        } else {
-            dataList.addAll(table.getData())
-            binding.btSearch.icon = ContextCompat.getDrawable(context, R.drawable.ic_search)
-        }
-
+        dataList.addAll(table.getData())
         notifyUser()
         notifyDataSetChanged(dataListOld)
+    }
+
+    private fun setTextQueryEmpty() {
+        if (searchStatus == SearchStatus.TEXT_QUERY_EMPTY) return
+
+        if (searchStatus == SearchStatus.NONE) activateEditText()
+
+        searchStatus = SearchStatus.TEXT_QUERY_EMPTY
+
+        textQuery = ""
+
+        val dataListOld = dataList.toList()
+        dataList.clear()
+        dataList.addAll(table.getData())
+        notifyUser()
+        notifyDataSetChanged(dataListOld)
+    }
+
+    private fun activateEditText() {
+        val imm =
+            context.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        binding.clTagButtons.visibility = View.GONE
+        binding.etSearch.visibility = View.VISIBLE
+        binding.clPanel.setBackgroundColor(
+            MaterialColors.getColor(
+                binding.clPanel,
+                R.attr.editBackground
+            )
+        )
+
+        binding.etSearch.subscribeOnTextChanged()
+        binding.etSearch.requestFocus()
+        binding.etSearch.inputType = InputType.TYPE_CLASS_TEXT
+        imm.showSoftInput(binding.etSearch, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    private fun deactivateEditText() {
+        val imm =
+            context.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        binding.clTagButtons.visibility = View.VISIBLE
+        binding.etSearch.visibility = View.GONE
+        binding.clPanel.setBackgroundColor(
+            MaterialColors.getColor(
+                binding.clPanel,
+                R.attr.panelTableBackground
+            )
+        )
+
+        binding.etSearch.unsubscribeOnTextChanged()
+        binding.etSearch.clearFocus()
+        imm.hideSoftInputFromWindow(binding.etSearch.windowToken, 0)
+        binding.etSearch.inputType = InputType.TYPE_NULL
+        binding.etSearch.text.clear()
+    }
+
+    private fun searchByText(query: String) {
+        searchStatus = SearchStatus.TEXT_QUERY
+
+        textQuery = query
+        val dataListOld = dataList.toList()
+        dataList.clear()
+        dataList.addAll(table.searchByData(query))
+        notifyUser()
+        notifyDataSetChanged(dataListOld)
+    }
+
+    fun onKeyDown(keyCode: Int, event: KeyEvent?) {
+        when (keyCode) {
+            KeyEvent.KEYCODE_F -> {
+                if (event?.isCtrlPressed == true) {
+                    when (searchStatus) {
+                        SearchStatus.NONE -> setTextQueryEmpty()
+                        SearchStatus.TAG_QUERY -> {
+                            clearSearch()
+                            setTextQueryEmpty()
+                        }
+
+                        else -> clearSearch()
+                    }
+                }
+            }
+
+            KeyEvent.KEYCODE_ESCAPE -> clearSearch()
+        }
+    }
+
+    fun checkItemCanBeShown(item: DataItem): Boolean {
+        return when (searchStatus) {
+            SearchStatus.NONE -> true
+            SearchStatus.TEXT_QUERY_EMPTY -> true
+            SearchStatus.TEXT_QUERY -> item.note.lowercase().contains(textQuery)
+                    || item.username.lowercase().contains(textQuery)
+
+            SearchStatus.TAG_QUERY -> activeTags[item.tag.toInt()]
+        }
     }
 }
