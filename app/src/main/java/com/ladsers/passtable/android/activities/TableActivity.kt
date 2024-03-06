@@ -26,7 +26,7 @@ import com.ladsers.passtable.android.callbacks.ReorderCallback
 import com.ladsers.passtable.android.callbacks.SearchDiffCallback
 import com.ladsers.passtable.android.components.BackupManager
 import com.ladsers.passtable.android.components.BiometricAuth
-import com.ladsers.passtable.android.components.TagPanel
+import com.ladsers.passtable.android.components.Searcher
 import com.ladsers.passtable.android.components.menus.DataItemMenu
 import com.ladsers.passtable.android.components.tableActivity.TableInitInfo
 import com.ladsers.passtable.android.containers.DataTableAndroid
@@ -60,7 +60,7 @@ class TableActivity : AppCompatActivity() {
     private lateinit var fileCreatorDlg: FileCreatorDlg
     private lateinit var messageDlg: MessageDlg
     private lateinit var dataItemMenu: DataItemMenu
-    private lateinit var tagPanel: TagPanel
+    private lateinit var searcher: Searcher
     private lateinit var reorderCallback: ReorderCallback
 
     private lateinit var nothingFoundDelay: Runnable
@@ -79,7 +79,7 @@ class TableActivity : AppCompatActivity() {
     private var disableLockFileSystem = true
     private var backgroundSecs = 0L
 
-    public fun getSearchStatus() = tagPanel.searchStatus
+    public fun getSearchStatus() = searcher.searchStatus
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -286,14 +286,13 @@ class TableActivity : AppCompatActivity() {
         val touchHelper = ItemTouchHelper(reorderCallback)
         touchHelper.attachToRecyclerView(binding.rvTable)
 
-        tagPanel = TagPanel(
+        searcher = Searcher(
             this,
             binding,
             itemList,
             table,
             { notifyUser() },
             { mtListOld -> notifyDataSetChanged(mtListOld) })
-        tagPanel.init()
 
         /* Notify user */
         TableInitInfo.showKeyboardShortcuts(this, binding)
@@ -387,7 +386,7 @@ class TableActivity : AppCompatActivity() {
         table.setData(tableId, data.tag, data.note, data.username, data.password)
         saving()
 
-        if (tagPanel.checkItemCanBeShown(data)) {
+        if (searcher.checkItemCanBeShown(data)) {
             itemList[lastEditId] = data
             itemList[lastEditId].password = if (data.password.isNotEmpty()) "/yes" else "/no"
 
@@ -407,7 +406,7 @@ class TableActivity : AppCompatActivity() {
 
     private fun addItem() {
         val intent = Intent(this, EditActivity::class.java)
-        tagPanel.getSingleTag()?.let { tag -> intent.putExtra("dataTag", tag.index.toString()) } // preselect tag
+        searcher.getSingleTag()?.let { tag -> intent.putExtra("dataTag", tag.index.toString()) } // preselect tag
         disableLockFileSystem = true // for Table activity
         addActivityResult.launch(intent)
     }
@@ -433,7 +432,7 @@ class TableActivity : AppCompatActivity() {
             table.add(data.tag, data.note, data.username, data.password)
             lastEditId = table.getSize() - 1
 
-            if (tagPanel.checkItemCanBeShown(data)) {
+            if (searcher.checkItemCanBeShown(data)) {
                 data.password = if (data.password.isNotEmpty()) "/yes" else "/no"
                 val id = if (getSearchStatus() == SearchStatus.NONE) -1 else lastEditId
                 itemList.add(DataItem(data.tag, data.note, data.username, data.password, id))
@@ -592,7 +591,7 @@ class TableActivity : AppCompatActivity() {
         itemList.addAll(table.getData())
         notifyUser()
         notifyDataSetChanged(mtListOld)
-        tagPanel.clearSearch()
+        searcher.clearSearch()
 
         if (!afterRemoval) { // occurred after editing the item
             messageDlg.create(
@@ -739,7 +738,7 @@ class TableActivity : AppCompatActivity() {
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if (getSearchStatus() != SearchStatus.NONE) {
-                tagPanel.clearSearch()
+                searcher.clearSearch()
                 escPressed = true
                 return
             }
@@ -773,7 +772,7 @@ class TableActivity : AppCompatActivity() {
             KeyEvent.KEYCODE_MOVE_END -> binding.rvTable.smoothScrollToPosition(itemList.lastIndex)
         }
 
-        tagPanel.onKeyDown(keyCode, event)
+        searcher.onKeyDown(keyCode, event)
 
         return super.onKeyDown(keyCode, event)
     }
