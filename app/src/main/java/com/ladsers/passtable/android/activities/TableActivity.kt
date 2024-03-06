@@ -70,7 +70,7 @@ class TableActivity : AppCompatActivity() {
     private var lastEditId = -1
     private var saveAsMode = false
     private var afterRemoval = false
-    private var escPressed = false
+    //private var escPressed = false
     private var disableElevation = false
     private var quickView = false
 
@@ -739,40 +739,26 @@ class TableActivity : AppCompatActivity() {
         override fun handleOnBackPressed() {
             if (getSearchStatus() != SearchStatus.NONE) {
                 searcher.clearSearch()
-                escPressed = true
                 return
             }
 
-            if (!escPressed) finish()
-            else {
-                // implemented for physical keyboard
-                Toast.makeText(
-                    this@TableActivity, getString(R.string.ui_msg_ctrlQToClose),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            escPressed = false
+            finish()
         }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         when (keyCode) {
-            KeyEvent.KEYCODE_ESCAPE -> escPressed = true // set flag for onBackPressed function
             KeyEvent.KEYCODE_N -> {
                 if (event?.isCtrlPressed ?: return super.onKeyDown(keyCode, event)) {
                     addItem()
                 }
             }
-            KeyEvent.KEYCODE_Q -> {
-                if (event?.isCtrlPressed ?: return super.onKeyDown(keyCode, event)) {
-                    finish()
-                }
-            }
+            KeyEvent.KEYCODE_ESCAPE -> if (getSearchStatus() == SearchStatus.NONE) finish()
             KeyEvent.KEYCODE_MOVE_HOME -> binding.rvTable.smoothScrollToPosition(0)
             KeyEvent.KEYCODE_MOVE_END -> binding.rvTable.smoothScrollToPosition(itemList.lastIndex)
         }
 
-        searcher.onKeyDown(keyCode, event)
+        searcher.onKeyDown(keyCode, event) // shortcuts for interacting with search
 
         return super.onKeyDown(keyCode, event)
     }

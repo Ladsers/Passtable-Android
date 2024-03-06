@@ -108,6 +108,13 @@ class Searcher(
             }
 
             KeyEvent.KEYCODE_ESCAPE -> clearSearch()
+
+            KeyEvent.KEYCODE_1 -> changeTagState(ItemTagColor.RED, binding.btTagRed)
+            KeyEvent.KEYCODE_2 -> changeTagState(ItemTagColor.GREEN, binding.btTagGreen)
+            KeyEvent.KEYCODE_3 -> changeTagState(ItemTagColor.BLUE, binding.btTagBlue)
+            KeyEvent.KEYCODE_4 -> changeTagState(ItemTagColor.YELLOW, binding.btTagYellow)
+            KeyEvent.KEYCODE_5 -> changeTagState(ItemTagColor.PURPLE, binding.btTagPurple)
+            KeyEvent.KEYCODE_0 -> if (searchStatus == SearchStatus.TAG_QUERY) clearSearch()
         }
     }
 
@@ -254,14 +261,18 @@ class Searcher(
     }
 
     private fun MaterialButton.setOnTagClickListener(tagColor: ItemTagColor) {
-        this.setOnClickListener {
-            val isChecked = !activeTags[tagColor.index]
-            activeTags[tagColor.index] = isChecked
+        this.setOnClickListener { changeTagState(tagColor, this) }
+    }
 
-            this.icon = getIconDrawable(tagColor, isChecked)
+    private fun changeTagState(tagColor: ItemTagColor, button: MaterialButton) {
+        if (searchStatus != SearchStatus.NONE && searchStatus != SearchStatus.TAG_QUERY) return
 
-            if (activeTags.any { it }) searchByTags() else clearSearch()
-        }
+        val isChecked = !activeTags[tagColor.index]
+        activeTags[tagColor.index] = isChecked
+
+        button.icon = getIconDrawable(tagColor, isChecked)
+
+        if (activeTags.any { it }) searchByTags() else clearSearch()
     }
 
     private fun getIconDrawable(color: ItemTagColor, isChecked: Boolean = false): Drawable {
