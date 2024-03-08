@@ -282,7 +282,7 @@ class TableActivity : AppCompatActivity() {
         (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
         /* Init remaining components */
-        reorderCallback = ReorderCallback(itemList)
+        reorderCallback = ReorderCallback(itemList, table, ::getSearchStatus, ::saving)
         val touchHelper = ItemTouchHelper(reorderCallback)
         touchHelper.attachToRecyclerView(binding.rvTable)
 
@@ -747,6 +747,9 @@ class TableActivity : AppCompatActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        // prevent keyboard interaction when moving items.
+        if (reorderCallback.dragIsActive) return super.onKeyDown(keyCode, event)
+
         when (keyCode) {
             KeyEvent.KEYCODE_N -> {
                 if (event?.isCtrlPressed ?: return super.onKeyDown(keyCode, event)) {
