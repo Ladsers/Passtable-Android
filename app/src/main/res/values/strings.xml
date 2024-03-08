@@ -204,7 +204,7 @@
         <string name="dlg_err_biometricFailure">Biometric authentication failure. Please re-enable biometric authentication for this file.</string>
         <string name="dlg_err_biometricNewFingerprints">New fingerprints were enrolled, which resulted in disabling biometric authentication for all files. Please re-enable biometric authentication for required files.</string>
         <string name="dlg_err_biometricNewFingerprintsEnableFail">New fingerprints were enrolled, which resulted in disabling biometric authentication for all files. Please re-enable biometric authentication for this and other required files.</string>
-        <string name="dlg_err_couldNotOpenRecentFile">The application could not open the file. If the file still exists, open it again.</string>
+        <string name="dlg_err_couldNotOpenRecentFile">The application could not find the file. If the file still exists, open it again.</string>
         <string name="dlg_err_couldNotReadData">The application could not read the updated data. Please try again.</string>
         <string name="dlg_err_fileDamaged">The file is damaged.</string>
         <string name="dlg_err_fileDamagedRestoreBackup">The file is damaged. Restore backup?</string>

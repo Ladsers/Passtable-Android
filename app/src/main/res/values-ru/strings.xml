@@ -56,7 +56,7 @@
         <string name="app_bt_keyboardShortcuts">Горячие клавиши</string>
         <string name="app_bt_license">Лицензия</string>
         <string name="app_bt_moveToTop">Переместить наверх</string>
-        <string name="app_bt_ok">Ладно</string>
+        <string name="app_bt_ok">Принято</string>
         <string name="app_bt_open">Открыть</string>
         <string name="app_bt_openRuStore">Открыть RuStore</string>
         <string name="app_bt_passwordGenerator">Генератор паролей</string>
@@ -203,7 +203,7 @@
         <string name="dlg_err_biometricFailure">Сбой биометрической аутентификации. Повторно включите биометрическую аутентификацию для этого файла.</string>
         <string name="dlg_err_biometricNewFingerprints">Были зарегистрированы новые отпечатки пальцев, что привело к отключению биометрической аутентификации для всех файлов. Повторно включите биометрическую аутентификацию для необходимых файлов.</string>
         <string name="dlg_err_biometricNewFingerprintsEnableFail">Были зарегистрированы новые отпечатки пальцев, что привело к отключению биометрической аутентификации для всех файлов. Повторно включите биометрическую аутентификацию для этого и других необходимых файлов.</string>
-        <string name="dlg_err_couldNotOpenRecentFile">Приложение не может открыть файл. Если файл всё ещё существует, откройте его снова.</string>
+        <string name="dlg_err_couldNotOpenRecentFile">Приложению не удалось найти файл. Если файл всё ещё существует, откройте его снова.</string>
         <string name="dlg_err_couldNotReadData">Приложению не удалось прочитать обновлённые данные. Пожалуйста, попробуйте ещё раз.</string>
         <string name="dlg_err_fileDamaged">Файл повреждён.</string>
         <string name="dlg_err_fileDamagedRestoreBackup">Файл повреждён. Восстановить резервную копию?</string>
