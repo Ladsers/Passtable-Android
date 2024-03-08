@@ -79,7 +79,15 @@ class TableActivity : AppCompatActivity() {
     private var disableLockFileSystem = true
     private var backgroundSecs = 0L
 
-    public fun getSearchStatus() = searcher.searchStatus
+    fun getSearchStatus() = searcher.searchStatus
+    fun notifyItemMoved(from: Int, to: Int) {
+        val canScroll = !binding.rvTable.canScrollVertically(-1)
+        adapter.notifyItemMoved(from, to)
+        adapter.notifyItemRangeChanged(0, adapter.itemCount) // recalculate positions
+        binding.rvTable.postDelayed({
+            if (canScroll) binding.rvTable.smoothScrollToPosition(0)
+        }, 500)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,8 +121,8 @@ class TableActivity : AppCompatActivity() {
             contentResolver,
             window
         ) { openFileExplorer() }
-        dataItemMenu = DataItemMenu(this, messageDlg, { id -> editItem(id = id) },
-            { id, note -> deleteItem(id, note) })
+        dataItemMenu = DataItemMenu(this, messageDlg, ::saving,
+            { id -> editItem(id = id) }, { id, note -> deleteItem(id, note) })
 
         /* Get file path (uri) */
         @Suppress("DEPRECATION") var uri =

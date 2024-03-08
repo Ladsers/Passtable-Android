@@ -56,6 +56,7 @@
         <string name="app_bt_ignoreAndCloseFile">Ignore and close file</string>
         <string name="app_bt_keyboardShortcuts">Keyboard shortcuts</string>
         <string name="app_bt_license">License</string>
+        <string name="app_bt_moveToTop">Move to top</string>
         <string name="app_bt_ok">OK</string>
         <string name="app_bt_open">Open</string>
         <string name="app_bt_openRuStore">Open RuStore</string>

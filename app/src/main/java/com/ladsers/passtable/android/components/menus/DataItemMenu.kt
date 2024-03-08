@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.activities.TableActivity
+import com.ladsers.passtable.android.adapters.TableAdapter
 import com.ladsers.passtable.android.components.DataPanel
 import com.ladsers.passtable.android.components.tableActivity.TableClipboard
 import com.ladsers.passtable.android.containers.DataTableAndroid
@@ -19,11 +20,13 @@ import com.ladsers.passtable.android.enums.DataItemMainAction
 import com.ladsers.passtable.android.enums.DataItemMainAction.*
 import com.ladsers.passtable.android.enums.DataItemPopupAction
 import com.ladsers.passtable.android.enums.DataItemPopupAction.*
+import com.ladsers.passtable.android.enums.SearchStatus
 import com.ladsers.passtable.lib.DataItem
 
 class DataItemMenu(
     private val activity: TableActivity,
     private val messageDlg: MessageDlg,
+    private val saving: () -> Unit,
     private val editItem: (Int) -> Unit,
     private val deleteItem: (Int, String) -> Unit
 ) {
@@ -81,7 +84,8 @@ class DataItemMenu(
         pop.menu.findItem(R.id.btPinToScreen).isVisible =
             binding.tvUsername.text != "" && binding.tvPassword.text != "/no"
 
-        pop.menu.findItem(R.id.btMoveToTop).isVisible = dataList.count() == table.getSize()
+        pop.menu.findItem(R.id.btMoveToTop).isVisible =
+            position != 0 && activity.getSearchStatus() == SearchStatus.NONE
 
         val colorNegative = ContextCompat.getColor(binding.root.context, R.color.actionNegative)
         val btDelete = pop.menu.findItem(R.id.btDelete)
@@ -128,7 +132,7 @@ class DataItemMenu(
             EDIT -> editItem(itemId)
             DELETE -> deleteItem(itemId, table.getNote(tableId))
             PIN_TO_SCREEN -> dataPanel.show(table.getUsername(tableId), table.getPassword(tableId))
-            MOVE_TO_TOP -> {} // TODO
+            MOVE_TO_TOP -> moveToTop(itemId)
         }
     }
 
@@ -144,5 +148,17 @@ class DataItemMenu(
             negText = activity.getString(R.string.app_bt_close),
             posIcon = R.drawable.ic_copy
         )
+    }
+
+    private fun moveToTop(itemId: Int) {
+        val tableId = if (dataList[itemId].id == -1) itemId else dataList[itemId].id
+
+        val item = dataList[itemId]
+        dataList.remove(item)
+        dataList.add(0, item)
+        activity.notifyItemMoved(itemId, 0)
+
+        table.moveItem(tableId, 0)
+        saving()
     }
 }

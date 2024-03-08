@@ -55,6 +55,7 @@
         <string name="app_bt_ignoreAndCloseFile">Игнорировать и закрыть файл</string>
         <string name="app_bt_keyboardShortcuts">Горячие клавиши</string>
         <string name="app_bt_license">Лицензия</string>
+        <string name="app_bt_moveToTop">Переместить наверх</string>
         <string name="app_bt_ok">Ладно</string>
         <string name="app_bt_open">Открыть</string>
         <string name="app_bt_openRuStore">Открыть RuStore</string>
