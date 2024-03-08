@@ -4,8 +4,8 @@
         <!-- info -->
         <string name="app_info_appName">Passtable</string>
         <string name="app_info_itemMenu">Click on the Eye button to show the password.\n\nClick on the item itself to show the menu for working with it.</string>
-        <string name="app_info_keyboardShortcuts">Ctrl+N — Add item.\nCtrl+F — Search by notes and usernames.\nCtrl+Q — Close file.\n\nSettings → Help → Keyboard shortcuts</string>
-        <string name="app_info_keyboardShortcutsHelp">&lt;b>Ctrl+N&lt;/b> — Add item.&lt;br>&lt;br>&lt;b>Ctrl+F&lt;/b> — Search by notes and usernames.&lt;br>&lt;br>&lt;b>Ctrl+Q&lt;/b> — Close file.</string>
+        <string name="app_info_keyboardShortcuts">Ctrl+N — Add item.\nCtrl+F — Search by notes and usernames.\n\nSettings → Help → Keyboard shortcuts</string>
+        <string name="app_info_keyboardShortcutsHelp">&lt;b>Ctrl+N&lt;/b> — Add item.&lt;br>&lt;br>&lt;b>Ctrl+F&lt;/b> — Search by notes and usernames.&lt;br>&lt;br>&lt;b>Ctrl+1&lt;/b> — Search by red tag.&lt;br>&lt;br>&lt;b>Ctrl+2&lt;/b> — Search by green tag.&lt;br>&lt;br>&lt;b>Ctrl+3&lt;/b> — Search by blue tag.&lt;br>&lt;br>&lt;b>Ctrl+4&lt;/b> — Search by yellow tag.&lt;br>&lt;br>&lt;b>Ctrl+5&lt;/b> — Search by purple tag.&lt;br>&lt;br>&lt;b>Ctrl+0&lt;/b> — Cancel search by tags.</string>
         <string name="app_info_license">Licensed under the Apache License, Version 2.0.\n\nSettings → About → License</string>
         <string name="app_info_pinToScreen">Pin the item to the screen to access it from any app.</string>
         <string name="app_info_repo">https://github.com/Ladsers/Passtable-Android</string>
