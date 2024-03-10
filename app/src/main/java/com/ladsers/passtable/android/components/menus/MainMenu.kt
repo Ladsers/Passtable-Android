@@ -119,6 +119,9 @@ class MainMenu(
     }
 
     private fun checkUpdate(menu: Menu) {
+        // don't ask the update server when developing an app
+        if (BuildConfig.DEBUG) return
+
         activity.lifecycleScope.launch(Dispatchers.IO) {
             var updateVerTag: String? = null
 
