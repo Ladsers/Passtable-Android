@@ -46,7 +46,14 @@ class ReorderCallback(
     }
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
-        startPos?.let { if (it != endPos) saving() }
+        startPos?.let {
+            if (it != endPos) {
+                val from = if (it < endPos) it else endPos
+                val count = if (it < endPos) (endPos - it + 1) else (it - endPos + 1)
+                recyclerView.adapter?.notifyItemRangeChanged(from, count)
+                saving()
+            }
+        }
         startPos = null
         dragIsActive = false
         super.clearView(recyclerView, viewHolder)
