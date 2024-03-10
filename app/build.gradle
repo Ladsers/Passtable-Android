@@ -41,6 +41,9 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+    dependenciesInfo {
+        includeInApk = false
+    }
     namespace 'com.ladsers.passtable.android'
 }
 
