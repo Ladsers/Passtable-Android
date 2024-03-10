@@ -5,7 +5,7 @@
 
 
 ## Passtable
-Android application for storing passwords and confidential data. Written in Kotlin using its own core library. This application can be run on Android 6 and above. Opens ".passtable" files.
+Android application for storing passwords and confidential data. Written in Kotlin using its own core library. This application can be run on Android 7 and above. Opens ".passtable" files.
 
 ```
 git clone --recursive https://github.com/Ladsers/Passtable-Android.git
@@ -18,11 +18,14 @@ The application does not contain paid functions and advertising.
 🔸 **Encryption** </br>
 Strong AES encryption based on the popular open source cryptography library [Bouncy Castle](https://www.bouncycastle.org/).
 
+🔸 **Password generator** </br>
+The application includes its own password generator with a large set of parameters.
+
 🔸 **File approach** </br>
 Passtable stores data in separate files, and not in the application itself. The advantage of this approach is that data sets can exist independently of each other and, if necessary, can easily be moved to another device (including PC).
 
-🔸 **Quick data sorting** </br>
-Add tags when creating elements in one touch, and then quickly find your data using them.
+🔸 **Quick data filtering** </br>
+Add tags when creating items in one touch, and then quickly find your data using them.
 
 🔸 **Biometric authentication** </br>
 Easy access to data using a fingerprint scanner.
