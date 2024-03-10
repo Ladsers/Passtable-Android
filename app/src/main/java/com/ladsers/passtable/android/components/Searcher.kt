@@ -164,7 +164,7 @@ class Searcher(
         textQuery = query
         val dataListOld = dataList.toList()
         dataList.clear()
-        dataList.addAll(table.searchByData(query))
+        dataList.addAll(table.searchByText(query))
         notifyUser()
         notifyDataSetChanged(dataListOld)
     }

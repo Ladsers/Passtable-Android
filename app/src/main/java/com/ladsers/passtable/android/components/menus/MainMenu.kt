@@ -19,7 +19,7 @@ import com.ladsers.passtable.android.enums.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.dialogs.MessageDlg
 import com.ladsers.passtable.android.dialogs.UpdateDlg
-import com.ladsers.passtable.lib.codes.UpdaterCheckResult
+import com.ladsers.passtable.lib.enums.UpdaterCheckResult
 import com.ladsers.passtable.lib.updater.Platform
 import com.ladsers.passtable.lib.updater.Updater
 import java.util.*
