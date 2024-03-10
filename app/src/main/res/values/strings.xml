@@ -4,8 +4,8 @@
         <!-- info -->
         <string name="app_info_appName">Passtable</string>
         <string name="app_info_itemMenu">Click on the Eye button to show the password.\n\nClick on the item itself to show the menu for working with it.</string>
-        <string name="app_info_keyboardShortcuts">Ctrl+N — Add item.\nCtrl+F — Search by notes and usernames.\nCtrl+Q — Close file.\n\nSettings → Help → Keyboard shortcuts</string>
-        <string name="app_info_keyboardShortcutsHelp">&lt;b>Ctrl+N&lt;/b> — Add item.&lt;br>&lt;br>&lt;b>Ctrl+F&lt;/b> — Search by notes and usernames.&lt;br>&lt;br>&lt;b>Ctrl+Q&lt;/b> — Close file.</string>
+        <string name="app_info_keyboardShortcuts">Ctrl+N — Add item.\nCtrl+F — Search by notes and usernames.\n\nSettings → Help → Keyboard shortcuts</string>
+        <string name="app_info_keyboardShortcutsHelp">&lt;b>Ctrl+N&lt;/b> — Add item.&lt;br>&lt;br>&lt;b>Ctrl+F&lt;/b> — Search by notes and usernames.&lt;br>&lt;br>&lt;b>Ctrl+1&lt;/b> — Search by red tag.&lt;br>&lt;br>&lt;b>Ctrl+2&lt;/b> — Search by green tag.&lt;br>&lt;br>&lt;b>Ctrl+3&lt;/b> — Search by blue tag.&lt;br>&lt;br>&lt;b>Ctrl+4&lt;/b> — Search by yellow tag.&lt;br>&lt;br>&lt;b>Ctrl+5&lt;/b> — Search by purple tag.&lt;br>&lt;br>&lt;b>Ctrl+0&lt;/b> — Cancel search by tags.</string>
         <string name="app_info_license">Licensed under the Apache License, Version 2.0.\n\nSettings → About → License</string>
         <string name="app_info_pinToScreen">Pin the item to the screen to access it from any app.</string>
         <string name="app_info_repo">https://github.com/Ladsers/Passtable-Android</string>
@@ -56,6 +56,7 @@
         <string name="app_bt_ignoreAndCloseFile">Ignore and close file</string>
         <string name="app_bt_keyboardShortcuts">Keyboard shortcuts</string>
         <string name="app_bt_license">License</string>
+        <string name="app_bt_moveToTop">Move to top</string>
         <string name="app_bt_ok">OK</string>
         <string name="app_bt_open">Open</string>
         <string name="app_bt_openRuStore">Open RuStore</string>
@@ -203,7 +204,7 @@
         <string name="dlg_err_biometricFailure">Biometric authentication failure. Please re-enable biometric authentication for this file.</string>
         <string name="dlg_err_biometricNewFingerprints">New fingerprints were enrolled, which resulted in disabling biometric authentication for all files. Please re-enable biometric authentication for required files.</string>
         <string name="dlg_err_biometricNewFingerprintsEnableFail">New fingerprints were enrolled, which resulted in disabling biometric authentication for all files. Please re-enable biometric authentication for this and other required files.</string>
-        <string name="dlg_err_couldNotOpenRecentFile">The application could not open the file. If the file still exists, open it again.</string>
+        <string name="dlg_err_couldNotOpenRecentFile">The application could not find the file. If the file still exists, open it again.</string>
         <string name="dlg_err_couldNotReadData">The application could not read the updated data. Please try again.</string>
         <string name="dlg_err_fileDamaged">The file is damaged.</string>
         <string name="dlg_err_fileDamagedRestoreBackup">The file is damaged. Restore backup?</string>

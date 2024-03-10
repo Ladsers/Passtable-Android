@@ -5,11 +5,11 @@ import android.content.Intent
 import android.net.Uri
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.components.AppStoreProcessor
-import com.ladsers.passtable.android.containers.AppStore
+import com.ladsers.passtable.android.enums.AppStore
 import com.ladsers.passtable.lib.updater.Updater
 
 object UpdateDlg {
-    fun show(messageDlg: MessageDlg) {
+    fun show(messageDlg: MessageDlg, updateDownloadUrl: String?) {
 
         val context = messageDlg.context
 
@@ -32,14 +32,14 @@ object UpdateDlg {
             messageDlg.addNeutralBtn(
                 context.getString(R.string.app_bt_download),
                 R.drawable.ic_download
-            ) { downloadFromSite(context) }
+            ) { downloadFromSite(context, updateDownloadUrl) }
 
         } else {
 
             messageDlg.addPositiveBtn(
                 context.getString(R.string.app_bt_download),
                 R.drawable.ic_download
-            ) { downloadFromSite(context) }
+            ) { downloadFromSite(context, updateDownloadUrl) }
 
         }
 
@@ -51,8 +51,11 @@ object UpdateDlg {
         messageDlg.show()
     }
 
-    private fun downloadFromSite(context: Context) {
-        val url = "https://ladsers.com/wp-content/uploads/Passtable-${Updater.lastVer}.apk"
-        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-    }
+    private fun downloadFromSite(context: Context, url: String?) = context.startActivity(
+        Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse(url ?: "https://passtable.com/download")
+        )
+    )
+
 }

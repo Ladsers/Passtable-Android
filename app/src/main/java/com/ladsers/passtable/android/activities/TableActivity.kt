@@ -16,20 +16,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.adapters.TableAdapter
+import com.ladsers.passtable.android.callbacks.ReorderCallback
 import com.ladsers.passtable.android.callbacks.SearchDiffCallback
 import com.ladsers.passtable.android.components.BackupManager
 import com.ladsers.passtable.android.components.BiometricAuth
-import com.ladsers.passtable.android.components.DataPanel
-import com.ladsers.passtable.android.components.TagPanel
-import com.ladsers.passtable.android.components.tableActivity.TableClipboard
+import com.ladsers.passtable.android.components.Searcher
+import com.ladsers.passtable.android.components.menus.DataItemMenu
 import com.ladsers.passtable.android.components.tableActivity.TableInitInfo
 import com.ladsers.passtable.android.containers.DataTableAndroid
-import com.ladsers.passtable.android.containers.Param
+import com.ladsers.passtable.android.enums.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.containers.RecentFiles
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
@@ -37,6 +38,7 @@ import com.ladsers.passtable.android.dialogs.ErrorDlg
 import com.ladsers.passtable.android.dialogs.FileCreatorDlg
 import com.ladsers.passtable.android.dialogs.MessageDlg
 import com.ladsers.passtable.android.dialogs.PrimaryPasswordDlg
+import com.ladsers.passtable.android.enums.SearchStatus
 import com.ladsers.passtable.android.extensions.getFileName
 import com.ladsers.passtable.android.extensions.getFileNameWithExt
 import com.ladsers.passtable.lib.DataItem
@@ -57,18 +59,18 @@ class TableActivity : AppCompatActivity() {
     private lateinit var primaryPasswordDlg: PrimaryPasswordDlg
     private lateinit var fileCreatorDlg: FileCreatorDlg
     private lateinit var messageDlg: MessageDlg
-    private lateinit var dataPanel: DataPanel
-    private lateinit var tagPanel: TagPanel
-    private lateinit var tableClipboard: TableClipboard
+    private lateinit var dataItemMenu: DataItemMenu
+    private lateinit var searcher: Searcher
+    private lateinit var reorderCallback: ReorderCallback
 
     private lateinit var nothingFoundDelay: Runnable
 
     private val smoothAnimItemLimit = 150 // to speed up work with big files
 
-    private var editId = -1
+    private var lastEditId = -1
     private var saveAsMode = false
     private var afterRemoval = false
-    private var escPressed = false
+    //private var escPressed = false
     private var disableElevation = false
     private var quickView = false
 
@@ -76,6 +78,16 @@ class TableActivity : AppCompatActivity() {
     private var isBackgrounded = false
     private var disableLockFileSystem = true
     private var backgroundSecs = 0L
+
+    fun getSearchStatus() = searcher.searchStatus
+    fun notifyItemMoved(from: Int, to: Int) {
+        val canScroll = !binding.rvTable.canScrollVertically(-1)
+        adapter.notifyItemMoved(from, to)
+        adapter.notifyItemRangeChanged(0, adapter.itemCount) // recalculate positions
+        binding.rvTable.postDelayed({
+            if (canScroll) binding.rvTable.smoothScrollToPosition(0)
+        }, 500)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,7 +121,8 @@ class TableActivity : AppCompatActivity() {
             contentResolver,
             window
         ) { openFileExplorer() }
-        dataPanel = DataPanel(applicationContext, this)
+        dataItemMenu = DataItemMenu(this, messageDlg, ::saving,
+            { id -> editItem(id = id) }, { id, note -> deleteItem(id, note) })
 
         /* Get file path (uri) */
         @Suppress("DEPRECATION") var uri =
@@ -271,21 +284,23 @@ class TableActivity : AppCompatActivity() {
 
         /* Configure table adapter */
         itemList = table.getData()
-        adapter = TableAdapter(itemList, { id, resCode -> popupAction(id, resCode) },
-            { id -> showPassword(id) })
+        dataItemMenu.attachData(table, itemList)
+        adapter = TableAdapter(itemList, dataItemMenu)
         binding.rvTable.adapter = adapter
         (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
         /* Init remaining components */
-        tableClipboard = TableClipboard(this, itemList, table)
-        tagPanel = TagPanel(
+        reorderCallback = ReorderCallback(itemList, table, ::getSearchStatus, ::saving)
+        val touchHelper = ItemTouchHelper(reorderCallback)
+        touchHelper.attachToRecyclerView(binding.rvTable)
+
+        searcher = Searcher(
             this,
             binding,
             itemList,
             table,
             { notifyUser() },
             { mtListOld -> notifyDataSetChanged(mtListOld) })
-        tagPanel.init()
 
         /* Notify user */
         TableInitInfo.showKeyboardShortcuts(this, binding)
@@ -314,52 +329,7 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Do action from pop-up menu created by the table adapter.
-     */
-    private fun popupAction(id: Int, resCode: Int) {
-        val tableId = if (itemList[id].id == -1) id else itemList[id].id
-
-        // show a window for cropped data
-        fun show(strResource: Int, data: String, key: TableClipboard.Key) {
-            messageDlg.quickDialog(
-                getString(strResource),
-                data,
-                { tableClipboard.copy(id, key) },
-                posText = getString(R.string.app_bt_copy),
-                negText = getString(R.string.app_bt_close),
-                posIcon = R.drawable.ic_copy
-            )
-        }
-
-        val keyNote = TableClipboard.Key.NOTE
-        val keyUsername = TableClipboard.Key.USERNAME
-        val keyPassword = TableClipboard.Key.PASSWORD
-        when (resCode) {
-            1 -> show(R.string.app_com_note, table.getNote(tableId), keyNote)
-            2 -> show(R.string.app_com_username, table.getUsername(tableId), keyUsername)
-            3 -> show(R.string.app_com_password, table.getPassword(tableId), keyPassword)
-            4 -> tableClipboard.copy(id, keyNote)
-            5 -> tableClipboard.copy(id, keyUsername)
-            6 -> tableClipboard.copy(id, keyPassword)
-            7 -> { // edit
-                editId = id
-                editItem()
-            }
-            8 -> deleteItem(id, table.getNote(tableId))
-            9 -> dataPanel.show(table.getUsername(tableId), table.getPassword(tableId))
-        }
-    }
-
-    private fun showPassword(id: Int) {
-        val tableId = if (itemList[id].id == -1) id else itemList[id].id
-        itemList[id].password =
-            if (itemList[id].password == "/yes") table.getPassword(tableId) else "/yes"
-        adapter.notifyItemChanged(id)
-        if (id == itemList.lastIndex) binding.rvTable.scrollToPosition(itemList.lastIndex)
-    }
-
-    private fun parseDataFromEditActivity(data: Intent?): List<String>? {
+    private fun parseDataFromEditActivity(data: Intent?): DataItem? {
         return if (data == null) {
             ErrorDlg.show(
                 messageDlg,
@@ -373,7 +343,7 @@ class TableActivity : AppCompatActivity() {
             val newUsername = data.getStringExtra("newDataUsername")
             val newPassword = data.getStringExtra("newDataPassword")
             if (newTag != null && newNote != null && newUsername != null && newPassword != null)
-                listOf(newTag, newNote, newUsername, newPassword)
+                DataItem(newTag, newNote, newUsername, newPassword)
             else {
                 ErrorDlg.show(
                     messageDlg,
@@ -385,10 +355,10 @@ class TableActivity : AppCompatActivity() {
         }
     }
 
-    private fun editItem(blockClosing: Boolean = false) {
-        if (tagPanel.searchModeIsActive && tagPanel.lastSearchQuery.isEmpty())
-            tagPanel.switchPanel() // it is necessary to fix the wrong behavior with empty query
-        val tableId = if (itemList[editId].id == -1) editId else itemList[editId].id
+    private fun editItem(id: Int? = null, blockClosing: Boolean = false) {
+        id?.let { lastEditId = it }
+
+        val tableId = if (itemList[lastEditId].id == -1) lastEditId else itemList[lastEditId].id
         val intent = Intent(this, EditActivity::class.java)
         intent.putExtra("dataTag", table.getTag(tableId))
         intent.putExtra("dataNote", table.getNote(tableId))
@@ -420,39 +390,31 @@ class TableActivity : AppCompatActivity() {
 
         val data = parseDataFromEditActivity(result.data) ?: return@registerForActivityResult
 
-        val tableId = if (itemList[editId].id == -1) editId else itemList[editId].id
-        table.setData(tableId, data[0], data[1], data[2], data[3])
+        val tableId = if (itemList[lastEditId].id == -1) lastEditId else itemList[lastEditId].id
+        table.setData(tableId, data.tag, data.note, data.username, data.password)
         saving()
 
-        val searchIsRunning = tagPanel.isAnyTagActive() || tagPanel.searchModeIsActive
-        val containQuery =
-            tagPanel.checkDataInQuery(data[1]) || tagPanel.checkDataInQuery(data[2])
-
-        if (!searchIsRunning || tagPanel.checkTag(data[0]) || containQuery) {
-            itemList[editId].tag = data[0]
-            itemList[editId].note = data[1]
-            itemList[editId].username = data[2]
-            itemList[editId].password = if (data[3].isNotEmpty()) "/yes" else "/no"
+        if (searcher.checkItemCanBeShown(data)) {
+            itemList[lastEditId] = data
+            itemList[lastEditId].password = if (data.password.isNotEmpty()) "/yes" else "/no"
 
             (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = true
-            adapter.notifyItemChanged(editId)
+            adapter.notifyItemChanged(lastEditId)
             binding.rvTable.post {
                 (binding.rvTable.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
                     false
             }
         } else {
-            itemList.removeAt(editId)
-            adapter.notifyItemRemoved(editId)
-            adapter.notifyItemRangeChanged(editId, adapter.itemCount)
+            itemList.removeAt(lastEditId)
+            adapter.notifyItemRemoved(lastEditId)
+            adapter.notifyItemRangeChanged(lastEditId, adapter.itemCount)
             notifyUser()
         }
     }
 
     private fun addItem() {
-        if (tagPanel.searchModeIsActive && tagPanel.lastSearchQuery.isEmpty())
-            tagPanel.switchPanel() // it is necessary to fix the wrong behavior with empty query
         val intent = Intent(this, EditActivity::class.java)
-        tagPanel.findActiveTag().let { intent.putExtra("dataTag", it) } // preselect tag
+        searcher.getSingleTag()?.let { tag -> intent.putExtra("dataTag", tag.index.toString()) } // preselect tag
         disableLockFileSystem = true // for Table activity
         addActivityResult.launch(intent)
     }
@@ -475,17 +437,13 @@ class TableActivity : AppCompatActivity() {
 
             val data = parseDataFromEditActivity(result.data) ?: return@registerForActivityResult
 
-            table.add(data[0], data[1], data[2], data[3])
-            editId = table.getSize() - 1
+            table.add(data.tag, data.note, data.username, data.password)
+            lastEditId = table.getSize() - 1
 
-            val searchIsRunning = tagPanel.isAnyTagActive() || tagPanel.searchModeIsActive
-            val containQuery =
-                tagPanel.checkDataInQuery(data[1]) || tagPanel.checkDataInQuery(data[2])
-
-            if (!searchIsRunning || tagPanel.checkTag(data[0]) || containQuery) {
-                val hasPassword = if (data[3].isNotEmpty()) "/yes" else "/no"
-                val id = if (!searchIsRunning) -1 else editId
-                itemList.add(DataItem(data[0], data[1], data[2], hasPassword, id))
+            if (searcher.checkItemCanBeShown(data)) {
+                data.password = if (data.password.isNotEmpty()) "/yes" else "/no"
+                val id = if (getSearchStatus() == SearchStatus.NONE) -1 else lastEditId
+                itemList.add(DataItem(data.tag, data.note, data.username, data.password, id))
                 notifyUser()
                 adapter.notifyItemInserted(itemList.lastIndex)
                 binding.rvTable.postDelayed({
@@ -641,7 +599,7 @@ class TableActivity : AppCompatActivity() {
         itemList.addAll(table.getData())
         notifyUser()
         notifyDataSetChanged(mtListOld)
-        if (tagPanel.isAnyTagActive() || tagPanel.searchModeIsActive) tagPanel.switchPanel()
+        searcher.clearSearch()
 
         if (!afterRemoval) { // occurred after editing the item
             messageDlg.create(
@@ -755,7 +713,7 @@ class TableActivity : AppCompatActivity() {
      */
     private fun notifyUser() {
         if (itemList.size == 0) {
-            if (tagPanel.isAnyTagActive() || tagPanel.lastSearchQuery.isNotEmpty()) {
+            if (getSearchStatus() == SearchStatus.TAG_QUERY || getSearchStatus() == SearchStatus.TEXT_QUERY) {
                 binding.notificationEmptyCollection.clInfo.visibility = View.GONE
                 binding.notificationNothingFound.clInfo.postDelayed(nothingFoundDelay, 300)
             } else {
@@ -787,42 +745,32 @@ class TableActivity : AppCompatActivity() {
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            if (tagPanel.isAnyTagActive() || tagPanel.searchModeIsActive) tagPanel.switchPanel() else {
-                if (!escPressed) finish()
-                else {
-                    // implemented for physical keyboard
-                    Toast.makeText(
-                        this@TableActivity, getString(R.string.ui_msg_ctrlQToClose),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+            if (getSearchStatus() != SearchStatus.NONE) {
+                searcher.clearSearch()
+                return
             }
-            escPressed = false
+
+            finish()
         }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        // prevent keyboard interaction when moving items.
+        if (reorderCallback.dragIsActive) return super.onKeyDown(keyCode, event)
+
         when (keyCode) {
-            KeyEvent.KEYCODE_F -> {
-                if (event?.isCtrlPressed ?: return super.onKeyDown(keyCode, event)) {
-                    if (tagPanel.isAnyTagActive()) tagPanel.switchPanel() // turn off search by tag
-                    if (!tagPanel.searchModeIsActive) tagPanel.switchPanel()
-                }
-            }
-            KeyEvent.KEYCODE_ESCAPE -> escPressed = true // set flag for onBackPressed function
             KeyEvent.KEYCODE_N -> {
                 if (event?.isCtrlPressed ?: return super.onKeyDown(keyCode, event)) {
                     addItem()
                 }
             }
-            KeyEvent.KEYCODE_Q -> {
-                if (event?.isCtrlPressed ?: return super.onKeyDown(keyCode, event)) {
-                    finish()
-                }
-            }
+            KeyEvent.KEYCODE_ESCAPE -> if (getSearchStatus() == SearchStatus.NONE) finish()
             KeyEvent.KEYCODE_MOVE_HOME -> binding.rvTable.smoothScrollToPosition(0)
             KeyEvent.KEYCODE_MOVE_END -> binding.rvTable.smoothScrollToPosition(itemList.lastIndex)
         }
+
+        searcher.onKeyDown(keyCode, event) // shortcuts for interacting with search
+
         return super.onKeyDown(keyCode, event)
     }
 

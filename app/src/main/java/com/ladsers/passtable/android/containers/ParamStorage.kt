@@ -1,6 +1,7 @@
 package com.ladsers.passtable.android.containers
 
 import android.content.Context
+import com.ladsers.passtable.android.enums.Param
 
 object ParamStorage {
 

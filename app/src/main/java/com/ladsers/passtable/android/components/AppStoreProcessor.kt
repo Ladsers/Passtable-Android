@@ -4,7 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.ladsers.passtable.android.containers.AppStore
+import com.ladsers.passtable.android.enums.AppStore
 import com.ladsers.passtable.android.extensions.isPackageInstalled
 
 object AppStoreProcessor {

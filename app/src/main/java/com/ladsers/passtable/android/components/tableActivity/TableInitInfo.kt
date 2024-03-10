@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.components.SnackbarManager
-import com.ladsers.passtable.android.containers.Param
+import com.ladsers.passtable.android.enums.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.databinding.ActivityTableBinding
 import com.ladsers.passtable.lib.DataItem

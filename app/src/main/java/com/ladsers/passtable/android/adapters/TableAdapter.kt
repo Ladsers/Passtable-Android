@@ -1,31 +1,27 @@
 package com.ladsers.passtable.android.adapters
 
-import android.content.Context
-import android.os.Build
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupMenu
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.color.MaterialColors
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.components.SnackbarManager
-import com.ladsers.passtable.android.containers.Param
+import com.ladsers.passtable.android.components.menus.DataItemMenu
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.databinding.ItemDataTableBinding
+import com.ladsers.passtable.android.enums.DataItemMainAction
+import com.ladsers.passtable.android.enums.Param
 import com.ladsers.passtable.lib.DataItem
 
 class TableAdapter(
     private val dataList: MutableList<DataItem>,
-    private val popupAction: (Int, Int) -> Unit,
-    private val showPassword: (Int) -> Unit
+    private val itemMenu: DataItemMenu
 ) : RecyclerView.Adapter<TableAdapter.ItemViewHolder>() {
+
+    private lateinit var recyclerView: RecyclerView
 
     class ItemViewHolder(val binding: ItemDataTableBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -78,57 +74,25 @@ class TableAdapter(
                     if (password != "/yes" && password != "/no") R.drawable.ic_lock else R.drawable.ic_password_show
                 )
 
-                binding.clItem.setOnClickListener { showPopupMenu(binding, it, position) }
-                binding.btShowPassword.setOnClickListener { showPassword(position) }
+                binding.clItem.setOnClickListener {
+                    itemMenu.showPopupMenu(binding, it, position)
+                    showInfoPinToScreen(binding)
+                }
+
+                binding.btShowPassword.setOnClickListener {
+                    itemMenu.doMainAction(position, DataItemMainAction.SHOW_PASSWORD)
+                    notifyItemChanged(position)
+                    if (position == dataList.lastIndex) recyclerView.scrollToPosition(dataList.lastIndex)
+                }
             }
         }
     }
 
     override fun getItemCount() = dataList.size
 
-    private fun showPopupMenu(binding: ItemDataTableBinding, view: View, position: Int): Boolean {
-        val pop = PopupMenu(
-            binding.root.context, view, Gravity.CENTER, 0,
-            R.style.PopupMenuCustomPosTable
-        )
-        pop.inflate(R.menu.menu_item)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) pop.setForceShowIcon(true)
-
-        pop.menu.findItem(R.id.btShowNote).isVisible = isEllipsized(binding.tvNote)
-        pop.menu.findItem(R.id.btShowUsername).isVisible = isEllipsized(binding.tvUsername)
-        pop.menu.findItem(R.id.btShowPassword).isVisible = isEllipsized(binding.tvPassword)
-
-        pop.menu.findItem(R.id.btCopyNote).isVisible = binding.tvNote.text != ""
-        pop.menu.findItem(R.id.btCopyUsername).isVisible = binding.tvUsername.text != ""
-        pop.menu.findItem(R.id.btCopyPassword).isVisible = binding.tvPassword.text != "/no"
-
-        val pinIsAvailable = binding.tvUsername.text != "" && binding.tvPassword.text != "/no"
-        pop.menu.findItem(R.id.btPinToScreen).isVisible = pinIsAvailable
-        showInfoPinToScreen(binding.root.context, binding.root, pinIsAvailable)
-
-        val colorNegative = ContextCompat.getColor(binding.root.context, R.color.actionNegative)
-        val btDelete = pop.menu.findItem(R.id.btDelete)
-        val spanStr = SpannableString(btDelete.title.toString())
-        spanStr.setSpan(ForegroundColorSpan(colorNegative), 0, spanStr.length, 0)
-        btDelete.title = spanStr
-
-        pop.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.btShowNote -> popupAction(position, 1)
-                R.id.btShowUsername -> popupAction(position, 2)
-                R.id.btShowPassword -> popupAction(position, 3)
-                R.id.btCopyNote -> popupAction(position, 4)
-                R.id.btCopyUsername -> popupAction(position, 5)
-                R.id.btCopyPassword -> popupAction(position, 6)
-                R.id.btEdit -> popupAction(position, 7)
-                R.id.btDelete -> popupAction(position, 8)
-                R.id.btPinToScreen -> popupAction(position, 9)
-            }
-            true
-        }
-        pop.show()
-
-        return true
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        this.recyclerView = recyclerView
+        super.onAttachedToRecyclerView(recyclerView)
     }
 
     private fun getColor(tag: String): Int {
@@ -142,17 +106,14 @@ class TableAdapter(
         }
     }
 
-    private fun isEllipsized(tv: TextView): Boolean {
-        val layout = tv.layout ?: return false
-        val count = layout.lineCount
-        return count > 0 && layout.getEllipsisCount(count - 1) > 0
-    }
-
-    private fun showInfoPinToScreen(context: Context, view: View, pinIsAvailable: Boolean) {
+    private fun showInfoPinToScreen(binding: ItemDataTableBinding) {
+        val context = binding.root.context
         val param = Param.INITIAL_INFO_PIN_TO_SCREEN
+        val pinIsAvailable = binding.tvUsername.text != "" && binding.tvPassword.text != "/no"
+
         if (ParamStorage.getBool(context, param) && pinIsAvailable) SnackbarManager.showInitInfo(
             context,
-            view,
+            binding.root,
             param,
             context.getString(R.string.app_info_pinToScreen)
         )

@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.net.Uri
 import android.view.Menu
 import android.view.MenuItem
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.color.MaterialColors
 import com.ladsers.passtable.android.BuildConfig
 import com.ladsers.passtable.android.R
@@ -14,14 +15,16 @@ import com.ladsers.passtable.android.activities.SettingsActivity
 import com.ladsers.passtable.android.components.AppStoreProcessor
 import com.ladsers.passtable.android.components.ClipboardManager
 import com.ladsers.passtable.android.components.PasswordGeneratorProcessor
-import com.ladsers.passtable.android.containers.AppStore
-import com.ladsers.passtable.android.containers.Param
+import com.ladsers.passtable.android.enums.AppStore
+import com.ladsers.passtable.android.enums.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.dialogs.MessageDlg
 import com.ladsers.passtable.android.dialogs.UpdateDlg
-import com.ladsers.passtable.lib.codes.UpdaterCheckResult
-import com.ladsers.passtable.lib.updater.Platform
-import com.ladsers.passtable.lib.updater.Updater
+import com.ladsers.web.update.Channel
+import com.ladsers.web.update.Platform
+import com.ladsers.web.update.Updater
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 
 class MainMenu(
@@ -29,6 +32,7 @@ class MainMenu(
     private val messageDlg: MessageDlg,
     private val passwordGeneratorProcessor: PasswordGeneratorProcessor
 ) {
+    private var updateDownloadUrl : String? = null
 
     fun onCreateOptionsMenu(menu: Menu): Boolean {
         activity.menuInflater.inflate(R.menu.menu_main, menu)
@@ -54,7 +58,7 @@ class MainMenu(
 
         return when (item.itemId) {
             R.id.btUpdate -> {
-                UpdateDlg.show(messageDlg)
+                UpdateDlg.show(messageDlg, updateDownloadUrl)
                 true
             }
             R.id.btSettings -> {
@@ -115,15 +119,30 @@ class MainMenu(
     }
 
     private fun checkUpdate(menu: Menu) {
-        try {
-            Thread {
-                val res = Updater.check(Platform.ANDROID_RELEASE, BuildConfig.VERSION_NAME)
-                activity.window.decorView.post {
-                    menu.setItemVisibility(R.id.btUpdate, res == UpdaterCheckResult.NEED_UPDATE)
-                }
-            }.start()
-        } catch (e: Exception) {
-            /* do nothing */
+        // don't ask the update server when developing an app
+        if (BuildConfig.DEBUG) return
+
+        activity.lifecycleScope.launch(Dispatchers.IO) {
+            var updateVerTag: String? = null
+
+            Updater.getNewVersionTag(
+                "passtable",
+                Platform.ANDROID,
+                BuildConfig.VERSION_NAME,
+                Channel.STABLE
+            )?.run {
+                updateVerTag = this
+                activity.window.decorView.post { menu.setItemVisibility(R.id.btUpdate, true) }
+            }
+
+            updateVerTag?.let { verTag ->
+                updateDownloadUrl = Updater.getDownloadLink(
+                    "passtable",
+                    Platform.ANDROID,
+                    verTag,
+                    Channel.STABLE
+                )
+            }
         }
     }
 

@@ -50,6 +50,11 @@
         android:title="@string/app_bt_edit" />
 
     <item
+        android:id="@+id/btMoveToTop"
+        android:icon="@drawable/ic_move_to_top"
+        android:title="@string/app_bt_moveToTop" />
+
+    <item
         android:id="@+id/btDelete"
         android:icon="@drawable/ic_delete"
         android:iconTint="@color/actionNegative"

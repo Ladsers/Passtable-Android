@@ -1,4 +1,4 @@
-package com.ladsers.passtable.android.containers
+package com.ladsers.passtable.android.enums
 
 import com.ladsers.passtable.android.BuildConfig
 
