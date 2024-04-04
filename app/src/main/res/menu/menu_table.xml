@@ -9,6 +9,12 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/btShare"
+        android:title="@string/app_bt_share"
+        android:icon="@drawable/ic_share"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/btSaveAs"
         android:title="@string/app_bt_saveAs"
         app:showAsAction="never" />
