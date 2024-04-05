@@ -4,11 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/btShare"
-        android:icon="@drawable/ic_share"
-        android:title="@string/app_bt_share" />
-
-    <item
         android:id="@+id/btDisableBiometric"
         android:icon="@drawable/ic_lock"
         android:title="@string/app_bt_disableBiometricForOne" />

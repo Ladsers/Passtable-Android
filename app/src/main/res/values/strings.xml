@@ -71,7 +71,6 @@
         <string name="app_bt_selectFolder">Select folder</string>
         <string name="app_bt_sendFeedback">Send feedback</string>
         <string name="app_bt_settings">Settings</string>
-        <string name="app_bt_share">Share</string>
         <string name="app_bt_showNote">Show note</string>
         <string name="app_bt_showPassword">Show password</string>
         <string name="app_bt_showUsername">Show username</string>

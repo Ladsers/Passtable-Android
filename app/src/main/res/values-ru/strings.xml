@@ -70,7 +70,6 @@
         <string name="app_bt_selectFolder">Выбрать папку</string>
         <string name="app_bt_sendFeedback">Отправить отзыв</string>
         <string name="app_bt_settings">Настройки</string>
-        <string name="app_bt_share">Поделиться</string>
         <string name="app_bt_showNote">Показать заметку</string>
         <string name="app_bt_showPassword">Показать пароль</string>
         <string name="app_bt_showUsername">Показать логин</string>

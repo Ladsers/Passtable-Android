@@ -27,7 +27,6 @@ import com.ladsers.passtable.android.callbacks.SearchDiffCallback
 import com.ladsers.passtable.android.components.BackupManager
 import com.ladsers.passtable.android.components.BiometricAuth
 import com.ladsers.passtable.android.components.Searcher
-import com.ladsers.passtable.android.components.ShareManager
 import com.ladsers.passtable.android.components.menus.DataItemMenu
 import com.ladsers.passtable.android.components.tableActivity.TableInitInfo
 import com.ladsers.passtable.android.containers.DataTableAndroid
@@ -318,10 +317,6 @@ class TableActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.btAdd -> {
                 addItem()
-                true
-            }
-            R.id.btShare -> {
-                ShareManager.shareFile(this, mainUri)
                 true
             }
             R.id.btSaveAs -> {
