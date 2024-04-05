@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter
 class BackupManager(private val context: Context) {
 
     private val fileLimit: Byte = 6
+    private val backupMarker: String = "backup"
 
     fun create(uri: Uri, data: String) {
         try {
@@ -18,11 +19,12 @@ class BackupManager(private val context: Context) {
                 find(path)?.let {
                     context.deleteFile(it)
                 } ?: let {
-                    if (context.fileList().size >= fileLimit) deleteFirst()
+                    val backups = context.fileList().filter { it.startsWith(backupMarker) }
+                    if (backups.size >= fileLimit) deleteFirst()
                 }
 
                 val timestamp = System.currentTimeMillis() / 1000 // accuracy in seconds is enough
-                val fileName = "${timestamp}_${path}"
+                val fileName = "${backupMarker}${timestamp}_${path}"
                 context.openFileOutput(fileName, Context.MODE_PRIVATE).use {
                     it.write(data.toByteArray())
                 }
@@ -52,7 +54,7 @@ class BackupManager(private val context: Context) {
 
     private fun deleteFirst() {
         val list = context.fileList()
-        val timestamps = list.map { s -> s.split('_')[0].toInt() }
+        val timestamps = list.map { s -> s.split('_')[0].drop(backupMarker.length).toInt() }
         val map = timestamps.zip(list).toMap().toSortedMap()
 
         context.deleteFile(map[map.firstKey()])
