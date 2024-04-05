@@ -15,8 +15,8 @@ android {
         applicationId "com.ladsers.passtable.android"
         minSdk 24
         targetSdk 34
-        versionCode 8
-        versionName "24.3.0"
+        versionCode 9
+        versionName "24.3.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
