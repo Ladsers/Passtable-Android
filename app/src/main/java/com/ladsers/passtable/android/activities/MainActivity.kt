@@ -22,6 +22,7 @@ import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.adapters.RecentAdapter
 import com.ladsers.passtable.android.components.ClipboardManager
 import com.ladsers.passtable.android.components.PasswordGeneratorProcessor
+import com.ladsers.passtable.android.components.ShareManager
 import com.ladsers.passtable.android.components.SnackbarManager
 import com.ladsers.passtable.android.components.menus.MainMenu
 import com.ladsers.passtable.android.enums.Param
@@ -30,6 +31,8 @@ import com.ladsers.passtable.android.containers.RecentFiles
 import com.ladsers.passtable.android.databinding.ActivityMainBinding
 import com.ladsers.passtable.android.dialogs.FileCreatorDlg
 import com.ladsers.passtable.android.dialogs.MessageDlg
+import com.ladsers.passtable.android.enums.RecentFileStatus
+import com.ladsers.passtable.android.enums.RecentItemPopupAction
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -167,21 +170,23 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun openRecentFile(id: Int, resCode: Int) {
-        when (resCode) {
-            0 -> { // ok
+    private fun openRecentFile(id: Int, status: RecentFileStatus) {
+        when (status) {
+            RecentFileStatus.OK -> {
                 val intent = Intent(this, TableActivity::class.java)
                 intent.putExtra("fileUri", recentUri[id])
                 intent.putExtra("newFile", false)
                 startActivity(intent)
             }
-            1 -> { // file from google disk is lost / not available
+
+            RecentFileStatus.GDRIVE_FILE_NOT_AVAILABLE -> {
                 refreshRecentList()
                 Toast.makeText(
                     this, getString(R.string.ui_msg_recentFilesUpdated), Toast.LENGTH_SHORT
                 ).show()
             }
-            2 -> { // local file is lost
+
+            RecentFileStatus.LOCAL_FILE_NOT_AVAILABLE -> {
                 messageDlg.create(
                     getString(R.string.dlg_title_cannotBeOpened),
                     getString(R.string.dlg_err_couldNotOpenRecentFile)
@@ -196,12 +201,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun popupAction(id: Int, resCode: Int) {
-        when (resCode) {
-            1 -> { // remove from list
-                removeFromRecentList(id)
-            }
-            2 -> { // forget password
+    private fun popupAction(id: Int, action: RecentItemPopupAction) {
+        when (action) {
+            RecentItemPopupAction.SHARE_FILE -> ShareManager.shareFile(this, recentUri[id])
+            RecentItemPopupAction.REMOVE_FROM_LIST -> removeFromRecentList(id)
+            RecentItemPopupAction.DISABLE_BIOMETRIC -> {
                 RecentFiles.forgetPasswordEncrypted(this, recentUri[id])
                 recentPasswords[id] = false
                 adapter.notifyItemChanged(id)
