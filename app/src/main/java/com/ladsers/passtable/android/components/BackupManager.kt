@@ -20,7 +20,7 @@ class BackupManager(private val context: Context) {
                     context.deleteFile(it)
                 } ?: let {
                     val backups = context.fileList().filter { it.startsWith(backupMarker) }
-                    if (backups.size >= fileLimit) deleteFirst()
+                    if (backups.size >= fileLimit) deleteFirst(backups)
                 }
 
                 val timestamp = System.currentTimeMillis() / 1000 // accuracy in seconds is enough
@@ -52,10 +52,9 @@ class BackupManager(private val context: Context) {
     private fun find(path: String) = context.fileList()
         .find { s -> s.contains(path) } // contains() is needed not only to discard the timestamp, but also to search for part of the path.
 
-    private fun deleteFirst() {
-        val list = context.fileList()
-        val timestamps = list.map { s -> s.split('_')[0].drop(backupMarker.length).toInt() }
-        val map = timestamps.zip(list).toMap().toSortedMap()
+    private fun deleteFirst(backups: List<String>) {
+        val timestamps = backups.map { s -> s.split('_')[0].drop(backupMarker.length).toInt() }
+        val map = timestamps.zip(backups).toMap().toSortedMap()
 
         context.deleteFile(map[map.firstKey()])
     }
