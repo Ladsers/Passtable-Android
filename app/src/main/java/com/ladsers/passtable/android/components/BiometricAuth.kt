@@ -92,11 +92,9 @@ class BiometricAuth(
     }
 
     fun checkAvailability(): Boolean {
-        val biometricManager = BiometricManager.from(context)
-        return biometricManager.canAuthenticate(
-            BiometricManager.Authenticators.BIOMETRIC_STRONG or
-                    BiometricManager.Authenticators.DEVICE_CREDENTIAL
-        ) == BiometricManager.BIOMETRIC_SUCCESS
+        val checkResult = BiometricManager.from(context)
+            .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)
+        return checkResult == BiometricManager.BIOMETRIC_SUCCESS
     }
 
     fun resetAuth() {

@@ -250,7 +250,7 @@ class TableActivity : AppCompatActivity() {
                     biometricAuth.activateAuth(primaryPassword)
                 else loginCompleted()
             }
-            3 -> primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN, incorrectPassword = true)
+            -2, 3 -> primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN, incorrectPassword = true)
         }
     }
 
