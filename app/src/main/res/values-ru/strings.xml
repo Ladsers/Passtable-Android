@@ -12,6 +12,7 @@
         <string name="app_info_thirdPartyResources">Криптографические алгоритмы&lt;br>&lt;big>&lt;b>Bouncy Castle&lt;/b>&lt;/big>&lt;br>Legion of the Bouncy Castle Inc.&lt;br>MIT License&lt;br>https://bouncycastle.org&lt;br>&lt;br>
             Иконки&lt;br>&lt;big>&lt;b>Material Design icons&lt;/b>&lt;/big>&lt;br>Google LLC&lt;br>Apache License 2.0&lt;br>https://fonts.google.com/icons&lt;br>&lt;br>
             Шрифт&lt;br>&lt;big>&lt;b>Manrope&lt;/b>&lt;/big>&lt;br>Mikhail Sharanda&lt;br>SIL Open Font License&lt;br>https://manropefont.com&lt;br>&lt;br>
+            Шрифт&lt;br>&lt;big>&lt;b>IBM Plex Sans&lt;/b>&lt;/big>&lt;br>IBM Corp., Mike Abbink, Bold Monday&lt;br>SIL Open Font License&lt;br>https://www.ibm.com/plex&lt;br>&lt;br>
             Шрифт&lt;br>&lt;big>&lt;b>Overpass Mono&lt;/b>&lt;/big>&lt;br>Delve Withrington, Dave Bailey, Thomas Jockin&lt;br>SIL Open Font License&lt;br>https://overpassfont.org&lt;br></string>
         <string name="app_info_webPage">https://www.ladsers.com/ru/passtable</string>
         <!-- end! -->
