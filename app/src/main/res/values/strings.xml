@@ -147,6 +147,7 @@
         <string name="ui_ct_preventScreenCapture">Prevent screen capture</string>
         <string name="ui_ct_recentFiles">Recent files</string>
         <string name="ui_ct_rememberRecentFiles">Remember recently opened files</string>
+        <string name="ui_ct_remindPrimaryPassword">Periodically remind you to enter Primary Password</string>
         <string name="ui_ct_searchByNotesUsernames">Search by notes and usernames</string>
         <string name="ui_ct_security">Security</string>
         <string name="ui_ct_settings">Settings</string>

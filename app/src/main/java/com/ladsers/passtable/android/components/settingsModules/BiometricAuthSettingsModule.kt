@@ -1,10 +1,12 @@
 package com.ladsers.passtable.android.components.settingsModules
 
 import android.app.Activity
+import android.content.Intent
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import com.ladsers.passtable.android.R
+import com.ladsers.passtable.android.activities.InfoActivity
 import com.ladsers.passtable.android.components.BiometricAuth
 import com.ladsers.passtable.android.enums.Param
 import com.ladsers.passtable.android.containers.ParamStorage
@@ -29,6 +31,9 @@ class BiometricAuthSettingsModule(
         binding.biometricAuth.swCheckboxRememberPasswordByDefault.isChecked =
             ParamStorage.getBool(activity, Param.CHECKBOX_REMEMBER_PASSWORD_BY_DEFAULT)
 
+        binding.biometricAuth.swRemindPrimaryPassword.isChecked =
+            ParamStorage.getBool(activity, Param.PASSWORD_USER_VALIDATOR_ENABLED)
+
         binding.biometricAuth.clBiometricAuth.visibility =
             if (biometricAuth.checkAvailability()) View.VISIBLE else View.GONE
     }
@@ -36,6 +41,10 @@ class BiometricAuthSettingsModule(
     override fun attachActionsOnCreate() {
         binding.biometricAuth.swCheckboxRememberPasswordByDefault.setOnCheckedChangeListener { _, isChecked ->
             ParamStorage.set(activity, Param.CHECKBOX_REMEMBER_PASSWORD_BY_DEFAULT, isChecked)
+        }
+
+        binding.biometricAuth.swRemindPrimaryPassword.setOnCheckedChangeListener { _, isChecked ->
+            ParamStorage.set(activity, Param.PASSWORD_USER_VALIDATOR_ENABLED, isChecked)
         }
 
         binding.biometricAuth.btDisableBiometric.setOnClickListener {
@@ -48,6 +57,13 @@ class BiometricAuthSettingsModule(
                     ).show()
                 }, it, activity.getString(R.string.app_bt_disable)
             )
+        }
+
+        binding.biometricAuth.btForgotPassword.setOnClickListener {
+            val intent = Intent(activity, InfoActivity::class.java)
+            intent.putExtra("title", activity.getString(R.string.app_info_changePasswordTitle))
+            intent.putExtra("info", activity.getString(R.string.app_info_changePasswordSteps))
+            activity.startActivity(intent)
         }
     }
 

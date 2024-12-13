@@ -146,6 +146,7 @@
         <string name="ui_ct_preventScreenCapture">Предотвращать захват экрана</string>
         <string name="ui_ct_recentFiles">Недавние файлы</string>
         <string name="ui_ct_rememberRecentFiles">Запоминать недавно открытые файлы</string>
+        <string name="ui_ct_remindPrimaryPassword">Периодически напоминать вводить основной пароль</string>
         <string name="ui_ct_searchByNotesUsernames">Поиск по заметкам и логинам</string>
         <string name="ui_ct_security">Безопасность</string>
         <string name="ui_ct_settings">Настройки</string>
