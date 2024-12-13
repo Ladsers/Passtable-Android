@@ -26,6 +26,7 @@ object RecentFiles {
             strList.map { it.toUri() }.toMutableList()
         } else mutableListOf()
 
+        /* last opened date */
         val strDate = shPref.getString("date", "")
         val dateList = if (!strDate.isNullOrEmpty()) {
             strDate.split("|").toMutableList()
@@ -37,7 +38,14 @@ object RecentFiles {
             strPasswordEncrypted.split("|").toMutableList()
         } else mutableListOf()
 
+        val strVerificationDate = shPref.getString("verificationDate", "")
+        val verificationDateList = if (!strVerificationDate.isNullOrEmpty()) {
+            strVerificationDate.split("|").toMutableList()
+        } else dateList.toMutableList()
+
         var currentPasswordEncrypted = " "
+        var currentVerificationDate = " "
+
         val index = uriList.indexOf(data)
         if (index != -1) {
             uriList.removeAt(index)
@@ -45,27 +53,33 @@ object RecentFiles {
 
             currentPasswordEncrypted = passwordEncryptedList[index]
             passwordEncryptedList.removeAt(index)
+            currentVerificationDate = verificationDateList[index]
+            verificationDateList.removeAt(index)
         }
 
         if (isAdding) {
             uriList.add(data)
             dateList.add(getCurrentDateAsStr())
             passwordEncryptedList.add(currentPasswordEncrypted)
+            verificationDateList.add(currentVerificationDate)
             val maxItems = shPref.getInt("maxItems", 15)
             if (uriList.size > maxItems) {
                 uriList.removeAt(0)
                 dateList.removeAt(0)
                 passwordEncryptedList.removeAt(0)
+                verificationDateList.removeAt(0)
             }
         }
 
         val newStrUri = uriList.joinToString("|") { it.toString() }
         val newStrDate = dateList.joinToString("|")
         val newStrPasswordEncrypted = passwordEncryptedList.joinToString("|")
+        val newStrVerificationDate = verificationDateList.joinToString("|")
         with(shPref.edit()) {
             putString("uri", newStrUri)
             putString("date", newStrDate)
             putString("passwordEncrypted", newStrPasswordEncrypted)
+            putString("verificationDate", newStrVerificationDate)
             apply()
         }
         return true
@@ -79,6 +93,7 @@ object RecentFiles {
             putString("uri", "")
             putString("date", "")
             putString("passwordEncrypted", "")
+            putString("verificationDate", "")
             apply()
         }
         return true
@@ -120,6 +135,16 @@ object RecentFiles {
         val strPasswordEncrypted = shPref.getString("passwordEncrypted", "")
         val passwordEncryptedList = strPasswordEncrypted!!.split("|").toMutableList()
         return passwordEncryptedList[passwordEncryptedList.lastIndex]
+    }
+
+    fun getLastVerificationDate(context: Context?): Date? {
+        val shPref = context?.getSharedPreferences("recentFiles", Context.MODE_PRIVATE)
+            ?: return null
+        val strVerificationDate = shPref.getString("verificationDate", "")
+        val verificationDateList = strVerificationDate!!.split("|").toMutableList()
+        val verificationDateStr = verificationDateList[verificationDateList.lastIndex]
+        if (verificationDateStr.isBlank()) return null
+        return convertStringToDate(verificationDateStr)
     }
 
     fun forgetPasswordEncrypted(context: Context?, data: Uri): Boolean {
@@ -177,9 +202,32 @@ object RecentFiles {
         return true
     }
 
-    private fun getCurrentDateAsStr(): String {
+    fun rememberLastVerificationDate(
+        context: Context?,
+        date: Date = Calendar.getInstance().time
+    ): Boolean {
+        val shPref = context?.getSharedPreferences("recentFiles", Context.MODE_PRIVATE)
+            ?: return false
+        val strVerificationDate = shPref.getString("verificationDate", "")
+        val verificationDateList = strVerificationDate!!.split("|").toMutableList()
+        verificationDateList[verificationDateList.lastIndex] = convertDateToString(date)
+        val newStrVerificationDate = verificationDateList.joinToString("|")
+
+        shPref.edit().putString("verificationDate", newStrVerificationDate).apply()
+        return true
+    }
+
+    private fun getCurrentDateAsStr() = convertDateToString(Calendar.getInstance().time)
+
+    private fun convertDateToString(date: Date): String {
         val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ROOT)
         formatter.timeZone = TimeZone.getTimeZone("UTC")
-        return formatter.format(Calendar.getInstance().time)
+        return formatter.format(date)
+    }
+
+    private fun convertStringToDate(dateStr: String): Date {
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ROOT)
+        formatter.timeZone = TimeZone.getTimeZone("UTC")
+        return formatter.parse(dateStr)!!
     }
 }

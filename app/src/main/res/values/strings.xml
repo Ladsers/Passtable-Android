@@ -3,6 +3,24 @@
 
         <!-- info -->
         <string name="app_info_appName">Passtable</string>
+        <string name="app_info_changePasswordTitle">Change password</string>
+        <string name="app_info_changePasswordSteps">&lt;b>Steps:&lt;/b>&lt;br>
+                1. Unlock the file using biometric authentication;&lt;br>
+                2. On the data screen, click on the three dots in the upper right corner;&lt;br>
+                3. Select \"Save as\";&lt;br>
+                4. In the window that appears, click the \"Select folder\" button;&lt;br>
+                5. Choose the folder to save the copy of the current file;&lt;br>
+                6. In the next window, enter a new primary password;&lt;br>
+                7. Click the \"Save\" button.&lt;br>
+                &lt;br>
+                After clicking the \"Save\" button, a new file with a new primary password will be used. In the future, always use only this file.
+                &lt;br>&lt;br>
+                &lt;b>It is necessary to remember that the primary password is the key to your data!&lt;/b>&lt;br>
+                If the device is changed or the biometric sensor is damaged, access to the data will be impossible without entering this password. Biometric authentication is only an additional way of logging in, not the main one.&lt;br>
+                &lt;b>It is impossible to recover encrypted data without the primary password!&lt;/b>
+                &lt;br>&lt;br>
+                This instruction can be opened at any time: Settings → Biometric authentication → Forgot password?</string>
+        <string name="app_info_disablePasswordReminders">You can disable reminders to enter Primary Password in Settings.</string>
         <string name="app_info_itemMenu">Click on the Eye button to show the password.\n\nClick on the item itself to show the menu for working with it.</string>
         <string name="app_info_keyboardShortcuts">Ctrl+N — Add item.\nCtrl+F — Search by notes and usernames.\n\nSettings → Help → Keyboard shortcuts</string>
         <string name="app_info_keyboardShortcutsHelp">&lt;b>Ctrl+N&lt;/b> — Add item.&lt;br>&lt;br>&lt;b>Ctrl+F&lt;/b> — Search by notes and usernames.&lt;br>&lt;br>&lt;b>Ctrl+1&lt;/b> — Search by red tag.&lt;br>&lt;br>&lt;b>Ctrl+2&lt;/b> — Search by green tag.&lt;br>&lt;br>&lt;b>Ctrl+3&lt;/b> — Search by blue tag.&lt;br>&lt;br>&lt;b>Ctrl+4&lt;/b> — Search by yellow tag.&lt;br>&lt;br>&lt;b>Ctrl+5&lt;/b> — Search by purple tag.&lt;br>&lt;br>&lt;b>Ctrl+0&lt;/b> — Cancel search by tags.</string>
@@ -52,6 +70,7 @@
         <string name="app_bt_edit">Edit</string>
         <string name="app_bt_enter">Enter</string>
         <string name="app_bt_enterPassword">Enter password</string>
+        <string name="app_bt_forgotPassword">Forgot password?</string>
         <string name="app_bt_githubRepo">GitHub repo</string>
         <string name="app_bt_goToSettings">Go to settings</string>
         <string name="app_bt_ignoreAndCloseFile">Ignore and close file</string>
@@ -76,6 +95,7 @@
         <string name="app_bt_showNote">Show note</string>
         <string name="app_bt_showPassword">Show password</string>
         <string name="app_bt_showUsername">Show username</string>
+        <string name="app_bt_skip">Skip</string>
         <string name="app_bt_supportDeveloper">Support developer</string>
         <string name="app_bt_thirdPartyResources">Third party resources</string>
         <string name="app_bt_tools">Tools</string>
@@ -199,6 +219,7 @@
         <string name="dlg_ct_primaryInvalidChars">Primary password contains invalid characters.\nAllowed characters: %1$s</string>
         <string name="dlg_ct_primaryPassword">Primary password</string>
         <string name="dlg_ct_primarySlashChar">Primary password cannot start with a forward slash</string>
+        <string name="dlg_ct_reminder">Reminder</string>
         <!-- end! -->
 
         <!-- err (error) -->
@@ -228,6 +249,7 @@
         <string name="dlg_msg_downloadNewVersionRuStore">You can download the new version from RuStore or from the app website</string>
         <string name="dlg_msg_grantPermissionToDisplayOver">Need to grant permission in settings to display the panel over other apps</string>
         <string name="dlg_msg_needToEnterPrimaryPasswordForAny">To open any file, you will need to enter its primary password</string>
+        <string name="dlg_msg_periodicallyEnterPrimaryPassword">It is recommended to periodically enter Primary Password so as not to forget it</string>
         <string name="dlg_msg_permanentAction">This is permanent and cannot be undone</string>
         <string name="dlg_msg_unsavedDataWillBeLost">All unsaved data will be lost</string>
         <!-- end! -->

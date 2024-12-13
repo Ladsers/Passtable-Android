@@ -39,6 +39,9 @@ class PrimaryPasswordDlg(
     var isNeedRememberPassword = false
         private set
 
+    var passwordEnteredManually = false
+        private set
+
     private var rememberingAvailable = true
     private var checkboxInitState = false
     private var isNeedSkipTextChangedCheck = false
@@ -56,6 +59,7 @@ class PrimaryPasswordDlg(
         val binding = DialogDataEntryBinding.inflate(window.layoutInflater)
         builder.setView(binding.root)
 
+        passwordEnteredManually = false
         isNeedRememberPassword = false
         val biometricAuthAvailable = biometricAuth.checkAvailability()
         if (!canRememberPass) rememberingAvailable = false // disable remembering
@@ -152,6 +156,7 @@ class PrimaryPasswordDlg(
                     Mode.NEW -> completeCreation(pass)
                     Mode.SAVE_AS -> completeSavingAs(uri!!, pass)
                 }
+                passwordEnteredManually = true
                 closedViaButton = true
                 this.dismiss()
             }
