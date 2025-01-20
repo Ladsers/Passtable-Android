@@ -25,6 +25,8 @@ enum class Param(
     PREVENT_SCREEN_CAPTURE("preventScreenCapture", defBool = true),
     PASSWORD_USER_VALIDATOR_ENABLED("passwordUserValidatorEnabled", defBool = true),
     PASSWORD_USER_VALIDATOR_TIMESTAMP("passwordUserValidatorTimestamp", defInt = 0),
+    PROJECT_SUPPORT_COUNTER("projectSupportCounter", defInt = 0),
+    PROJECT_SUPPORT_STATE("projectSupportState", defInt = 0),
 
     GENERATOR_PASSWORD_LENGTH("generatorPasswordLength", defInt = 8),
     GENERATOR_LOWERCASE_LETTERS_ALLOW("generatorLowercaseLettersAllow", defBool = true),

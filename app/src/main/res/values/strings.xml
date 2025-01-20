@@ -66,6 +66,7 @@
         <string name="app_bt_disableBiometricForAll">Disable biometric authentication for all files</string>
         <string name="app_bt_disableBiometricForOne">Disable biometric authentication</string>
         <string name="app_bt_done">Done</string>
+        <string name="app_bt_dontShowAgain">Don\'t show again</string>
         <string name="app_bt_download">Download</string>
         <string name="app_bt_edit">Edit</string>
         <string name="app_bt_enter">Enter</string>
@@ -199,6 +200,7 @@
         <string name="dlg_title_deleteItemFormat">Delete \"%1$s\"?</string>
         <string name="dlg_title_disable">Disable?</string>
         <string name="dlg_title_encryptionError">Encryption error</string>
+        <string name="dlg_title_importantMessage">Important message</string>
         <string name="dlg_title_openFile">Open file</string>
         <string name="dlg_title_operationCanceled">Operation canceled</string>
         <string name="dlg_title_permissionRequired">Permission required</string>
@@ -252,6 +254,8 @@
         <string name="dlg_msg_needToEnterPrimaryPasswordForAny">To open any file, you will need to enter its primary password</string>
         <string name="dlg_msg_periodicallyEnterPrimaryPassword">It is recommended to periodically enter Primary Password so as not to forget it</string>
         <string name="dlg_msg_permanentAction">This is permanent and cannot be undone</string>
+        <string name="dlg_msg_rateApp">Your rating and feedback are important and will help improve the application. It will not take much time, but will be a great support for the development of the project. Thank you!</string>
+        <string name="dlg_msg_supportDeveloper">The app is free and does not contain ads, but its development requires resources. If you like the project, please support it! Even a small amount will help make the app better for you!</string>
         <string name="dlg_msg_unsavedDataWillBeLost">All unsaved data will be lost</string>
         <!-- end! -->
 

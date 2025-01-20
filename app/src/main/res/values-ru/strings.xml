@@ -65,6 +65,7 @@
         <string name="app_bt_disableBiometricForAll">Отключить биометрическую аутентификацию для всех файлов</string>
         <string name="app_bt_disableBiometricForOne">Откл. биометр. аутентификацию</string>
         <string name="app_bt_done">Готово</string>
+        <string name="app_bt_dontShowAgain">Больше не показывать</string>
         <string name="app_bt_download">Скачать</string>
         <string name="app_bt_edit">Редактировать</string>
         <string name="app_bt_enter">Ввод</string>
@@ -198,6 +199,7 @@
         <string name="dlg_title_deleteItemFormat">Удалить \"%1$s\"?</string>
         <string name="dlg_title_disable">Отключить?</string>
         <string name="dlg_title_encryptionError">Ошибка шифрования</string>
+        <string name="dlg_title_importantMessage">Важное сообщение</string>
         <string name="dlg_title_openFile">Открыть файл</string>
         <string name="dlg_title_operationCanceled">Операция отменена</string>
         <string name="dlg_title_permissionRequired">Требуется разрешение</string>
@@ -251,6 +253,8 @@
         <string name="dlg_msg_needToEnterPrimaryPasswordForAny">Для открытия любого файла потребуется ввод его основного пароля</string>
         <string name="dlg_msg_periodicallyEnterPrimaryPassword">Рекомендуется периодически вводить основной пароль, чтобы его не забыть</string>
         <string name="dlg_msg_permanentAction">Это действие не может быть отменено</string>
+        <string name="dlg_msg_rateApp">Ваша оценка и отзыв важны и помогут улучшить приложение. Это не займёт много времени, но станет большой поддержкой для развития проекта. Спасибо!</string>
+        <string name="dlg_msg_supportDeveloper">Приложение бесплатное и не содержит рекламы, но его развитие требует ресурсов. Если вам нравится проект, пожалуйста, поддержите его! Даже небольшая сумма поможет сделать приложение лучше для вас!</string>
         <string name="dlg_msg_unsavedDataWillBeLost">Все несохраненные данные будут потеряны</string>
         <!-- end! -->
 

@@ -27,6 +27,7 @@ import com.ladsers.passtable.android.callbacks.SearchDiffCallback
 import com.ladsers.passtable.android.components.BackupManager
 import com.ladsers.passtable.android.components.BiometricAuth
 import com.ladsers.passtable.android.components.PasswordUserValidator
+import com.ladsers.passtable.android.components.ProjectSupportProcessor
 import com.ladsers.passtable.android.components.Searcher
 import com.ladsers.passtable.android.components.ShareManager
 import com.ladsers.passtable.android.components.menus.DataItemMenu
@@ -324,6 +325,8 @@ class TableActivity : AppCompatActivity() {
         /* Notify user */
         TableInitInfo.showKeyboardShortcuts(this, binding)
         notifyUser()
+
+        ProjectSupportProcessor.updateState(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

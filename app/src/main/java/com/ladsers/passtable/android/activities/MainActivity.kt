@@ -22,6 +22,7 @@ import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.adapters.RecentAdapter
 import com.ladsers.passtable.android.components.ClipboardManager
 import com.ladsers.passtable.android.components.PasswordGeneratorProcessor
+import com.ladsers.passtable.android.components.ProjectSupportProcessor
 import com.ladsers.passtable.android.components.ShareManager
 import com.ladsers.passtable.android.components.SnackbarManager
 import com.ladsers.passtable.android.components.menus.MainMenu
@@ -105,7 +106,13 @@ class MainActivity : AppCompatActivity() {
             { id, resCode -> popupAction(id, resCode) })
         binding.rvRecent.adapter = adapter
 
-        showInfoLicense()
+        if (handleFirstLaunch()) {
+            // if the app is opened for the first time
+            ProjectSupportProcessor.updateState(this)
+        } else {
+            // if the app is opened after updating
+            ProjectSupportProcessor.boostCounterIfZero(this)
+        }
     }
 
     override fun onResume() {
@@ -240,10 +247,12 @@ class MainActivity : AppCompatActivity() {
             if (recentUri.isEmpty()) View.VISIBLE else View.GONE
     }
 
-    private fun showInfoLicense() {
+    private fun handleFirstLaunch(): Boolean {
         val param = Param.INITIAL_INFO_LICENSE
-        if (!ParamStorage.getBool(this, param)) return
+        if (!ParamStorage.getBool(this, param)) return false
         val info = getString(R.string.app_info_license)
+        // show license info
         SnackbarManager.showInitInfo(this, binding.root, param, info, 4000)
+        return true
     }
 }
