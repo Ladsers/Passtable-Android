@@ -77,10 +77,8 @@ object PasswordUserValidator {
         messageDlg.show()
     }
 
-    fun handleSuccessValidation(activity: Activity) = updateLastVerificationDate(
-        activity = activity,
-        addDays = 7
-    )
+    fun handleSuccessValidation(activity: Activity) =
+        RecentFiles.rememberLastVerificationDate(activity)
 
     /**
      * Block the appearance of windows for all files for an hour.
@@ -99,18 +97,10 @@ object PasswordUserValidator {
     /**
      * Block the appearance of windows for this file for a day.
      */
-    private fun blockReminderForFile(activity: Activity) = updateLastVerificationDate(
-        activity = activity,
-        addDays = 1
-    )
-
-    private fun updateLastVerificationDate(activity: Activity, addDays: Int) {
-        RecentFiles.getLastVerificationDate(activity)?.let { current ->
-            val calendar = Calendar.getInstance()
-            calendar.time = current
-            calendar.add(Calendar.DAY_OF_MONTH, addDays)
-            RecentFiles.rememberLastVerificationDate(activity, calendar.time)
-        }
+    private fun blockReminderForFile(activity: Activity) {
+        val currentDate = Calendar.getInstance()
+        currentDate.add(Calendar.DAY_OF_MONTH, -1)
+        RecentFiles.rememberLastVerificationDate(activity, currentDate.time)
     }
 
     /**

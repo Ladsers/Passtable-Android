@@ -150,13 +150,15 @@ class PrimaryPasswordDlg(
                     binding.cbRememberPass.isChecked
                 checkboxInitState = isNeedRememberPassword
 
+                passwordEnteredManually = true
+
                 val pass = binding.etPassword.text.toString()
                 when (mode) {
                     Mode.OPEN -> completeOpening(pass)
                     Mode.NEW -> completeCreation(pass)
                     Mode.SAVE_AS -> completeSavingAs(uri!!, pass)
                 }
-                passwordEnteredManually = true
+
                 closedViaButton = true
                 this.dismiss()
             }
