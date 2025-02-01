@@ -31,6 +31,11 @@ Web site: https://manropefont.com <br />
 SIL Open Font License: https://raw.githubusercontent.com/sharanda/manrope/master/OFL.txt <br />
 <br />
 
+**IBM Plex Sans** <br />
+*IBM Corp., Mike Abbink, Bold Monday* <br />
+Web site: https://www.ibm.com/plex/<br />
+SIL Open Font License: https://raw.githubusercontent.com/IBM/plex/master/LICENSE.txt <br />
+<br />
 
 **Overpass Mono** <br />
 *Delve Withrington, Dave Bailey, Thomas Jockin* <br />
