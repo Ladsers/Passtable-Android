@@ -1,5 +1,5 @@
 # Passtable (Android Application)
-Copyright 2024 Maxim Korolev
+Copyright 2025 Maxim Korolev
 <br /><br />
 ### This software includes binary files and/or source codes from third party:
 
