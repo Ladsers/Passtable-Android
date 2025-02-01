@@ -86,11 +86,11 @@
         <string name="app_bt_rateApp">Rate app</string>
         <string name="app_bt_removeFromList">Remove from list</string>
         <string name="app_bt_restore">Restore</string>
+        <string name="app_bt_reportError">Report Error</string>
         <string name="app_bt_save">Save</string>
         <string name="app_bt_saveAs">Save as</string>
         <string name="app_bt_saveWithCurrentPassword">Save with current password</string>
         <string name="app_bt_selectFolder">Select folder</string>
-        <string name="app_bt_sendFeedback">Send feedback</string>
         <string name="app_bt_settings">Settings</string>
         <string name="app_bt_share">Share</string>
         <string name="app_bt_showNote">Show note</string>

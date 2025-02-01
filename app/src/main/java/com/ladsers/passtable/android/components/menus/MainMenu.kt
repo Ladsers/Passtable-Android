@@ -120,8 +120,8 @@ class MainMenu(
                 activity.startActivity(Intent(Intent.ACTION_VIEW, webPage))
                 true
             }
-            R.id.btSendFeedback -> {
-                val webPage = Uri.parse("https://ladsers.com/passtable/report-android")
+            R.id.btReportError -> {
+                val webPage = Uri.parse("https://ladsers.com/report/")
                 activity.startActivity(Intent(Intent.ACTION_VIEW, webPage))
                 true
             }

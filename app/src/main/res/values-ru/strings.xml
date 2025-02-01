@@ -85,11 +85,11 @@
         <string name="app_bt_rateApp">Оценить приложение</string>
         <string name="app_bt_removeFromList">Убрать из списка</string>
         <string name="app_bt_restore">Восстановить</string>
+        <string name="app_bt_reportError">Сообщить об ошибке</string>
         <string name="app_bt_save">Сохранить</string>
         <string name="app_bt_saveAs">Сохранить как</string>
         <string name="app_bt_saveWithCurrentPassword">Сохр. с текущим паролем</string>
         <string name="app_bt_selectFolder">Выбрать папку</string>
-        <string name="app_bt_sendFeedback">Отправить отзыв</string>
         <string name="app_bt_settings">Настройки</string>
         <string name="app_bt_share">Поделиться</string>
         <string name="app_bt_showNote">Показать заметку</string>

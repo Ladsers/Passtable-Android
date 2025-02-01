@@ -68,8 +68,8 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/btSendFeedback"
-        android:title="@string/app_bt_sendFeedback"
+        android:id="@+id/btReportError"
+        android:title="@string/app_bt_reportError"
         app:showAsAction="never" />
 
     <item
