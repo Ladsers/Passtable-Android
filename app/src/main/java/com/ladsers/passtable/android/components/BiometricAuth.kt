@@ -112,6 +112,7 @@ class BiometricAuth(
         val outStr = "$iv@$data"
         strToBiometricPrompt = null
         if (RecentFiles.rememberLastPasswordEncrypted(context, outStr)) {
+            RecentFiles.rememberLastVerificationDate(context)
             Toast.makeText(
                 context,
                 context.getString(R.string.ui_msg_biometricEnabled),
