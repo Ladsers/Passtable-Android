@@ -3,6 +3,24 @@
 
         <!-- info -->
         <string name="app_info_appName">Passtable</string>
+        <string name="app_info_changePasswordTitle">Сменить пароль</string>
+        <string name="app_info_changePasswordSteps">&lt;b>Шаги:&lt;/b>&lt;br>
+                1. Разблокируйте файл с помощью биометрической аутентификации;&lt;br>
+                2. На экране с данными нажмите на три точки в верхнем правом углу;&lt;br>
+                3. Выберить \"Сохранить как\";&lt;br>
+                4. В появившемся окне нажмите кнопку \"Выбрать папку\";&lt;br>
+                5. Выберите папку для сохранения копии текущего файла;&lt;br>
+                6. В следующем окне введите новый основной пароль;&lt;br>
+                7. Нажмите кнопку \"Сохранить\".&lt;br>
+                &lt;br>
+                После нажатия на кнопку \"Сохранить\" будет использоваться новый файл с новым основным паролем. Далее всегда используйте только этот файл.
+                &lt;br>&lt;br>
+                &lt;b>Необходимо помнить, что основной пароль — это ключ к вашим данным!&lt;/b>&lt;br>
+                В случае смены устройства или повреждения биометрического датчика доступ к данным будет невозможен без ввода этого пароля. Биометрическая аутентификация служит лишь дополнительным способом входа, а не основным.&lt;br>
+                &lt;b>Восстановить зашифрованные данные без основного пароля невозможно!&lt;/b>
+                &lt;br>&lt;br>
+                Данная инструкция может быть открыта в любое время: Настройки → Биометрическая аутентификация → Забыли пароль?</string>
+        <string name="app_info_disablePasswordReminders">Вы можете отключить напоминания о вводе основного пароля в настройках приложения.</string>
         <string name="app_info_itemMenu">Нажмите на кнопку с изображением глаза, чтобы показать пароль.\n\nНажмите на сам элемент, чтобы открыть меню для работы с ним.</string>
         <string name="app_info_keyboardShortcuts">Ctrl+N — Добавить элемент.\nCtrl+F — Поиск по заметкам и логинам.\n\nНастройки → Помощь → Горячие клавиши</string>
         <string name="app_info_keyboardShortcutsHelp">&lt;b>Ctrl+N&lt;/b> — Добавить элемент.&lt;br>&lt;br>&lt;b>Ctrl+F&lt;/b> — Поиск по заметкам и логинам.&lt;br>&lt;br>&lt;b>Ctrl+1&lt;/b> — Поиск по красной метке.&lt;br>&lt;br>&lt;b>Ctrl+2&lt;/b> — Поиск по зеленой метке.&lt;br>&lt;br>&lt;b>Ctrl+3&lt;/b> — Поиск по синей метке.&lt;br>&lt;br>&lt;b>Ctrl+4&lt;/b> — Поиск по желтой метке.&lt;br>&lt;br>&lt;b>Ctrl+5&lt;/b> — Поиск по фиолетовой метке.&lt;br>&lt;br>&lt;b>Ctrl+0&lt;/b> — Отменить поиск по меткам.</string>
@@ -12,6 +30,7 @@
         <string name="app_info_thirdPartyResources">Криптографические алгоритмы&lt;br>&lt;big>&lt;b>Bouncy Castle&lt;/b>&lt;/big>&lt;br>Legion of the Bouncy Castle Inc.&lt;br>MIT License&lt;br>https://bouncycastle.org&lt;br>&lt;br>
             Иконки&lt;br>&lt;big>&lt;b>Material Design icons&lt;/b>&lt;/big>&lt;br>Google LLC&lt;br>Apache License 2.0&lt;br>https://fonts.google.com/icons&lt;br>&lt;br>
             Шрифт&lt;br>&lt;big>&lt;b>Manrope&lt;/b>&lt;/big>&lt;br>Mikhail Sharanda&lt;br>SIL Open Font License&lt;br>https://manropefont.com&lt;br>&lt;br>
+            Шрифт&lt;br>&lt;big>&lt;b>IBM Plex Sans&lt;/b>&lt;/big>&lt;br>IBM Corp., Mike Abbink, Bold Monday&lt;br>SIL Open Font License&lt;br>https://www.ibm.com/plex&lt;br>&lt;br>
             Шрифт&lt;br>&lt;big>&lt;b>Overpass Mono&lt;/b>&lt;/big>&lt;br>Delve Withrington, Dave Bailey, Thomas Jockin&lt;br>SIL Open Font License&lt;br>https://overpassfont.org&lt;br></string>
         <string name="app_info_webPage">https://www.ladsers.com/ru/passtable</string>
         <!-- end! -->
@@ -46,10 +65,12 @@
         <string name="app_bt_disableBiometricForAll">Отключить биометрическую аутентификацию для всех файлов</string>
         <string name="app_bt_disableBiometricForOne">Откл. биометр. аутентификацию</string>
         <string name="app_bt_done">Готово</string>
+        <string name="app_bt_dontShowAgain">Больше не показывать</string>
         <string name="app_bt_download">Скачать</string>
         <string name="app_bt_edit">Редактировать</string>
         <string name="app_bt_enter">Ввод</string>
         <string name="app_bt_enterPassword">Ввести пароль</string>
+        <string name="app_bt_forgotPassword">Забыли пароль?</string>
         <string name="app_bt_githubRepo">Репозиторий на GitHub</string>
         <string name="app_bt_goToSettings">Перейти в настройки</string>
         <string name="app_bt_ignoreAndCloseFile">Игнорировать и закрыть файл</string>
@@ -64,15 +85,17 @@
         <string name="app_bt_rateApp">Оценить приложение</string>
         <string name="app_bt_removeFromList">Убрать из списка</string>
         <string name="app_bt_restore">Восстановить</string>
+        <string name="app_bt_reportError">Сообщить об ошибке</string>
         <string name="app_bt_save">Сохранить</string>
         <string name="app_bt_saveAs">Сохранить как</string>
         <string name="app_bt_saveWithCurrentPassword">Сохр. с текущим паролем</string>
         <string name="app_bt_selectFolder">Выбрать папку</string>
-        <string name="app_bt_sendFeedback">Отправить отзыв</string>
         <string name="app_bt_settings">Настройки</string>
+        <string name="app_bt_share">Поделиться</string>
         <string name="app_bt_showNote">Показать заметку</string>
         <string name="app_bt_showPassword">Показать пароль</string>
         <string name="app_bt_showUsername">Показать логин</string>
+        <string name="app_bt_skip">Пропустить</string>
         <string name="app_bt_supportDeveloper">Поддержать разработчика</string>
         <string name="app_bt_thirdPartyResources">Сторонние ресурсы</string>
         <string name="app_bt_tools">Инструменты</string>
@@ -124,6 +147,7 @@
         <string name="ui_ct_preventScreenCapture">Предотвращать захват экрана</string>
         <string name="ui_ct_recentFiles">Недавние файлы</string>
         <string name="ui_ct_rememberRecentFiles">Запоминать недавно открытые файлы</string>
+        <string name="ui_ct_remindPrimaryPassword">Периодически напоминать вводить основной пароль</string>
         <string name="ui_ct_searchByNotesUsernames">Поиск по заметкам и логинам</string>
         <string name="ui_ct_security">Безопасность</string>
         <string name="ui_ct_settings">Настройки</string>
@@ -175,6 +199,7 @@
         <string name="dlg_title_deleteItemFormat">Удалить \"%1$s\"?</string>
         <string name="dlg_title_disable">Отключить?</string>
         <string name="dlg_title_encryptionError">Ошибка шифрования</string>
+        <string name="dlg_title_importantMessage">Важное сообщение</string>
         <string name="dlg_title_openFile">Открыть файл</string>
         <string name="dlg_title_operationCanceled">Операция отменена</string>
         <string name="dlg_title_permissionRequired">Требуется разрешение</string>
@@ -196,6 +221,7 @@
         <string name="dlg_ct_primaryInvalidChars">Основной пароль содержит недопустимые символы.\nРазрешенные символы: %1$s</string>
         <string name="dlg_ct_primaryPassword">Основной пароль</string>
         <string name="dlg_ct_primarySlashChar">Основной пароль не может начинаться с косой черты</string>
+        <string name="dlg_ct_reminder">Напоминание</string>
         <!-- end! -->
 
         <!-- err (error) -->
@@ -225,7 +251,10 @@
         <string name="dlg_msg_downloadNewVersionRuStore">Вы можете скачать новую версию из RuStore или с сайта приложения</string>
         <string name="dlg_msg_grantPermissionToDisplayOver">Необходимо предоставить разрешение в настройках для отображения панели поверх других приложений</string>
         <string name="dlg_msg_needToEnterPrimaryPasswordForAny">Для открытия любого файла потребуется ввод его основного пароля</string>
+        <string name="dlg_msg_periodicallyEnterPrimaryPassword">Рекомендуется периодически вводить основной пароль, чтобы его не забыть</string>
         <string name="dlg_msg_permanentAction">Это действие не может быть отменено</string>
+        <string name="dlg_msg_rateApp">Ваша оценка и отзыв важны и помогут улучшить приложение. Это не займёт много времени, но станет большой поддержкой для развития проекта. Спасибо!</string>
+        <string name="dlg_msg_supportDeveloper">Приложение бесплатное и не содержит рекламы, но его развитие требует ресурсов. Если вам нравится проект, пожалуйста, поддержите его! Даже небольшая сумма поможет сделать приложение лучше для вас!</string>
         <string name="dlg_msg_unsavedDataWillBeLost">Все несохраненные данные будут потеряны</string>
         <!-- end! -->
 

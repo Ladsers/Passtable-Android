@@ -11,6 +11,22 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/btRateAppToolbar"
+        android:enabled="false"
+        android:icon="@drawable/ic_star"
+        android:title="@string/app_bt_rateApp"
+        android:visible="true"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/btSupportDeveloperToolbar"
+        android:enabled="false"
+        android:icon="@drawable/ic_diamond"
+        android:title="@string/app_bt_supportDeveloper"
+        android:visible="true"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/btTools"
         android:icon="@drawable/ic_tools"
         android:title="@string/app_bt_tools"
@@ -52,8 +68,8 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/btSendFeedback"
-        android:title="@string/app_bt_sendFeedback"
+        android:id="@+id/btReportError"
+        android:title="@string/app_bt_reportError"
         app:showAsAction="never" />
 
     <item

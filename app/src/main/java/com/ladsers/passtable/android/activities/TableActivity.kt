@@ -26,7 +26,10 @@ import com.ladsers.passtable.android.callbacks.ReorderCallback
 import com.ladsers.passtable.android.callbacks.SearchDiffCallback
 import com.ladsers.passtable.android.components.BackupManager
 import com.ladsers.passtable.android.components.BiometricAuth
+import com.ladsers.passtable.android.components.PasswordUserValidator
+import com.ladsers.passtable.android.components.ProjectSupportProcessor
 import com.ladsers.passtable.android.components.Searcher
+import com.ladsers.passtable.android.components.ShareManager
 import com.ladsers.passtable.android.components.menus.DataItemMenu
 import com.ladsers.passtable.android.components.tableActivity.TableInitInfo
 import com.ladsers.passtable.android.containers.DataTableAndroid
@@ -222,7 +225,21 @@ class TableActivity : AppCompatActivity() {
                 RecentFiles.add(this, mainUri)
                 val passEncrypted = RecentFiles.getLastPasswordEncrypted(this)
                 if (passEncrypted.isNullOrBlank()) primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN)
-                else biometricAuth.startAuth(passEncrypted)
+                else {
+                    val needValidate = PasswordUserValidator.isNeedValidate(this)
+                    if (needValidate) {
+                        PasswordUserValidator.showValidationDialog(
+                            messageDlg = messageDlg,
+                            activity = this,
+                            enterPasswordAction = {
+                                primaryPasswordDlg.show(
+                                    PrimaryPasswordDlg.Mode.OPEN,
+                                    canRememberPass = false
+                                )
+                            },
+                            skipAction = { biometricAuth.startAuth(passEncrypted) })
+                    } else biometricAuth.startAuth(passEncrypted)
+                }
             } else primaryPasswordDlg.show(PrimaryPasswordDlg.Mode.OPEN, canRememberPass = false)
         }
 
@@ -246,6 +263,9 @@ class TableActivity : AppCompatActivity() {
         table = DataTableAndroid(mainUri.toString(), primaryPassword, cryptData, contentResolver)
         when (table.fill()) {
             0 -> {
+                if (primaryPasswordDlg.passwordEnteredManually)
+                    PasswordUserValidator.handleSuccessValidation(this)
+
                 if (primaryPasswordDlg.isNeedRememberPassword)
                     biometricAuth.activateAuth(primaryPassword)
                 else loginCompleted()
@@ -305,6 +325,8 @@ class TableActivity : AppCompatActivity() {
         /* Notify user */
         TableInitInfo.showKeyboardShortcuts(this, binding)
         notifyUser()
+
+        ProjectSupportProcessor.updateState(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -317,6 +339,10 @@ class TableActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.btAdd -> {
                 addItem()
+                true
+            }
+            R.id.btShare -> {
+                ShareManager.shareFile(this, mainUri)
                 true
             }
             R.id.btSaveAs -> {

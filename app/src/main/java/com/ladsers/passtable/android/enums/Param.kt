@@ -11,6 +11,7 @@ enum class Param(
     INITIAL_INFO_PIN_TO_SCREEN("initialInfoPinToScreen", defBool = true),
     INITIAL_INFO_KEYBOARD_SHORTCUTS("initialInfoKeyboardShortcuts", defBool = true),
     INITIAL_INFO_LICENSE("initialInfoLicense", defBool = true),
+    INITIAL_INFO_PASSWORD_USER_VALIDATOR("initialInfoPasswordUserValidator", defBool = true),
 
     PHYSICAL_KEYBOARD_DETECTED("physicalKeyboardDetected", defBool = false),
 
@@ -22,6 +23,10 @@ enum class Param(
     REMEMBER_RECENT_FILES("rememberRecentFiles", defBool = true),
     THEME("theme", defInt = 0),
     PREVENT_SCREEN_CAPTURE("preventScreenCapture", defBool = true),
+    PASSWORD_USER_VALIDATOR_ENABLED("passwordUserValidatorEnabled", defBool = true),
+    PASSWORD_USER_VALIDATOR_TIMESTAMP("passwordUserValidatorTimestamp", defInt = 0),
+    PROJECT_SUPPORT_COUNTER("projectSupportCounter", defInt = 0),
+    PROJECT_SUPPORT_STATE("projectSupportState", defInt = 0),
 
     GENERATOR_PASSWORD_LENGTH("generatorPasswordLength", defInt = 8),
     GENERATOR_LOWERCASE_LETTERS_ALLOW("generatorLowercaseLettersAllow", defBool = true),

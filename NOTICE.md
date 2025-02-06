@@ -1,5 +1,5 @@
 # Passtable (Android Application)
-Copyright 2024 Maxim Korolev
+Copyright 2025 Maxim Korolev
 <br /><br />
 ### This software includes binary files and/or source codes from third party:
 
@@ -31,6 +31,11 @@ Web site: https://manropefont.com <br />
 SIL Open Font License: https://raw.githubusercontent.com/sharanda/manrope/master/OFL.txt <br />
 <br />
 
+**IBM Plex Sans** <br />
+*IBM Corp., Mike Abbink, Bold Monday* <br />
+Web site: https://www.ibm.com/plex/<br />
+SIL Open Font License: https://raw.githubusercontent.com/IBM/plex/master/LICENSE.txt <br />
+<br />
 
 **Overpass Mono** <br />
 *Delve Withrington, Dave Bailey, Thomas Jockin* <br />

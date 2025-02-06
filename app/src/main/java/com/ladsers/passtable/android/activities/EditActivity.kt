@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doBeforeTextChanged
 import com.google.android.material.button.MaterialButton
@@ -109,9 +110,24 @@ class EditActivity : AppCompatActivity() {
             }
         }
 
-        editTextBehavior(binding.etNote, binding.btUndoNote, originalNote)
-        editTextBehavior(binding.etUsername, binding.btUndoUsername, originalUsername)
-        editTextBehavior(binding.etPassword, binding.btUndoPassword, originalPassword)
+        editTextBehavior(
+            editText = binding.etNote,
+            button = binding.btUndoNote,
+            originalVal = originalNote,
+            isNeedChangeFont = true
+        )
+        editTextBehavior(
+            editText = binding.etUsername,
+            button = binding.btUndoUsername,
+            originalVal = originalUsername,
+            isNeedChangeFont = true
+        )
+        editTextBehavior(
+            editText = binding.etPassword,
+            button = binding.btUndoPassword,
+            originalVal = originalPassword,
+            isNeedChangeFont = false
+        )
 
         if (resources.configuration.keyboard == Configuration.KEYBOARD_QWERTY) binding.etNote.requestFocus()
 
@@ -143,10 +159,24 @@ class EditActivity : AppCompatActivity() {
         canBeSavedCheck()
     }
 
-    private fun editTextBehavior(editText: EditText, button: Button, originalVal: String) {
+    private fun editTextBehavior(
+        editText: EditText,
+        button: Button,
+        originalVal: String,
+        isNeedChangeFont: Boolean
+    ) {
         editText.post { editText.setText(originalVal) }
 
         editText.doAfterTextChanged { x ->
+
+            if (isNeedChangeFont) {
+                val isNotEmpty = x.toString().isNotEmpty()
+                editText.typeface = ResourcesCompat.getFont(
+                    this,
+                    if (isNotEmpty) R.font.ibmplexsans_regular else R.font.manrope
+                )
+            }
+
             binding.clErr.removeCallbacks(doNotMatchMsgWithDelay)
             button.isEnabled = editMode && x.toString() != originalVal
             canBeSavedCheck()

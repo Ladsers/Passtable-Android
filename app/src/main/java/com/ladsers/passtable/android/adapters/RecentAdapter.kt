@@ -11,6 +11,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ladsers.passtable.android.R
 import com.ladsers.passtable.android.databinding.ItemRecentFileBinding
+import com.ladsers.passtable.android.enums.RecentFileStatus
+import com.ladsers.passtable.android.enums.RecentItemPopupAction
 import com.ladsers.passtable.android.extensions.getFileName
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -24,8 +26,8 @@ class RecentAdapter(
     private val recentDate: MutableList<String>,
     private val recentPasswords: MutableList<Boolean>, // having encrypted primary passwords?
     private val contextActivity: Context,
-    private val open: (Int, Int) -> Unit,
-    private val popupAction: (Int, Int) -> Unit,
+    private val open: (Int, RecentFileStatus) -> Unit,
+    private val popupAction: (Int, RecentItemPopupAction) -> Unit,
 ) : RecyclerView.Adapter<RecentAdapter.ItemViewHolder>() {
 
     class ItemViewHolder(val binding: ItemRecentFileBinding) :
@@ -40,6 +42,7 @@ class RecentAdapter(
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         with(holder) {
             val fileName = contextActivity.getFileName(recentUri[position]) ?: "???"
+
             binding.tvFileName.text = fileName
             binding.tvLastDate.text = getFormattedDate(recentDate[position])
 
@@ -53,18 +56,18 @@ class RecentAdapter(
                 binding.ivGdrive.visibility = View.GONE
             }
 
-            val openCode = when (true) {
-                (fileName != "???") -> 0
-                (fileName == "???" && gdriveFile) -> 1
-                else -> 2
-            }
-            binding.clItem.setOnClickListener { open(position, openCode) }
+            val canBeOpened = fileName != "???"
+            val recentFileStatus = if (canBeOpened) RecentFileStatus.OK
+            else if (gdriveFile) RecentFileStatus.GDRIVE_FILE_NOT_AVAILABLE
+            else RecentFileStatus.LOCAL_FILE_NOT_AVAILABLE
+
+            binding.clItem.setOnClickListener { open(position, recentFileStatus) }
             binding.clItem.setOnLongClickListener {
                 it.performHapticFeedback(
                     HapticFeedbackConstants.VIRTUAL_KEY,
                     HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
                 )
-                showPopupMenu(it, position)
+                showPopupMenu(it, recentFileStatus, position)
             }
         }
     }
@@ -97,7 +100,7 @@ class RecentAdapter(
         return result
     }
 
-    private fun showPopupMenu(view: View, position: Int): Boolean {
+    private fun showPopupMenu(view: View, status: RecentFileStatus, position: Int): Boolean {
         val pop = PopupMenu(
             contextActivity, view, Gravity.CENTER, 0,
             R.style.PopupMenuCustomPosRecent
@@ -113,11 +116,23 @@ class RecentAdapter(
         val spanStr = SpannableString(btRemoveFromList.title.toString())
         spanStr.setSpan(ForegroundColorSpan(colorNegative), 0, spanStr.length, 0)
         btRemoveFromList.title = spanStr
+        val btShare = pop.menu.findItem(R.id.btShare)
+        btShare.isVisible = status == RecentFileStatus.OK
+        btShare.isEnabled = status == RecentFileStatus.OK
 
         pop.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.btRemoveFromList -> popupAction(position, 1)
-                R.id.btDisableBiometric -> popupAction(position, 2)
+                R.id.btRemoveFromList -> popupAction(
+                    position,
+                    RecentItemPopupAction.REMOVE_FROM_LIST
+                )
+
+                R.id.btDisableBiometric -> popupAction(
+                    position,
+                    RecentItemPopupAction.DISABLE_BIOMETRIC
+                )
+
+                R.id.btShare -> popupAction(position, RecentItemPopupAction.SHARE_FILE)
             }
             true
         }

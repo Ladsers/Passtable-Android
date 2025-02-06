@@ -15,11 +15,13 @@ import com.ladsers.passtable.android.activities.SettingsActivity
 import com.ladsers.passtable.android.components.AppStoreProcessor
 import com.ladsers.passtable.android.components.ClipboardManager
 import com.ladsers.passtable.android.components.PasswordGeneratorProcessor
+import com.ladsers.passtable.android.components.ProjectSupportProcessor
 import com.ladsers.passtable.android.enums.AppStore
 import com.ladsers.passtable.android.enums.Param
 import com.ladsers.passtable.android.containers.ParamStorage
 import com.ladsers.passtable.android.dialogs.MessageDlg
 import com.ladsers.passtable.android.dialogs.UpdateDlg
+import com.ladsers.passtable.android.enums.ProjectSupportState
 import com.ladsers.web.update.Channel
 import com.ladsers.web.update.Platform
 import com.ladsers.web.update.Updater
@@ -42,6 +44,18 @@ class MainMenu(
         checkUpdate(menu)
         checkKeyboard(menu)
 
+        val projectSupportState = ProjectSupportProcessor.getState(activity)
+
+        menu.setItemVisibility(
+            itemId = R.id.btRateAppToolbar,
+            isVisible = projectSupportState == ProjectSupportState.RATING_APP
+        )
+
+        menu.setItemVisibility(
+            itemId = R.id.btSupportDeveloperToolbar,
+            isVisible = projectSupportState == ProjectSupportState.DONATION
+        )
+
         menu.setItemVisibility(
             R.id.btRateApp,
             AppStoreProcessor.isInstalled(activity, AppStore.RUSTORE)
@@ -57,6 +71,22 @@ class MainMenu(
     fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         return when (item.itemId) {
+            R.id.btRateAppToolbar -> {
+                ProjectSupportProcessor.showDialog(
+                    messageDlg, activity,
+                    ProjectSupportState.RATING_APP
+                )
+                item.isVisible = false
+                true
+            }
+            R.id.btSupportDeveloperToolbar -> {
+                ProjectSupportProcessor.showDialog(
+                    messageDlg, activity,
+                    ProjectSupportState.DONATION
+                )
+                item.isVisible = false
+                true
+            }
             R.id.btUpdate -> {
                 UpdateDlg.show(messageDlg, updateDownloadUrl)
                 true
@@ -90,8 +120,8 @@ class MainMenu(
                 activity.startActivity(Intent(Intent.ACTION_VIEW, webPage))
                 true
             }
-            R.id.btSendFeedback -> {
-                val webPage = Uri.parse("https://ladsers.com/passtable/report-android")
+            R.id.btReportError -> {
+                val webPage = Uri.parse("https://ladsers.com/report/")
                 activity.startActivity(Intent(Intent.ACTION_VIEW, webPage))
                 true
             }
