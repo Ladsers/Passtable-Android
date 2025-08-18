@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:passtable/features/recent_files/recent_files.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -11,7 +13,6 @@ class MyHomePage extends StatefulWidget {
   // case the title) provided by the parent (in this case the App widget) and
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
-
   final String title;
 
   @override
@@ -19,6 +20,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final _recentFilesRepository = GetIt.I<RecentFilesRepository>();
+
   int _counter = 0;
 
   void _incrementCounter() {
@@ -30,6 +33,13 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+  }
+
+  void _recentFileTest () async {
+    var list1 = await _recentFilesRepository.getRecentFiles();
+    await _recentFilesRepository.addRecentFile(path: "some_path/$_counter", name: "File №$_counter");
+    var list2 = await _recentFilesRepository.getRecentFiles();
+    _counter++;
   }
 
   @override
@@ -78,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: _recentFileTest,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
