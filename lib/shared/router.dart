@@ -1,5 +1,3 @@
-import 'package:passtable/default/my_home_page.dart';
+import 'package:passtable/features/home/home_screen.dart';
 
-final routes = {
-  '/': (context) => const MyHomePage(title: "Passtable"), // todo
-};
+final routes = {'/': (context) => HomeScreen()}; // todo const

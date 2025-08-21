@@ -6,12 +6,16 @@ part 'recent_file.g.dart';
 class RecentFile {
   @HiveField(0)
   final String path;
-  
+
   @HiveField(1)
   final String name;
 
   @HiveField(2)
   final DateTime lastOpened;
-  
-  RecentFile({required this.path, required this.name, required this.lastOpened});
+
+  const RecentFile({
+    required this.path,
+    required this.name,
+    required this.lastOpened,
+  });
 }
