@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:passtable/features/home/widgets/recent_file_tile.dart';
+import 'package:passtable/features/home/utils/create_tool_list.dart';
+import 'package:passtable/features/home/widgets/widgets.dart';
 import 'package:passtable/features/recent_files/models/recent_file.dart';
 import 'package:passtable/shared/enums/list_position.dart';
 
@@ -116,21 +117,6 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildSquareIconButton(IconData icon, String tooltip) {
-    return SizedBox(
-      width: 62,
-      height: 62,
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.zero, // Убираем внутренние отступы
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        ),
-        child: Icon(icon, size: 24),
-      ),
-    );
-  }
 }
 
 class AdaptiveButtonGrid extends StatelessWidget {
@@ -138,6 +124,8 @@ class AdaptiveButtonGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final toolList = createToolList(true, true);
+
     return LayoutBuilder(
       builder: (context, constraints) {
         const double buttonWidth = 162.0;
@@ -167,11 +155,7 @@ class AdaptiveButtonGrid extends StatelessWidget {
                     ? MainAxisAlignment.start
                     : MainAxisAlignment.spaceEvenly,
                 children: [
-                  for (int i = 0; i < firstRowButtons; i++)
-                    _buildQuickSettingButton(
-                      icon: _getIcon(i),
-                      text: _getText(i),
-                    ),
+                  for (int i = 0; i < firstRowButtons; i++) ToolButton(tool: toolList[i], width: 150)
                 ],
               ),
               if (rowCount > 1) const SizedBox(height: 12),
@@ -179,11 +163,7 @@ class AdaptiveButtonGrid extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    for (int i = firstRowButtons; i < 4; i++)
-                      _buildQuickSettingButton(
-                        icon: _getIcon(i),
-                        text: _getText(i),
-                      ),
+                    for (int i = firstRowButtons; i < 4; i++) ToolButton(tool: toolList[i], width: 150)
                   ],
                 ),
             ],
@@ -191,73 +171,5 @@ class AdaptiveButtonGrid extends StatelessWidget {
         );
       },
     );
-  }
-
-  Widget _buildQuickSettingButton({
-    required IconData icon,
-    required String text,
-  }) {
-    return ElevatedButton(
-      onPressed: () {},
-      style: ElevatedButton.styleFrom(
-        minimumSize: const Size(150, 48),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-          //side: BorderSide(color: Colors.grey[300]!),
-        ),
-        elevation: 0,
-        shadowColor: Colors.transparent,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 20),
-          const SizedBox(width: 8),
-          Text(
-            text,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: Colors.black87,
-              height: 1.1,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  //todo
-  IconData _getIcon(int index) {
-    switch (index) {
-      case 0:
-        return Icons.note_add_rounded;
-      case 1:
-        return Icons.folder_open_rounded;
-      case 2:
-        return Icons.health_and_safety_rounded;
-      case 3:
-        return Icons.settings_rounded;
-      default:
-        return Icons.error;
-    }
-  }
-
-  //todo
-  String _getText(int index) {
-    switch (index) {
-      case 0:
-        return 'Create';
-      case 1:
-        return 'Open';
-      case 2:
-        return 'Password\ngenerator';
-      case 3:
-        return 'Settings';
-      default:
-        return 'Error';
-    }
   }
 }
