@@ -9,7 +9,7 @@ class ToolButton extends StatelessWidget {
   final double width;
 
   static const double _buttonHeight = 48;
-  final double _borderRadius = _buttonHeight / 2;
+  static const double _borderRadius = _buttonHeight / 2;
 
   ButtonStyle get _baseStyle => ButtonStyle(
     minimumSize: WidgetStateProperty.all(Size(width, _buttonHeight)),
@@ -18,8 +18,8 @@ class ToolButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(_borderRadius),
       ),
     ),
-    elevation: WidgetStateProperty.all(0),
-    shadowColor: WidgetStateProperty.all(Colors.transparent),
+    //elevation: WidgetStateProperty.all(0),
+    //shadowColor: WidgetStateProperty.all(Colors.transparent),
   );
 
   @override
@@ -29,16 +29,17 @@ class ToolButton extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(tool.icon, size: 20),
-        const SizedBox(width: 8),
-        Text(
-          tool.label,
-          textAlign: TextAlign.center,
-          style: TextStyle(height: 1.1),
-        ),
+        if (tool.name != null) const SizedBox(width: 8),
+        if (tool.name != null)
+          Text(
+            tool.name!,
+            textAlign: TextAlign.center,
+            style: TextStyle(height: 1.1),
+          ),
       ],
     );
 
-    return switch (tool.priority) {
+    final button = switch (tool.priority) {
       ToolPriority.high => FilledButton(
         onPressed: () => Navigator.pushNamed(context, tool.route),
         style: _baseStyle,
@@ -52,7 +53,7 @@ class ToolButton extends StatelessWidget {
           ),
           foregroundColor: WidgetStateProperty.all(
             Theme.of(context).colorScheme.inverseSurface,
-          )
+          ),
         ),
         child: child,
       ),
@@ -69,5 +70,9 @@ class ToolButton extends StatelessWidget {
         child: child,
       ),
     };
+
+    return tool.tooltip != null
+        ? Tooltip(message: tool.tooltip!, child: button)
+        : button;
   }
 }

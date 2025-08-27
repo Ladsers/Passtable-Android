@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:passtable/features/home/utils/create_tool_list.dart';
 import 'package:passtable/features/home/widgets/widgets.dart';
 import 'package:passtable/features/recent_files/models/recent_file.dart';
 import 'package:passtable/shared/enums/list_position.dart';
@@ -36,7 +35,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
-      appBar: _buildAppBar(context),
+      appBar: CustomAppBar(),
       body: _buildBody(context),
       bottomNavigationBar: Container(
         height: MediaQuery.of(context).padding.bottom,
@@ -46,23 +45,11 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
-    return AppBar(
-      title: const Text('Passtable'),
-      centerTitle: true,
-      elevation: 0,
-      scrolledUnderElevation: 0,
-      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
-      leading: IconButton(icon: const Icon(Icons.update), onPressed: () {}),
-      actions: [IconButton(icon: const Icon(Icons.settings), onPressed: () {})],
-    );
-  }
-
   Widget _buildBody(BuildContext context) {
     return Column(
       children: [
         Expanded(child: _buildRecentFilesContainer()),
-        AdaptiveButtonGrid(),
+        ActionButtonsLayout(isMobileApp: true, isSupportAvailable: true),
       ],
     );
   }
@@ -115,61 +102,6 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class AdaptiveButtonGrid extends StatelessWidget {
-  const AdaptiveButtonGrid({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final toolList = createToolList(true, true);
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        const double buttonWidth = 162.0;
-        final int buttonsPerRow = (constraints.maxWidth / buttonWidth).floor();
-        final int rowCount = buttonsPerRow >= 4 ? 1 : 2;
-        final int firstRowButtons = buttonsPerRow >= 4
-            ? 4
-            : buttonsPerRow >= 3
-            ? 3
-            : 2;
-
-        return Padding(
-          padding: EdgeInsets.only(
-            top: 24,
-            bottom: 24,
-            left: (rowCount > 1 ? 0 : 24),
-            right: 0,
-          ),
-          child: Column(
-            crossAxisAlignment: buttonsPerRow >= 4
-                ? CrossAxisAlignment.start
-                : CrossAxisAlignment.center,
-            children: [
-              Row(
-                spacing: rowCount > 1 ? 0 : 12,
-                mainAxisAlignment: buttonsPerRow >= 4
-                    ? MainAxisAlignment.start
-                    : MainAxisAlignment.spaceEvenly,
-                children: [
-                  for (int i = 0; i < firstRowButtons; i++) ToolButton(tool: toolList[i], width: 150)
-                ],
-              ),
-              if (rowCount > 1) const SizedBox(height: 12),
-              if (rowCount > 1)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    for (int i = firstRowButtons; i < 4; i++) ToolButton(tool: toolList[i], width: 150)
-                  ],
-                ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

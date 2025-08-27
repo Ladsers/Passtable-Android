@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:passtable/features/home/enums/tool_priority.dart';
 import 'package:passtable/features/home/models/tool.dart';
 
-List<Tool> createToolList(bool isMobileApp, bool isRuLocale) {
+List<Tool> createToolList({
+  required bool isMobileApp,
+  required bool isSupportAvailable,
+}) {
   final list = <Tool>[];
 
   list.add(
     Tool(
-      label: 'Open',
+      name: 'Open',
       icon: Icons.folder_open_rounded,
       priority: ToolPriority.high,
       route: '',
@@ -16,7 +19,7 @@ List<Tool> createToolList(bool isMobileApp, bool isRuLocale) {
 
   list.add(
     Tool(
-      label: 'Create',
+      name: 'Create',
       icon: Icons.note_add_rounded,
       priority: ToolPriority.medium,
       route: '',
@@ -25,7 +28,7 @@ List<Tool> createToolList(bool isMobileApp, bool isRuLocale) {
 
   list.add(
     Tool(
-      label: 'Password\ngenerator',
+      name: 'Password\ngenerator',
       icon: Icons.auto_awesome_rounded,
       priority: ToolPriority.low,
       route: '',
@@ -35,7 +38,8 @@ List<Tool> createToolList(bool isMobileApp, bool isRuLocale) {
   if (isMobileApp) {
     list.add(
       Tool(
-        label: 'App for PC',
+        name: isSupportAvailable ? null : 'App for PC',
+        tooltip: isSupportAvailable ? 'App for PC' : null,
         icon: Icons.desktop_mac_rounded,
         priority: ToolPriority.low,
         route: '',
@@ -44,7 +48,8 @@ List<Tool> createToolList(bool isMobileApp, bool isRuLocale) {
   } else {
     list.add(
       Tool(
-        label: 'App for Android',
+        name: isSupportAvailable ? null : 'Android\napp',
+        tooltip: isSupportAvailable ? 'Android app' : null,
         icon: Icons.phone_android_rounded,
         priority: ToolPriority.low,
         route: '',
@@ -52,10 +57,10 @@ List<Tool> createToolList(bool isMobileApp, bool isRuLocale) {
     );
   }
 
-  if (isRuLocale) {
+  if (isSupportAvailable) {
     list.add(
       Tool(
-        label: 'Support developer',
+        tooltip: 'Support developer',
         icon: Icons.diamond_rounded,
         priority: ToolPriority.low,
         route: '',
