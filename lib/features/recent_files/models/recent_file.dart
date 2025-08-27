@@ -1,9 +1,10 @@
+import 'package:equatable/equatable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 part 'recent_file.g.dart';
 
 @HiveType(typeId: 0)
-class RecentFile {
+class RecentFile extends Equatable {
   @HiveField(0)
   final String path;
 
@@ -18,4 +19,7 @@ class RecentFile {
     required this.name,
     required this.lastOpened,
   });
+
+  @override
+  List<Object?> get props => [path, name, lastOpened];
 }

@@ -1,3 +1,3 @@
 import 'package:passtable/features/home/home.dart';
 
-final routes = {'/': (context) => HomeScreen()}; // todo const
+final routes = {'/': (context) => const HomeScreen()};

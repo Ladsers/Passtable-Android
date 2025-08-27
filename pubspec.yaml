@@ -34,6 +34,8 @@ dependencies:
   hive_flutter: ^1.1.0
   get_it: ^8.2.0
   intl: ^0.20.2
+  equatable: ^2.0.7
+  flutter_bloc: ^9.1.1
 
 dev_dependencies:
   flutter_test:
