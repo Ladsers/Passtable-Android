@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:passtable/features/home/utils/create_tool_list.dart';
 import 'package:passtable/features/home/widgets/tool_button.dart';
+import 'package:passtable/generated/l10n.dart';
 
 class ActionButtonsLayout extends StatelessWidget {
   const ActionButtonsLayout({
@@ -30,6 +31,7 @@ class ActionButtonsLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final toolList = createToolList(
+      s: S.of(context),
       isMobileApp: isMobileApp,
       isSupportAvailable: isSupportAvailable,
     );

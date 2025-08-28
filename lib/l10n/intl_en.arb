@@ -1,0 +1,10 @@
+{
+  "home_btn_open": "Open",
+  "home_btn_create": "Create",
+  "home_btn_passwordGenerator": "Password\ngenerator",
+  "home_btn_appForPc": "App for PC",
+  "home_btn_androidApp": "Android\napp",
+  "home_btn_supportDeveloper": "Support developer",
+  "home_text_noRecentlyOpenedFiles": "No recently opened files",
+  "home_label_recentFiles": "Recent files"
+}

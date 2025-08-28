@@ -1,0 +1,10 @@
+{
+  "home_btn_open": "Открыть",
+  "home_btn_create": "Создать",
+  "home_btn_passwordGenerator": "Генератор\nпаролей",
+  "home_btn_appForPc": "Приложение для ПК",
+  "home_btn_androidApp": "Android\nприложение",
+  "home_btn_supportDeveloper": "Поддержать разработчика",
+  "home_text_noRecentlyOpenedFiles": "Нет недавно открытых файлов",
+  "home_label_recentFiles": "Недавние файлы"
+}

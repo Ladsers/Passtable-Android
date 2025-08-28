@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:passtable/features/home/bloc/recent_files.bloc.dart';
 import 'package:passtable/features/home/widgets/widgets.dart';
 import 'package:passtable/features/recent_files/recent_files.dart';
+import 'package:passtable/generated/l10n.dart';
 import 'package:passtable/shared/enums/list_position.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -65,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
               bottom: 12,
             ),
             child: Text(
-              "Recent files",
+              S.of(context).home_label_recentFiles,
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w400,
@@ -107,7 +108,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [Text('No files')],
+                      children: [
+                        Text(S.of(context).home_text_noRecentlyOpenedFiles),
+                      ],
                     ),
                   );
                 }
