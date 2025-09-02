@@ -5,6 +5,9 @@ import 'package:passtable/features/home/bloc/recent_files.bloc.dart';
 import 'package:passtable/features/home/widgets/widgets.dart';
 import 'package:passtable/features/recent_files/recent_files.dart';
 
+/// The main home screen of the Passtable application that serves as the entry point
+/// for users. It provides a centralized interface with recent files access,
+/// action buttons, and app navigation.
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 

@@ -40,8 +40,8 @@ List<Tool> createToolList({
   if (isMobileApp) {
     list.add(
       Tool(
-        name: isSupportAvailable ? null : s.home_btn_appForPc,
-        tooltip: isSupportAvailable ? s.home_btn_appForPc : null,
+        name: isSupportAvailable ? null : s.home_btn_appForPc, // for a compact button that contains only an icon
+        tooltip: isSupportAvailable ? s.home_btn_appForPc : null, // for a compact button that contains only an icon
         icon: Icons.desktop_mac_rounded,
         priority: ToolPriority.low,
         route: '',
@@ -50,8 +50,8 @@ List<Tool> createToolList({
   } else {
     list.add(
       Tool(
-        name: isSupportAvailable ? null : s.home_btn_androidApp,
-        tooltip: isSupportAvailable ? s.home_btn_androidApp : null,
+        name: isSupportAvailable ? null : s.home_btn_androidApp, // for a compact button that contains only an icon
+        tooltip: isSupportAvailable ? s.home_btn_androidApp : null, // for a compact button that contains only an icon
         icon: Icons.phone_android_rounded,
         priority: ToolPriority.low,
         route: '',

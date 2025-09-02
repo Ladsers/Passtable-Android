@@ -2,15 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:passtable/features/home/enums/tool_priority.dart';
 import 'package:passtable/features/home/models/tool.dart';
 
+/// A customizable button widget for different tools
+/// Changes appearance based on tool priority (high, medium, low)
+/// Displays icon and optional text with navigation functionality
 class ToolButton extends StatelessWidget {
   const ToolButton({super.key, required this.tool, required this.width});
 
+  /// The tool data containing icon, name, route, and priority
   final Tool tool;
+
+  /// The width of the button
   final double width;
 
-  static const double _buttonHeight = 48;
-  static const double _borderRadius = _buttonHeight / 2;
+  // Button styling constants
+  static const double _buttonHeight = 48; // Fixed button height
+  static const double _borderRadius =
+      _buttonHeight / 2; // Circular border radius
 
+  /// Base button style used by all priority levels
   ButtonStyle get _baseStyle => ButtonStyle(
     minimumSize: WidgetStateProperty.all(Size(width, _buttonHeight)),
     shape: WidgetStateProperty.all(
@@ -39,6 +48,7 @@ class ToolButton extends StatelessWidget {
       ],
     );
 
+    // Create button based on tool priority
     final button = switch (tool.priority) {
       ToolPriority.high => FilledButton(
         onPressed: () => Navigator.pushNamed(context, tool.route),
@@ -71,6 +81,7 @@ class ToolButton extends StatelessWidget {
       ),
     };
 
+    // Add tooltip if available
     return tool.tooltip != null
         ? Tooltip(message: tool.tooltip!, child: button)
         : button;
