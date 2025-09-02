@@ -1,14 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:passtable/features/home/utils/create_tool_list.dart';
 import 'package:passtable/features/home/widgets/tool_button.dart';
 import 'package:passtable/generated/l10n.dart';
 
 class ActionButtonsLayout extends StatelessWidget {
-  const ActionButtonsLayout({
-    super.key,
-    required this.isMobileApp,
-    required this.isSupportAvailable,
-  });
+  const ActionButtonsLayout({super.key});
 
   static const double _buttonWidth = 152;
   static const double _buttonHalfWidth = _buttonWidth / 2;
@@ -25,11 +22,12 @@ class ActionButtonsLayout extends StatelessWidget {
   static const int _maxNumWidgetsInRow = 4;
   static const int _minNumWidgetsInRow = 2;
 
-  final bool isMobileApp;
-  final bool isSupportAvailable;
-
   @override
   Widget build(BuildContext context) {
+    final isMobileApp = Platform.isAndroid || Platform.isIOS;
+    final locale = Localizations.localeOf(context);
+    final isSupportAvailable = locale.languageCode == 'ru';
+
     final toolList = createToolList(
       s: S.of(context),
       isMobileApp: isMobileApp,
